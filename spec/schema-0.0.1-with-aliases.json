@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/connected-json-v0.0.1.schema.json",
+  "title": "Connected JSON Schema",
+  "description": "A JSON Schema for the Connected JSON format (v0.0.1) used for exchanging connected data (graphs, networks). Allows arbitrary additional properties on all elements.",
+  "version": "0.0.1",
+  "type": "object",
+  "properties": {
+    "graph": {
+      "$ref": "#/$defs/OneOrManyGraphs",
+      "description": "A single graph object or an array of graph objects. Use this or 'graphs'."
+    },
+    "graphs": {
+      "$ref": "#/$defs/OneOrManyGraphs",
+      "description": "Alias for 'graph'. A single graph object or an array of graph objects. Use this or 'graph'."
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "graph"
+      ]
+    },
+    {
+      "required": [
+        "graphs"
+      ]
+    }
+  ],
+  "additionalProperties": true,
+  "$defs": {
+    "Identifier": {
+      "description": "A unique identifier, represented as a string or number.",
+      "type": [
+        "string",
+        "number"
+      ]
+    },
+    "Label": {
+      "description": "A display label, either as a single string or a multi-lingual object (e.g., {\"en\": \"Hello\", \"de\": \"Hallo\"}).",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]+)*$": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      ]
+    },
+    "OneOrManyGraphs": {
+      "description": "Allows either a single Graph object or an array of Graph objects.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Graph"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Graph"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "OneOrManyNodes": {
+      "description": "Allows either a single Node object or an array of Node objects.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Node"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          },
+          "minItems": 0
+        }
+      ]
+    },
+    "OneOrManyEdges": {
+      "description": "Allows either a single Edge object or an array of Edge objects.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Edge"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Edge"
+          },
+          "minItems": 0
+        }
+      ]
+    },
+    "MaybeArrayOfIdentifiers": {
+      "description": "Allows a single identifier (string/number) or an array of identifiers.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Identifier"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Identifier"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "Graph": {
+      "description": "Represents a graph containing nodes and edges.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier",
+          "description": "Unique identifier for the graph. Required."
+        },
+        "label": {
+          "$ref": "#/$defs/Label",
+          "description": "Optional display label for the graph."
+        },
+        "edgedefault": {
+          "type": "string",
+          "enum": [
+            "directed",
+            "undirected"
+          ],
+          "description": "Optional. Defines default directedness for edges. If 'undirected', edges default to directed:false. Otherwise defaults to directed:true."
+        },
+        "nodes": {
+          "$ref": "#/$defs/OneOrManyNodes",
+          "description": "Optional. Contains the nodes of the graph. Can be a single node object or an array."
+        },
+        "node": {
+          "$ref": "#/$defs/OneOrManyNodes",
+          "description": "Alias for 'nodes'. Optional."
+        },
+        "edges": {
+          "$ref": "#/$defs/OneOrManyEdges",
+          "description": "Optional. Contains the edges of the graph. Can be a single edge object or an array."
+        },
+        "edge": {
+          "$ref": "#/$defs/OneOrManyEdges",
+          "description": "Alias for 'edges'. Optional."
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": true
+    },
+    "Node": {
+      "description": "Represents a node within a graph.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier",
+          "description": "Unique identifier for the node within its graph. Required."
+        },
+        "label": {
+          "$ref": "#/$defs/Label",
+          "description": "Optional display label for the node."
+        },
+        "name": {
+          "$ref": "#/$defs/Label",
+          "description": "Alias for 'label'. Optional."
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Port"
+          },
+          "description": "Optional array of ports attached to this node.",
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": true
+    },
+    "Port": {
+      "description": "Represents a connection point on a Node, can be nested.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Identifier for the port, unique within its parent node or port. Required."
+        },
+        "label": {
+          "$ref": "#/$defs/Label",
+          "description": "Optional display label for the port."
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Port"
+          },
+          "description": "Optional array of sub-ports attached to this port.",
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": true
+    },
+    "Edge": {
+      "description": "Represents a connection (edge) between nodes or ports. Can use shortcut syntax (source/target) or canonical endpoint syntax.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Identifier",
+          "description": "Optional unique identifier for the edge."
+        },
+        "label": {
+          "$ref": "#/$defs/Label",
+          "description": "Optional display label for the edge."
+        },
+        "type": {
+          "type": "string",
+          "description": "Optional kind of link (text label, node id, or URI). Defaults to 'related'."
+        },
+        "directed": {
+          "type": "boolean",
+          "description": "Default: true. If false, all endpoints are treated as 'undir', overriding explicit directions and graph edgedefault."
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Endpoint"
+          },
+          "description": "Canonical way to define edge connections using endpoint objects.",
+          "minItems": 1
+        },
+        "endpoint": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Endpoint"
+          },
+          "description": "Alias for 'endpoints'.",
+          "minItems": 1
+        },
+        "source": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Shortcut syntax (with target): Node ID(s) interpreted as incoming ('in')."
+        },
+        "sources": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'source'."
+        },
+        "from": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'source'."
+        },
+        "incoming": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'source'."
+        },
+        "in": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'source'."
+        },
+        "target": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Shortcut syntax (with source): Node ID(s) interpreted as outgoing ('out')."
+        },
+        "targets": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'target'."
+        },
+        "to": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'target'."
+        },
+        "outgoing": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'target'."
+        },
+        "out": {
+          "$ref": "#/$defs/MaybeArrayOfIdentifiers",
+          "description": "Alias for 'target'."
+        }
+      },
+      "oneOf": [
+        {
+          "description": "Canonical endpoint syntax requires 'endpoints' or 'endpoint'.",
+          "anyOf": [
+            {
+              "required": [
+                "endpoints"
+              ]
+            },
+            {
+              "required": [
+                "endpoint"
+              ]
+            }
+          ]
+        },
+        {
+          "description": "Shortcut syntax requires at least one source alias AND at least one target alias.",
+          "allOf": [
+            {
+              "anyOf": [
+                {
+                  "required": [
+                    "source"
+                  ]
+                },
+                {
+                  "required": [
+                    "sources"
+                  ]
+                },
+                {
+                  "required": [
+                    "from"
+                  ]
+                },
+                {
+                  "required": [
+                    "incoming"
+                  ]
+                },
+                {
+                  "required": [
+                    "in"
+                  ]
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "required": [
+                    "target"
+                  ]
+                },
+                {
+                  "required": [
+                    "targets"
+                  ]
+                },
+                {
+                  "required": [
+                    "to"
+                  ]
+                },
+                {
+                  "required": [
+                    "outgoing"
+                  ]
+                },
+                {
+                  "required": [
+                    "out"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "additionalProperties": true
+    },
+    "Endpoint": {
+      "description": "Defines one end of an edge, connecting to a node or port with a specific direction.",
+      "type": "object",
+      "properties": {
+        "node": {
+          "$ref": "#/$defs/Identifier",
+          "description": "Node ID this endpoint connects to. Required."
+        },
+        "port": {
+          "$ref": "#/$defs/Identifier",
+          "description": "Optional Port ID within the target node this endpoint connects to."
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "in",
+            "out",
+            "undir",
+            "incoming",
+            "outgoing",
+            "undirected",
+            "none"
+          ],
+          "description": "Optional direction relative to the edge ('in', 'out', 'undir' or aliases). Default 'undir'."
+        },
+        "dir": {
+          "type": "string",
+          "enum": [
+            "in",
+            "out",
+            "undir",
+            "incoming",
+            "outgoing",
+            "undirected",
+            "none"
+          ],
+          "description": "Alias for 'direction'. Optional."
+        },
+        "type": {
+          "type": "string",
+          "description": "Optional type of relation from the edge to this endpoint node."
+        },
+        "type-uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional URI representing the type of relation. Takes precedence over 'type' if both are given."
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": true
+    }
+  }
+}

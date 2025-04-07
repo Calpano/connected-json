@@ -1,2 +1,2 @@
 # connected-json
-Connected JSON Specification. A data-first JSON Format for exchanging connected data (graphs, networks). The successor to GraphML.
+Connected JSON Specification. A data-first JSON Format for exchanging connected data (graphs, networks). The successor to GraphML. Super-set of JSON Graph.
