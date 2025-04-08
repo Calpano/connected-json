@@ -16,7 +16,7 @@ jobs:
   build:
     name: 'Build Doc Site'
     services:
-      kroki.local:
+      kroki:
         image: yuzutech/kroki
         ports:
           - 8081:8000
@@ -51,9 +51,9 @@ jobs:
         env:
           KROKI_URL: http://localhost:8081
         run: npx antora antora-playbook.yml
-
-      - name: Check Kroki server logs
-        run: docker logs kroki
+#
+#      - name: Check Kroki server logs
+#        run: docker logs kroki
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
