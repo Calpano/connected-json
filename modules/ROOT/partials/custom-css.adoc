@@ -1,0 +1,14 @@
+++++
+<style>
+a[href*="wikipedia"]:before {
+  content: '🌐 ';
+  margin-right: 0.2em;
+  display: inline-block;
+  pointer-events: none;
+}
+.sidebarblock {
+  background: #72b3cc3b;
+}
+</style>
+++++
+

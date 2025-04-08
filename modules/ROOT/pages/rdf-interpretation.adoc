@@ -1,0 +1,109 @@
+= Interpretation as RDF
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+== Export vs Interpretation
+[NOTE]
+--
+The JSON document can be exported as RDF. This resembles simply mapping the JSON tree document to a corresponding tree (RDF graph) of RDF resources. However, to actually export the knowledge _encoded_ in a {cj} graph, is often more interesting. This specification does not define an RDF Export, just an RDF Interpretation.
+--
+
+== Base URI
+The __graph__.`baseuri` is used to map nodes and edges to RDF. The baseuri is defined like in https://developer.mozilla.org/en-US/docs/Web/API/Node/baseURI[HTML] as "__the absolute base URL of the document containing the node.__" The default value is the local file path using the `file://` scheme, with URL-encoding, where required.
+
+== Node URI
+Each node id is URL-escaped and then appended to the base URI to form a unique, valid node uri. Similarly, the edge id is appended to the base URI to form a unique edge uri.
+Ports are ignored in RDF.
+// Ports ids are appended to the node URI by using a dash character (`-`) between node URI and port id.
+
+[#edge-to-rdf]
+== Edge Types
+The type of an edge can be stated at the edge level and/or at the endpoint level. For bi-edges the edge level works fine and has a clear interpretation, even as RDF. However, an n-ary edge cannot always be interpreted as RDF.
+I.e., the hyper-edge itself is not mapped to triples, but the induced bi-edges are.
+
+The edge type (__edge__.`type`, __edge__.`type-node`, __edge__.`type-uri`) defines a value for each endpoint. It can be overwritten in each endpoint (__endpoint__.`type`, __endpoint__.`type-node`, __endpoint__.`type-uri`).
+
+.Algorithm for Interpreting a (Hyper-)Edge as RDF Triples
+- Compute the effective endpoint type by
+** Compute the edge type (resolve __edge__.`type`, __edge__.`type-node` and __edge__.`type-uri` into a single type using precedence rules.
+** Compute the endpoint type (is any of __endpoint__.`type`, __endpoint__.`type-node`, __endpoint__.`type-uri` given?).
+** Combine into a single, effective endpoint type.
+
+- Process each pair of endpoints (A,B):
+** Sort pair into first and second, by
+** If `type-uri` is empty and `type-node` is given, then set `type-uri` to the node URI of the node, referenced in `type-node`.
+** For each `type-uri` in the pair generate an RDF triple from `in` to `out`:
++
+If __in.type-uri__ is present, generate +
+(in.node, in.type-uri, out.node).
++
+If __out.type-uri__ is present, generate +
+(in.node, out.type-uri, out.node).
+
+.Mapping of Endpoint Pair
+[cols="^1m,^1m,1,1"]
+|===
+2+h| Input  2+h| Resulting RDF Order
+h| A h| B h| Subject h| Object
+
+|    in |    in 2+e| Skip
+|    in |   out    | A | B
+|    in | undir    | A | B
+|   out |    in    | B | A
+|   out |   out 2+e| Skip
+|   out | undir    | B | A
+| undir |    in    | B | A
+| undir |   out    | A | B
+| undir | undir    | A | B
+|===
+
+
+== Examples
+.Example: Bi-Edge with One Type
+[source,json]
+----
+{
+  "source": "n12",
+  "target": "n17",
+  "endpoints": [
+    { "node": "n12",
+      "direction": "in"  },
+    { "node": "n17",
+      "direction": "out",
+      "type-uri": "https://example.org/worksAt" }
+  ]
+}
+----
+interpretation as RDF (Turtle Syntax)
+[source,turtle]
+----
+@prefix ex: <https://example.org/> .
+ex:n12 ex:worksAt ex:n17 .
+----
+
+NOTE: The following example uses `source`/`target` and `endpoints`, which is allowed but uncommon. The endpoints stated using `source`/`target` have no endpoint types defined.
+
+.Example: Hyper-Edge
+[source,json]
+----
+{
+  "id": "sale123",
+  "source": ["n12","n3","n123"],
+  "target": ["n17","n100"],
+  "endpoints": [
+    { "node": "n100", "direction": "in",
+      "type-uri": "https://example.org/sells" },
+    { "node": "n12",  "direction": "in",
+      "type-uri": "https://example.org/buys" },
+    { "node": "n3",   "direction": "undir"  },
+    { "node": "item-1",  "direction": "out" }
+  ]
+}
+----
+interpretation as RDF (Turtle Syntax)
+[source,turtle]
+----
+@prefix ex: <https://example.org/> .
+ex:n100 ex:sells ex:item-1 .
+ex:n12  ex:buys  ex:item-1 .
+----

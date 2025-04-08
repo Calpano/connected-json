@@ -21,8 +21,22 @@
       "type": [ "string", "number" ]
     },
     "Label": {
-      "description": "A display label",
-      "type": "string"
+      "description": "A display label, either as a single string or a multi-lingual object (e.g., {\"en\": \"Hello\", \"de\": \"Hallo\"}).",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]+)*$": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      ]
     },
     "OneOrManyGraphs": {
       "description": "Allows either a single Graph object or an array of Graph objects.",

@@ -1,0 +1,24 @@
+= Migrating from JSON Graph
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+https://github.com/jsongraph/json-graph-specification[JSON Graph v2] is the best JSON Graph format before this one. It lacks some features from GraphML (i.e., mixed direction hyperedges).
+
+JSON Graph should be parsed using the xref:aliases.adoc[] extension. The `metadata` property is allowed at any structural element (see xref:spec.adoc#data[Data]).
+
+Required changes to put existing JSON Graph data in {cj}:
+
+|===
+h| JSON Graph h| {cj}
+| Node and edge ids are map key | Ids part of node and edge objects.
+|===
+
+A {cj} parser MAY accept
+
+- a `nodes` object and interpret each key as a _node_.`id`,
+- a `edges` object and interpret each key as an _edge_.`id`.
+- Furthermore, an _edge_.`nodes`: `array` of ids may be interpreted as a list of endpoints with the given node ids. This is similar to the processing of `source` and `target`.
+
+Given these optional extensions, any valid JSON Graph Document should parse with the same semantics as a {cj} document.
+
+

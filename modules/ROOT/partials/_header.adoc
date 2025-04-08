@@ -1,0 +1,58 @@
+:x-comment: ------------------ Settings
+ifdef::env-browser[]
+:experimental:
+:stem:
+:sectnums:
+:icons: font
+:idprefix:
+:idseparator: _
+:imagesdir: ./../images
+:toc: macro
+:version: pass:[<style>.ribbon { width: 150px; height: 150px; overflow: hidden; position: absolute; top: -10px; right: -10px; } .ribbon span { position: absolute; display: block; width: 225px; padding: 15px 0; background-color: #3498db; box-shadow: 0 5px 10px rgba(0,0,0,.1); color: #fff; font-size: 14px; text-shadow: 0 1px 1px rgba(0,0,0,.2); text-align: center; left: -25px; top: 36px; transform: rotate(45deg); }</style><div class="ribbon ribbon-top-right"><span>Version 0.0.1</span></div>]
+ifndef::plantUMLDir[:plantUMLDir: ./.plantuml/]
+:source-highlighter: highlightjs
+endif::[]
+ifdef::backend-html5[]
+:source-highlighter: highlightjs
+endif::[]
+ifdef::backend-pdf[]
+:source-highlighter: rouge
+endif::[]
+ifdef::env-github,env-browser[:relfilesuffix: .adoc]
+:!hardbreaks:
+:x-comment: ------------------ Content snippets
+:cj: Connected JSON
+:graphml: GraphML
+:jgf: JSON Graph Format
+:leftright: ↔
+:star: ✳️
+:check: ✓
+:greencheck: ✅
+:circle: ⚫
+:pointA: Ⓐ
+:pointB: Ⓑ
+:pointC: Ⓒ
+:pointD: Ⓓ
+:pointE: Ⓔ
+:pointF: Ⓕ
+:pointG: Ⓖ
+:pointH: Ⓗ
+:pointI: Ⓘ
+:pointJ: Ⓙ
+:pointK: Ⓚ
+:pointL: Ⓛ
+:pointM: Ⓜ
+:pointN: Ⓝ
+:pointO: Ⓞ
+:pointP: Ⓟ
+:pointQ: Ⓠ
+:pointR: Ⓡ
+:pointS: Ⓢ
+:pointT: Ⓣ
+:pointU: Ⓤ
+:pointV: Ⓥ
+:pointW: Ⓦ
+:pointX: Ⓧ
+:pointY: Ⓨ
+:pointZ: Ⓩ
+:ticket: https://github.com/Calpano/connected-json/issues/

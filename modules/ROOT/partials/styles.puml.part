@@ -1,0 +1,24 @@
+hide <<SeeAlso>> stereotype
+hide <<Control>> stereotype
+hide <<Edge>> stereotype
+hide <<Node>> stereotype
+hide <<Lab>> stereotype
+hide <<Container>> stereotype
+hide <<Conceptual>> stereotype
+<style>
+  classDiagram {
+    class {
+      .SeeAlso { BackgroundColor lightgray }
+      .Control { BackgroundColor lightblue }
+      .Node { BackgroundColor lightgreen }
+      .Edge { BackgroundColor yellow }
+      .Container { BackgroundColor lightblue }
+      .Lab { BorderColor green
+             FontColor darkgray }
+      .Conceptual {
+        BackgroundColor #ff6900
+        FontColor white
+      }
+    }
+  }
+</style>

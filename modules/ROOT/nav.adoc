@@ -1,0 +1,8 @@
+* xref:ROOT:spec.adoc[]
+* Extensions
+** xref:aliases.adoc[Aliases]
+* Migrating from
+** xref:migrating-from-json-graph.adoc[JSON Graph Format]
+** xref:migrating-from-graphml.adoc[GraphML]
+* xref:rdf-interpretation.adoc[Interpretation as RDF]
+* https://github.com/Calpano/connected-json/issues[Issues on GitHub]

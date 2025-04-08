@@ -1,0 +1,51 @@
+= Vocabulary and Aliases
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+Here is a list of all property keys and defined string values.
+There are a number of alias values, which an implementation MAY support.
+See also xref:migrating-from-json-graph.adoc[].
+
+
+.Properties
+[options="header",cols="^4m,^4m,4,^1",width=60%]
+|===
+| Property Name | Is Alias For | Usage in | See
+
+|dir|direction|xref:spec.adoc#endpoint[Endpoint]|1
+|endpoint|endpoints|xref:spec.adoc#edge[Edge]|2, 3
+|edge|edges|xref:spec.adoc#graph[Graph]|2
+|from|source|xref:spec.adoc#edge[Edge]|3
+|graph|graphs|xref:spec.adoc#document[Document]|2
+|hyperedges|edges|xref:spec.adoc#graph[Graph]|4
+//|incoming|source|xref:spec.adoc#edge[Edge>//|in|source|xref:spec.adoc#edge[Edge>|name|label|xref:spec.adoc#node[Node]|1
+|node|nodes|xref:spec.adoc#graph[Graph]|2
+//|outgoing|target|xref:spec.adoc#edge[Edge>//|out|target|xref:spec.adoc#edge[Edge>|relation|type|xref:spec.adoc#edge[Edge]|4
+|sources|source|xref:spec.adoc#edge[Edge]|2, 3
+|targets|target|xref:spec.adoc#edge[Edge]|2, 3
+|to|target|xref:spec.adoc#edge[Edge]|3
+|===
+
+- (1) Alias Ambiguity: The non-alias value has precedence if both property and alias property are used.
+- (2) Single- and array properties: If both are used, are silently merged at parse-time into a single array.
+- (3) Endpoints: _All_ endpoint properties generate endpoints of an edge.
+- (4) Alias for _JSON Graph_ compatibility
+
+
+.Values for xref:spec.adoc#endpoint[Endpoint] `direction`
+[options="header",cols="^4m,^4m,4",width=60%]
+|===
+| Value | Is Aliases For | Usage in
+|incoming|in| xref:spec.adoc#endpoint[Endpoint]
+|none|undir| xref:spec.adoc#endpoint[Endpoint]
+|outgoing|out| xref:spec.adoc#endpoint[Endpoint]
+|undirected|undir| xref:spec.adoc#endpoint[Endpoint]
+|===
+
+.xref:spec.adoc#graph[Graph] Properties
+|===
+h| Alternative h| Parsed as
+| `directed`: `true` | `edgedefault`: `directed`
+| `directed`: `false` | `edgedefault`: `undirected`
+|===
+For compatibility with JSON Graph.

@@ -1,0 +1,55 @@
+= Migrating from GraphML
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+A GraphML `<data>` section is migrated by attaching the values directly to the structural element, using the `name` attribute from the GraphML `<keys>` section.
+
+Here is a GraphML keys declaration section using all possible data types:
+
+[source,xml]
+----
+<graph>
+  <key id="k1" for="node" name="myString" type="xs:string"/>
+  <key id="k2" for="node" name="myInt" type="xs:int"/>
+  <key id="k3" for="node" name="myDouble" type="xs:double"/>
+  <key id="k4" for="node" name="myBoolean" type="xs:boolean"/>
+  <key id="k5" for="node" name="myLong" type="xs:long"/>
+  <key id="k6" for="node" name="myFloat" type="xs:float"/>
+</graph>
+----
+and here is the section where we assign a node 'n1' all this data:
+
+[source,xml]
+----
+<node id="n1">
+  <data key="k1">Hello</data>
+  <data key="k2">42</data>
+  <data key="k3">3.14</data>
+  <data key="k4">true</data>
+  <data key="k5">12345678901234567890</data>
+  <data key="k6">1.23</data>
+</node>
+----
+this is expressed in {cj} as
+[source,json]
+----
+{
+    "nodes": [
+      {
+        "id": "n1",
+        "myString": "Hello",
+        "myInt": 42,
+        "myDouble": 3.14,
+        "myBoolean": true,
+        "myLong": 12345678901234567890,
+        "myFloat": 1.23
+      }
+    ]
+}
+----
+and the `<keys>` section is omitted. JSON carries enough type information in its values. Also, we moved to a schema-less world where the effective schema (w.g., which properties are used on nodes?) can be inferred from the data.
+
+NOTE: Some tools extend GraphML by using XML namespaces and embedding, e.g., layout or style data within a graphml file. Such data should be expressed as JSON in any properties, not defined by this spec.
+
+
+
