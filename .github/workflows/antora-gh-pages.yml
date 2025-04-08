@@ -44,8 +44,7 @@ jobs:
       - name: Generate Site
         run: npx antora antora-playbook.yml
 
-      - name: Check Kroki server logs (if it failed)
-        if: failure() # Only run this step if the previous steps failed
+      - name: Check Kroki server logs
         run: docker logs kroki
 
       - name: Upload Artifacts
