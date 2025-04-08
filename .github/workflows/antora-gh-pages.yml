@@ -43,10 +43,16 @@ jobs:
 
       - name: Generate Site
         run: npx antora antora-playbook.yml
+
+      - name: Check Kroki server logs (if it failed)
+        if: failure() # Only run this step if the previous steps failed
+        run: docker logs kroki
+
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/site
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
