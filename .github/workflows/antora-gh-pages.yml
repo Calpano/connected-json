@@ -21,14 +21,26 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+
       - name: Install Antora + Antora Lunr Extension + Kroki
         run: npm i antora @antora/lunr-extension asciidoctor-kroki
+
+      - name: Start Kroki server
+        run: |
+          docker run -d --name kroki -p 8081:8080 yuzutech/kroki
+
+      - name: Wait for Kroki server to start # Optional but recommended
+        run: |
+          sleep 5 # Adjust the sleep time as needed
+
       - name: Generate Site
         run: npx antora antora-playbook.yml
       - name: Upload Artifacts
