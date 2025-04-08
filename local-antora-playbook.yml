@@ -1,0 +1,34 @@
+site:
+  title: Connected JSON
+  #  url: https://example.com
+  start_page: ROOT::spec.adoc
+content:
+  sources:
+    - url: .
+      branches: HEAD
+ui:
+  bundle:
+    url: ./modules/_ui
+    snapshot: true
+output:
+  clean: true
+  dir: ./doc-site
+asciidoc:
+  extensions:
+    - asciidoctor-kroki
+  attributes:
+    server-type: kroki_io
+    kroki-server-url: http://localhost:8081/
+    kroki-default-format: svg
+    # Very cool, but much slower
+    kroki-fetch-diagram: true
+    # kroki-default-options: inline --> Pending bug with SVGs
+antora:
+  extensions:
+    - require: '@antora/lunr-extension'
+      index_latest_only: true
+      snippet_length: 250
+      languages: [ en, de ]
+
+
+

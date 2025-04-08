@@ -1,0 +1,16 @@
+# component descriptor
+name: ROOT
+title: Connected JSON
+version: ~
+# prerelease: Draft
+asciidoc:
+  attributes:
+    experimental: ''
+    stem: ''
+    sectnums: '@'
+    icons: 'font'
+    idprefix: ''
+    idseparator: '_'
+    page-pagination: true
+nav:
+  - modules/ROOT/nav.adoc

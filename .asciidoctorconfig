@@ -1,0 +1,14 @@
+:x-comment: --This defines Intellij/AsciiDoc/Antora rendering only.--
+:experimental:
+:stem:
+:icons: font
+:idprefix:
+:idseparator: _
+:toc:
+:doctype: book
+:x-comment: -- from _header.adoc[] -----------
+:cj: Connected JSON
+:leftright: ↔
+:star: ✳️
+:check: ✓
+:WP: https://en.wikipedia.org/wiki/
