@@ -12,7 +12,7 @@ ui:
     snapshot: true
 output:
   clean: true
-  dir: ./doc-site
+  dir: ./site
 asciidoc:
   extensions:
     - asciidoctor-kroki
