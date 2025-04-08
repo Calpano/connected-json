@@ -1,0 +1,15 @@
+    {{#with site.keys.googleAnalytics}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{this}}"></script>
+    <script>function gtag(){dataLayer.push(arguments)};window.dataLayer=window.dataLayer||[];gtag('js',new Date());gtag('config','{{this}}')</script>
+    {{/with}}
+    <script>var uiRootPath = '{{{uiRootPath}}}'</script>
+    <!-- first configure, then load -->
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]], ignoreClass: "nostem|nolatexmath" },
+  asciimath2jax: { delimiters: [["\\$", "\\$"]], ignoreClass: "nostem|noasciimath" },
+  TeX: { equationNumbers: { autoNumber: "none" } }
+});
+</script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
