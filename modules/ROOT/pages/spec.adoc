@@ -39,7 +39,7 @@ This format is intended as the universal interchange format for all kinds of gra
 
 === Example
 .Diagram Layout Input JSON Example File
-[source,json5]
+[source,json]
 ----
 include::example$example-1.con.json5[]
 ----
