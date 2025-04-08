@@ -2,16 +2,23 @@
 :prevent-blank-line:
 include::../partials/_header.adoc[]
 :reftext: Spec
+:toc: macro
 
 A JSON Format for exchanging connected data (graphs, networks).
 
+image::cj-logo.png[width=80%,align="center"]
+
+
+[cols="2h,3",width=60%]
+|===
+| Version | 0.1.0
+| Date | 2025-04-08
+| Editor | Dr. Max Völkel
+| Status | Draft
+|===
+
 toc::[]
 
-Version: 0.0.1 +
-Date: 2025-03-27 +
-Dr. Max Völkel
-
-Status: Draft
 
 //{version}
 
@@ -23,7 +30,11 @@ It supports the semantic capabilities and data representation found in GraphML, 
 Different from GraphML, this format prioritizes flexible data attachment directly onto elements, alongside the core graph structure.
 Any element can carry arbitrary additional properties.
 
-This format is intended as the universal interchange format for all kinds of graphs.
+This format is intended as the universal interchange format for all kinds of graphs, which can be as complex, as what GraphML allows -- and that is a lot.
+
+.Non-goals
+- Suitability for massive-scale graphs requiring streaming (its a JSON format after all)
+- Highly dynamic graphs (require a protocol, not a file format)
 
 
 === Example
@@ -48,13 +59,14 @@ https://opensource.org/license/mit[MIT] License +
 Copyright 2025 Max Völkel
 
 .Version History
+- 2025-04-08: Version 0.1.0 -- Initial public release
 - 2025-04-06: Version 0.0.1
 
 == Structure Overview
 
 NOTE: Every element can carry arbitrary JSON properties besides the one interpreted by this spec.
 
-.Structure for Bi-Links, without Ports, without Nested Graphs
+.Structure for Bi-Edges, without Ports, without Nested Graphs
 [plantuml]
 ....
 hide empty members
@@ -84,7 +96,7 @@ Graph ..> "0..1" Node :  contains
 Graph ..> "0..1" Edge : contains
 ....
 
-A bi-link has always exactly 2 endpoints.
+A bi-edge has always exactly 2 endpoints.
 
 
 .Full Structure
@@ -146,7 +158,7 @@ It contains one or more <<graph, graphs>>.
 | Property | Type | Description
 
 |graph| `object`(<<graph>>) __or__ `array`(<<graph>> `[]`)
-| Object for 1 graph, array for 1 to n graphs.
+| Object for 1 graph, array for 1 to n graphs. Default: Empty.
 
 |===
 
@@ -167,15 +179,15 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 
 |edgedefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`.
 
-|edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges).
+|edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges). Default: Empty.
 
 |id
-| `string` __or__ `number` | Unique identifier for the graph within a <<document>>. Optional. A number is converted at import time to a string.
+| `string` __or__ `number` | Unique identifier for the graph within a <<document>>. Optional. A number is converted at import time to a string. Default: Implementation MAY use the array position as id.
 
 |label
 | `string` | Label (name) of the node. Optional.
 
-|nodes| `array`(<<node>> `[]`) | 0 to n nodes
+|nodes| `array`(<<node>> `[]`) | 0 to n nodes. Default: Empty.
 
 |===
 
@@ -273,15 +285,15 @@ Ports are only available in endpoints syntax.
 
 |type
 |`string`
-.3+|Optional. The kind of link. See <<endpoint>> and xref:rdf-interpretation.adoc[].
+.3+|Optional. The kind of edge. See <<endpoint>> and xref:rdf-interpretation.adoc[].
 
 |type-uri
 |`string`
-//|Optional. The kind of link. See <<endpoint>>.
+//|Optional. The kind of edge. See <<endpoint>>.
 
 |type-node
 |`string` or `number`
-//|Optional. The kind of link. See <<endpoint>>.
+//|Optional. The kind of edge. See <<endpoint>>.
 
 
 |directed
@@ -444,7 +456,11 @@ The structural elements are:
 - Edge
 - Endpoint
 
-Each of these can have arbitrary additional JSON properties, besides the ones defined in this spec.All additional properties are interpreted as data attached to the structural element.Nested JSON is allowed.
+Each of these can have arbitrary additional JSON properties, besides the ones defined in this spec.
+All additional properties are interpreted as data attached to the structural element.
+Nested JSON is allowed.
+
+This can be used for style data (e.g. `line-color`) or domain data (e.g. `population`, `sales volume`).
 
 [[multilingual-labels]]
 === Multi-Lingual Labels
@@ -519,14 +535,17 @@ h| Scope h| Comment
 
 
 
-
 [appendix]
 == JSON Schema
 The following schema has no support for aliases.
 
+.Download
+- xref:attachment$connected-json-schema.json[JSON Schema]
+- xref:attachment$connected-schema-with-aliases.json[JSON Schema with Aliases]
+
 .JSON Schema for {cj}
 [source,json]
 ----
-include::../attachments/schema-0.0.1-no-aliases.json[]
+include::../attachments/connected-json-schema.json[]
 ----
 
