@@ -14,6 +14,12 @@ permissions:
   id-token: write
 jobs:
   build:
+    name: 'Build Doc Site'
+    services:
+      kroki.local:
+        image: yuzutech/kroki
+        ports:
+          - 8081:8000
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -32,10 +38,6 @@ jobs:
 
       - name: Install Antora + Antora Lunr Extension + Kroki
         run: npm i antora @antora/lunr-extension asciidoctor-kroki
-
-      - name: Start Kroki server
-        run: |
-          docker run -d --name kroki -p 8081:8080 yuzutech/kroki
 
       - name: Wait for Kroki server to start # Optional but recommended
         run: |
