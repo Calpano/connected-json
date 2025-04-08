@@ -42,6 +42,8 @@ jobs:
           sleep 5 # Adjust the sleep time as needed
 
       - name: Generate Site
+        env:
+          KROKI_URL: http://localhost:8081
         run: npx antora antora-playbook.yml
 
       - name: Check Kroki server logs
