@@ -39,7 +39,11 @@ jobs:
 
       - name: Wait for Kroki server to start # Optional but recommended
         run: |
-          sleep 5 # Adjust the sleep time as needed
+          max_attempts=10
+          attempt=0
+          while [[ $attempt -lt $max_attempts ]]; do
+            curl -s http://localhost:8081/health | grep -q 'pass' && break || ((attempt++)) && sleep 1
+          done
 
       - name: Generate Site
         env:
