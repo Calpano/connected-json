@@ -3,6 +3,7 @@
 include::../partials/_header.adoc[]
 :reftext: Spec
 :toc: macro
+:toclevels: 4
 
 A JSON Format for exchanging connected data (graphs, networks).
 
@@ -64,9 +65,18 @@ GitHub: https://github.com/Calpano/connected-json[]
 https://opensource.org/license/mit[MIT] License +
 Copyright 2025 Max Völkel
 
-.Version History
-- 2025-04-08: Version 0.1.0 -- Initial public release
-- 2025-04-06: Version 0.0.1
+
+=== Version History
+
+2025-04-30: Version 0.1.1::
+* Clearer <<ids>> section
+* Allow graph inside edge (consistent with diagram an GraphML)
+
+2025-04-08: Version 0.1.0:: Initial public release
+
+2025-04-06: Version 0.0.1
+
+
 
 == Structure Overview
 
@@ -188,7 +198,7 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 |edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges). Default: Empty.
 
 |id
-| `string` __or__ `number` | Unique identifier for the graph within a <<document>>. Optional. A number is converted at import time to a string. Default: Implementation MAY use the array position as id.
+| `string` __or__ `number` (integer) | Optional. Unique identifier for the graph within a <<document>>. See <<ids>>.
 
 |label
 | `string` | Label (name) of the node. Optional.
@@ -204,12 +214,12 @@ A node is an atom in the graph.
 [options="header",cols="^3m,^2,8"]
 |===
 | Property | Type | Description
-|id
-| `string` __or__ `number` | Unique identifier for the node. Required. A number is converted at import time to a string.
-Uniqueness per graph.
 
 |graph
 | `object` (<<Graph>>) or `array` (<<graph>> `[]`) |Optional. Graph(s) nested within the node. This turns the node into a compound node. The edges in a sub-graph can refer to nodes higher up in the tree of graphs.
+
+|id
+| `string` __or__ `number` (integer) | Required. Unique identifier for the node. See <<ids>>.
 
 |label
 | `string` | Label (name) of the node. Optional.
@@ -227,7 +237,7 @@ This is used in practice graphical editors, where a port is a connection point o
 |===
 | Property | Type | Description
 
-|id| `string` | ID unique within the <<node>>. All ports, even nested one, share the same ID space per node.
+|id| `string` | ID unique within the <<node>>. All ports, even nested one, share the same ID space per node. See also <<ids>>.
 
 |label|`string`| Optional
 
@@ -268,12 +278,15 @@ NOTE: Edges have been modelled like GraphML. They have been extended with a `typ
 |===
 | Property | Type | Description
 
-|id|`string` or `number`|Optional id. Unique per graph.
+|graph
+| `object` (<<Graph>>) or `array` (<<graph>> `[]`) |Optional. Graph(s) nested within the edge. This turns the edge into a compound edge. The edges in a sub-graph can refer to nodes higher up in the tree of graphs.
+
+|id|`string` or `number` (integer) |Optional id. Unique per graph. See <<ids>>.
 
 |label|`string`|Optional label.
 
 |source
-.2+| `string` or `number` or `array`(node id `[]`). +
+.2+| `string` or `number` (integer) or `array`(node id `[]`). +
  +
 Either a single node id +
 or an `array` of node ids.
@@ -298,7 +311,7 @@ Ports are only available in endpoints syntax.
 //|Optional. The kind of edge. See <<endpoint>>.
 
 |type-node
-|`string` or `number`
+|`string` or `number` (integer)
 //|Optional. The kind of edge. See <<endpoint>>.
 
 
@@ -430,19 +443,19 @@ is the same as
 | One of: `in`, `out` or `undir` | Optional.
 Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`. See also: <<graph>> `edgedefault`.
 
-|node| `string` or `number` | Required. __Node id__.
+|node| `string` or `number` (integer) | Required. __Node id__.
 Either a `string` containing a single __nodeId__
 or a `number` (auto-converted to string) containing a single node id.
 
-|port| `string` or `number` | Optional. __Port id__.
-Port ids are only unique per node/port.
+|port| `string` or `number` (integer) | Optional. __Port id__.
+Port ids are only unique per node/port. See <<ids>>.
 
 |type| `string`| Optional. The type of relation from the edge entity to the endpoint node.
 If a URI is given, us `type-uri` instead. This property states the relation as a string, e.g. `works at` or `knows`. Default is `related`.
 
 |type-uri| `string`(URI) | Optional. The type of relation from the edge entity to the endpoint node.
 
-|type-node| `string` or `number` (node id) |Uses a node in the graph to define the kind of relation. This is the same strategy that RDF uses: property URIs are RDF resources themselves, which can have a label and other edges attached to them.
+|type-node| `string` or `number` (integer) | Uses a node in the graph (referenced by node id, see <<ids>>) to define the kind of relation. This is the same strategy that RDF uses: property URIs are RDF resources themselves, which can have a label and other edges attached to them.
 |===
 
 .Type
@@ -528,13 +541,29 @@ The edge direction can be stated in three locations:
 | `undirected` | `false` | `out` | `undir`
 |===
 
-=== Identifier Scope
+[[ids]]
+=== Identifiers
+For <<graph>>, <<node>>, and <<edge>> ids, the allowed JSON type is `string` or `number`(integer).
+A number is converted at import time to a string.
+E.g., the number `3` is convered to the string id `"3"`.
+Floating-point numbers or negative numbers are not allowed.
+
+If no identifier is given, an implementation can create any unique identifiers. Common strategies are:
+
+- use the array position as id, or
+- use an auto-incremented integer, or
+- use a UUID.
+
+[[idScope]]
+==== Identifier Scope
+The identifiers for different elements have different scopes in which they must be unique.
+
 [cols="2,6"]
 |===
 h| Scope h| Comment
-| Document | A document contains a set of top-level graphs. Graph ids, if used, MUST be unique per document.
-| Top-Level Graph | Node and edge ids are unique per top-level graph. Nested graphs do not provide a new id scope.
-| Ports | Port ids are only unique within their corresponding node.
+| <<document>> | A document contains a set of top-level graphs. <<graph>> ids, if used, MUST be unique per document.
+| Top-Level <<graph>> | <<node>> ids, <<edge>> ids and nested <<graph>> ids are unique per top-level graph. Nested graphs do not provide a new id scope.
+| <<node>> | <<port>> ids are only unique within their corresponding <<node>>.
 |===
 
 
@@ -554,4 +583,3 @@ The following schema has no support for aliases.
 ----
 include::../attachments/connected-json-schema.json[]
 ----
-
