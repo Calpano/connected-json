@@ -222,10 +222,11 @@ A node is an atom in the graph.
 | `string` __or__ `number` (integer) | Required. Unique identifier for the node. See <<ids>>.
 
 |label
-| `string` | Label (name) of the node. Optional.
+| `string` or `object` | Label (name) of the node. Optional. The `object` is used for <<multilingual-labels>>.
 
 | ports| `array`(<<port>> `[]`) | Optional array of ports.
 |===
+
 
 
 [[port]]
@@ -283,7 +284,10 @@ NOTE: Edges have been modelled like GraphML. They have been extended with a `typ
 
 |id|`string` or `number` (integer) |Optional id. Unique per graph. See <<ids>>.
 
-|label|`string`|Optional label.
+|label
+| `string` or `object` | Label for the edge. Optional. The `object` is used for <<multilingual-labels>>.
+
+
 
 |source
 .2+| `string` or `number` (integer) or `array`(node id `[]`). +
