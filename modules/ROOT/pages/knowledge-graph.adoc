@@ -24,4 +24,19 @@ We extend the xref:spec.adoc#node[CJ node] with these properties:
 
 |===
 
+== Example
 
+The following example demonstrates how to model a knowledge graph using Connected JSON with the extensions described above:
+
+.Knowledge Graph Example
+[source,json]
+----
+include::example$knowledge-graph-example.con.json5[]
+----
+
+This example shows:
+
+* Nodes with plain text content
+* A node with multi-lingual text content
+* A node with HTML-formatted text content
+* Edges connecting the nodes with different relationship types

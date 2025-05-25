@@ -1,0 +1,51 @@
+{
+  "nodes": [
+    {
+      "id": "artificial_intelligence",
+      "label": "Artificial Intelligence",
+      "text": "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems.",
+      "text-type": "text/plain"
+    },
+    {
+      "id": "machine_learning",
+      "label": "Machine Learning",
+      "text": "Machine Learning is a subset of AI that provides systems the ability to automatically learn and improve from experience without being explicitly programmed.",
+      "text-type": "text/plain"
+    },
+    {
+      "id": "deep_learning",
+      "label": "Deep Learning",
+      "text": {
+        "en": "Deep Learning is a subset of machine learning that uses neural networks with many layers.",
+        "de": "Deep Learning ist ein Teilbereich des maschinellen Lernens, der neuronale Netze mit vielen Schichten verwendet."
+      },
+      "text-type": "text/plain"
+    },
+    {
+      "id": "neural_networks",
+      "label": "Neural Networks",
+      "text": "<p>Neural networks are computing systems inspired by the <strong>biological neural networks</strong> that constitute animal brains.</p>",
+      "text-type": "text/html"
+    }
+  ],
+  "edges": [
+    {
+      "source": "artificial_intelligence",
+      "target": "machine_learning",
+      "label": "includes",
+      "type": "hierarchical"
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "label": "includes",
+      "type": "hierarchical"
+    },
+    {
+      "source": "deep_learning",
+      "target": "neural_networks",
+      "label": "uses",
+      "type": "functional"
+    }
+  ]
+}
