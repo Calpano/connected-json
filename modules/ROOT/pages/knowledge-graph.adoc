@@ -1,0 +1,27 @@
+= Knowledge Graphs
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+Connected JSON (CJ) is inherently an extensible format. This small document describes one option to model a knowledge graph in a CJ-compatible way.
+
+CJ already defines a network of nodes, including node and link labels. Furthermore, link types can be expressed. So what is missing? Textual content for nodes. We want plain text and formatted text.
+
+== Elements
+
+[[node]]
+=== Node
+We extend the xref:spec.adoc#node[CJ node] with these properties:
+
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+| text
+| `string` or `object` | Textual content. Optional. The `object` is used for xref:spec.adoc#multilingual-labels[multi-lingual text].
+
+| text-type
+| `string` | MIME type of the text format, e.g. `text/plain`, `text/html`, `text/markdown`, or `text/asciidoc`.
+
+|===
+
+
