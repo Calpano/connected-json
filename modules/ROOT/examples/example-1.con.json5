@@ -6,12 +6,14 @@
                  { "id": "a2",
                    "ports": [ "a2-1", "a2-2" ]
     }]},
-    { "id":  "b" },
+    { "id":  "b", "foo": "bar" },
     { "id":  "c" },
     { "id":  "d" },
     { "id":  "e" },
     { "id":  "f" }
   ],
+  // Extensible. Only some keys reserved for CJ.
+  "hello": ["My data","can be","everywhere"],
   "edges": [
     { "source": 12, "target": "a"},
     // in canonical form, can have ports:
