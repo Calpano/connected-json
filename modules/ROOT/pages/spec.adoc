@@ -9,7 +9,7 @@ A JSON Format for exchanging connected data (graphs, networks).
 
 image::cj-logo.png[width=100%,align="center"]
 
-
+Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
 [cols="2h,12",width=80%]
 |===
 | Version | 0.1.0
