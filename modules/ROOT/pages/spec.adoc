@@ -7,7 +7,7 @@ include::../partials/_header.adoc[]
 
 A JSON Format for exchanging connected data (graphs, networks).
 
-image::cj-logo.png[width=80%,align="center"]
+image::cj-logo.png[width=100%,align="center"]
 
 
 [cols="2h,12",width=80%]
@@ -26,12 +26,17 @@ toc::[]
 //{version}
 
 == Introduction
+We want a JSON-based document for exchanging graphs.
+Graphs contain nodes and edges.
+Undirected edges, directed edges (DAG), typed edges (Hello RDF), weighted edges (Hello flow algorithms) and even hyper-edges (Hello biologists).
+We want sub-graphs (Hello diagrams).
+We want data attached to nodes and edges (Hello knowledge graphs).
 
 === Goals and Motivation
 Yes, https://xkcd.com/927/[we know], but the last effort (https://jsongraphformat.info/[JSON Graph Format]) is over 10 years old and GraphML over 20 years by now. And some GraphML features (mixed hyper-edges, nested graphs) are not supported in JGF.
 In fact, none of the existing JSON graph interchange formats has the same depth of features as the over 20-year-old XML-based http://graphml.graphdrawing.org/[GraphML].
 
-{cj} aims to be a full GraphML replacement.
+_{cj}_ aims to be a full GraphML replacement.
 It supports the semantic capabilities and data representation found in GraphML, while adopting a more flexible, schema-less JSON approach.
 Different from GraphML, this format prioritizes flexible data attachment directly onto elements, alongside the core graph structure:
 Any element can carry arbitrary additional properties.
@@ -40,12 +45,12 @@ This format is intended as the universal interchange format for all kinds of gra
 Together with the xref:aliases.adoc[] extension, it is even a super-set of JSON Graph Format.
 
 .Non-goals
-- Suitability for massive-scale graphs requiring streaming (its a JSON format after all)
-- Highly dynamic graphs (require a protocol, not a file format)
+- Massive-scale (> 1 GB) graphs requiring streaming (its a JSON format after all)
+- Highly dynamic graphs, which change more often than every minute. Those require a delta protocol, not a file format.
 
 
 === Example
-.Diagram Layout Input JSON Example File
+.Connected JSON Example File
 [source,json]
 ----
 include::example$example-1.con.json5[]
