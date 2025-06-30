@@ -12,7 +12,7 @@ image::cj-logo.png[width=100%,align="center"]
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
 [cols="2h,12",width=80%]
 |===
-| Version | 0.2.0
+| Version | 2.0.0
 | Date | 2025-06-26
 | Editor | Dr. Max Völkel
 | Status | Draft
