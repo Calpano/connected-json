@@ -51,5 +51,42 @@ and the `<keys>` section is omitted. JSON carries enough type information in its
 
 NOTE: Some tools extend GraphML by using XML namespaces and embedding, e.g., layout or style data within a graphml file. Such data should be expressed as JSON in any properties, not defined by this spec.
 
+TIP: GraphML has _description_ element in several places. These simply map to a _description_ property in {cj}.
 
+.Ideas On Mapping CJ to GraphML
+****
+For backward compatibility, CJ can be expressed as GraphML. For the most part, this is almost a 1:1 mapping. The challenging part is the mapping of the data types:
+
+[cols="4,3,8"]
+|===
+| h| CJ h| GraphML
+| Type system | JSON | XML Schema
+| Schema required? | schema-less | Types defined in `<keys>` section
+| Compound types | yes | no
+| Types | Any JSON | xs:string, xs:int, xs:double, xs:boolean, xs:long, xs:float
+|===
+
+.Conclusions
+. Some data types in JSON (object, array) _cannot_ be represented in GraphML.
+. Data can in GraphML only be added to `node`, edge, and graph elements. Data on other elements can only be stored in GraphML as custom XML attributes.
+. A schema needs to be inferred from data and made available to the GraphML writer.
+
+.Strategy
+Emit all CJ into a buffer and build type observations for node, edge and graph elements.
+
+[options="header", cols="3d,2m"]
+|===
+| Observed JSON | Mapped XML Schema Type
+| All `boolean` | xs:boolean
+| All `number`, no decimals, < MAX_INT | xs:int
+| All `number`, no decimals | xs:long
+| All `number`, < MAX_FLOAT | xs:float
+| All `number` | xs:double
+| All `string` | xs:string
+| Mix of types | xs:string
+|===
+with MAX_INT = 2147483647
+and MAX_FLOAT = 3.4028235E38
+as defined in https://www.w3.org/TR/xmlschema11-2/#double
+****
 
