@@ -12,8 +12,8 @@ image::cj-logo.png[width=100%,align="center"]
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
 [cols="2h,12",width=80%]
 |===
-| Version | 0.1.0
-| Date | 2025-04-08
+| Version | 0.2.0
+| Date | 2025-06-26
 | Editor | Dr. Max Völkel
 | Status | Draft
 | Spec | https://calpano.github.io/connected-json/spec.html[this site]
@@ -71,21 +71,22 @@ https://opensource.org/license/mit[MIT] License +
 Copyright 2025 Max Völkel
 
 
-=== Version History
+=== Version History and Change Log
+The versions use link:https://semver.org/[semantic versioning].
 
-2025-04-30: Version 0.1.1::
+2025-06-26: Version 2.0.0::
+* <<multilingual-labels>> switched from a JSON object with language tags as property keys to a more canonical array-form.
+
+2025-04-30: Version 1.1.0::
 * Clearer <<ids>> section
 * Allow graph inside edge (consistent with diagram an GraphML)
 
-2025-04-08: Version 0.1.0:: Initial public release
-
-2025-04-06: Version 0.0.1
-
+2025-04-08: Version 1.0.0:: Initial public release
 
 
 == Structure Overview
 
-NOTE: Every element can carry arbitrary JSON properties besides the one interpreted by this spec.
+NOTE: Every element can carry arbitrary JSON properties besides the ones interpreted by this spec.
 
 .Structure for Bi-Edges, without Ports, without Nested Graphs
 [plantuml]
@@ -212,6 +213,10 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 
 |===
 
+.Streaming
+For streaming processing, the property order MUST be: (`baseuri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
+
+
 [[node]]
 === Node
 A node is an atom in the graph.
@@ -232,6 +237,8 @@ A node is an atom in the graph.
 | ports| `array`(<<port>> `[]`) | Optional array of ports.
 |===
 
+.Streaming
+For streaming processing, the property order MUST be: (`id`, `label`), `ports`, `graph`. The order within the brace group is not relevant.
 
 
 [[port]]
@@ -249,6 +256,9 @@ This is used in practice graphical editors, where a port is a connection point o
 
 |ports| `array`(<<port>> `[]`) | Optional array of sub-ports. Recursively.
 |===
+
+.Streaming
+For streaming processing, the property order MUST be: (`id`, `label`), `ports`. The order within the brace group is not relevant.
 
 
 [[edge]]
@@ -292,8 +302,6 @@ NOTE: Edges have been modelled like GraphML. They have been extended with a `typ
 |label
 | `string` or `object` | Label for the edge. Optional. The `object` is used for <<multilingual-labels>>.
 
-
-
 |source
 .2+| `string` or `number` (integer) or `array`(node id `[]`). +
  +
@@ -333,6 +341,11 @@ Ports are only available in endpoints syntax.
 
 | This is the canonical way to express edges.
 |===
+
+
+.Streaming
+For streaming processing, the property order MUST be: (`id`, `label`, `type`, `type-uri`, `type-node`, `directed`), (`source`, `target`, `endpoints`), `graph`. The order within each brace group is not relevant.
+
 
 .Example: Directed Bi-Edge
 ****
@@ -493,18 +506,16 @@ This can be used for style data (e.g. `line-color`) or domain data (e.g. `popula
 [[multilingual-labels]]
 === Multi-Lingual Labels
 A standard label `"label": "Hello, World"` has no language information.
-Multilingual labels in {cj} are stated like https://www.w3.org/TR/json-ld/#language-indexing[JSON-LD 1.1] does it:
+Multilingual labels in {cj} are stated like https://www.w3.org/TR/json-ld/#language-indexing[JSON-LD 1.1] (expanded)footnote:[The compacted form looks much cleaner, but prevents attaching metadata. Multi-language labels are rarely hand-authored and the array form is self-explanatory.] does it:
 [source,json]
 ----
 {
-  "label": {
-    "de": "Hallo, Welt",
-    "en": "Hello, World"
-  }
+  "label": [
+    {"language":"de", "value": "Hallo, Welt"},
+    {"language":"en", "value": "Hello, World"}
+  ]
 }
 ----
-So label can contain an `object`, with ISO language codes as keys and the actual label values as property values.
-
 
 [[nested-graphs]]
 === Nested Graphs
@@ -575,7 +586,33 @@ h| Scope h| Comment
 | <<node>> | <<port>> ids are only unique within their corresponding <<node>>.
 |===
 
+[[streaming]]
+==== Streaming Assumptions
+{cj} has some assumptions about the size and shape of the input data.
+These assumptions make it easier to build performant parsers.
 
+Most entities are expected to be resonably small, so that they can be completely processed in memory. Some entities may occur a large number of times.
+As indicated by the _Streaming_ notes below some property tables, the order of properties is also important. In general, small properties must come before the large properties (due to values with many child elements).
+Here is the conceptual grammar:
+
+.Elements with Large Number of Children
+[plantuml]
+....
+hide empty members
+hide circle
+
+interface Document
+interface Graph
+interface Node
+interface Edge
+Document *--> "n" Graph
+Graph *-> "n" Node
+Graph *--> "n" Edge
+Node *--> "n" Graph
+Edge *--> "n" Graph
+....
+
+Note that attached JSON data is especially excluded from being overly large.
 
 
 
@@ -592,3 +629,38 @@ The following schema has no support for aliases.
 ----
 include::../attachments/connected-json-schema.json[]
 ----
+
+[appendix]
+== Reserved Property Names
+
+The following property names are used by {cj} in certain places.
+
+[cols="2m,4d"]
+|===
+| Property | Usage
+| baseuri | <<graph>> base URI for RDF interpretation
+| directed | <<edge>> directedness
+| direction | <<endpoint>> direction (in/out/undir)
+| edgedefault | <<graph>> default edge direction
+| edges | <<graph>> edges
+| endpoints | <<edge>> endpoints
+| graph | <<node>> nested graph, <<edge>> nested graph
+| id | <<node>> id, <<edge>> id, <<graph>> id
+| label | <<node>>, <<edge>>, <<graph>>
+| node | <<endpoint>> referenced node id
+| nodes | <<graph>> nodes
+| port | <<endpoint>> referenced port id
+| ports | <<node>> ports
+| source | <<edge>>
+| target | <<edge>>
+| type | <<edge>>, <<endpoint>>
+| type-node | <<edge>>, <<endpoint>>
+| type-uri | <<edge>>, <<endpoint>>
+|===
+
+The following property names are merely suggested.
+
+[cols="2m,4d"]
+|===
+| description | Suggested for <<node>>, <<edge>>, <<graph>>, <<port>>, <<endpoint>> description
+|===
