@@ -3,7 +3,7 @@
   "$id": "https://example.com/schemas/connected-json-v0.0.1.schema.json",
   "title": "Connected JSON Schema",
   "description": "A JSON Schema for the Connected JSON format (v0.0.1) used for exchanging connected data (graphs, networks). Allows arbitrary additional properties on all elements.",
-  "version": "0.0.1",
+  "version": "3.0.0",
   "type": "object",
   "properties": {
     "graph": {
