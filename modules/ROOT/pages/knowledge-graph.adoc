@@ -2,9 +2,14 @@
 :prevent-blank-line:
 include::../partials/_header.adoc[]
 
+****
+{cj} Knowledge Graph Extension. +
+Version: 2.0.0
+****
+
 Connected JSON (CJ) is inherently an extensible format. This small document describes one option to model a knowledge graph in a CJ-compatible way.
 
-CJ already defines a network of nodes, including node and link labels. Furthermore, link types can be expressed. So what is missing? Textual content for nodes. We want plain text and formatted text.
+CJ already defines a network of nodes, including node and link labels. Furthermore, link types can be expressed. So what is missing? Content for nodes. We want plain text, formatted text, and even binaries (e.g., images).
 
 == Elements
 
@@ -16,13 +21,16 @@ We extend the xref:spec.adoc#node[CJ node] with these properties:
 |===
 | Property | Type | Description
 
-| text
-| `string` or `object` | Textual content. Optional. The `object` is used for xref:spec.adoc#multilingual-labels[multi-lingual text].
+| content
+| `string` or `object` | Content. Optional.
+If an `object` is used, it is for xref:spec.adoc#multilingual-labels[multilingual text]. For binary content, use `content` as a `string` with BASE64 encoded value.
 
-| text-type
-| `string` | MIME type of the text format, e.g. `text/plain`, `text/html`, `text/markdown`, or `text/asciidoc`.
+| contentType
+| `string` | MIME type of the text format, e.g. `text/plain`, `text/html`, `text/markdown`, or `text/asciidoc`. A contentType of, e.g., `application/octet-stream` or `image/png` can be used for binary data.
 
 |===
+
+This effectively turns a node optionally into a file-like container for content.
 
 == Example
 
@@ -37,6 +45,6 @@ include::example$knowledge-graph-example.con.json5[]
 This example shows:
 
 * Nodes with plain text content
-* A node with multi-lingual text content
+* A node with multilingual text content
 * A node with HTML-formatted text content
 * Edges connecting the nodes with different relationship types

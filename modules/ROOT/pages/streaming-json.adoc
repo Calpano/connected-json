@@ -1,0 +1,36 @@
+= Streaming JSON
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+This document is not formally part of the {cj} specification.
+It describes the rationale for the _Streaming_ recommendations within the {cj} spec.
+The concepts in this document apply to all JSON formats, that might get streamed.
+
+.Recommendations for streaming JSON.
+Streaming JSON is easy with formats like https://jsonlines.org/[JSON Lines] (aka _JsonL_). However, formats like {cj} have a more complex nesting structure. With some care, such formats can also be streamed.
+
+What happens technically when streaming data?
+
+- A sender generates a data stream
+- A receiver parses the incoming stream first as a stream of bytes, them characters, then JSON events, and finally events on the domain object layer. A database might get filled or domain objects might be created.
+
+Crucially, data is streamed to avoid buffering it completely in memory.
+Let us look at each step in the receiver pipeline:
+
+.Receiver Pipeline
+[%header,cols="2e,6d,4d"]
+|===
+| Layer | Events | Required buffer
+| Bytes | byte(x) | none
+| Characters | codepoint(x) | few bytes, e.g., to decode UTF8
+| JSON | object-start, object-end, array-start, array-end, key(x), primitive(x) | as large as a primitive value (could be split)
+| Domain | domain objects | Usually whole domain objects are constructed
+|===
+
+{cj} is challenging, due to the recursive nature of graphs having nodes, nodes potentially having subgraphs, and then these graphs having nodes ... and so on.
+
+TIP: Domain objects (e.g., _graph_) consists of attribute-properties (e.g., _id_, _label_) and child-properties (e.g., _nodes_ and _edges_). +
+For good streaming, *all attribute-properties need to be sent before all child-properties.* +
+
+**Attribute properties** contain JSON primitives or smaller, non-recursive JSON structures. +
+**Child properties** may contain a large or even unbounded number of child elements and/or may have recursion as part of their data model.

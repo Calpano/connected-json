@@ -126,7 +126,7 @@
           "$ref": "#/$defs/Label",
           "description": "Optional display label for the graph."
         },
-        "edgedefault": {
+        "edgeDefault": {
           "type": "string",
           "enum": [
             "directed",
@@ -230,7 +230,7 @@
         },
         "directed": {
           "type": "boolean",
-          "description": "Default: true. If false, all endpoints are treated as 'undir', overriding explicit directions and graph edgedefault."
+          "description": "Default: true. If false, all endpoints are treated as 'undir', overriding explicit directions and graph edgeDefault."
         },
         "endpoints": {
           "type": "array",
@@ -413,7 +413,7 @@
           "type": "string",
           "description": "Optional type of relation from the edge to this endpoint node."
         },
-        "type-uri": {
+        "typeUri": {
           "type": "string",
           "format": "uri",
           "description": "Optional URI representing the type of relation. Takes precedence over 'type' if both are given."

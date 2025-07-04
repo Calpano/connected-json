@@ -12,8 +12,8 @@ image::cj-logo.png[width=100%,align="center"]
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
 [cols="2h,12",width=80%]
 |===
-| Version | 2.0.0
-| Date | 2025-06-26
+| Version | 3.0.0
+| Date | 2025-07-03
 | Editor | Dr. Max Völkel
 | Status | Draft
 | Spec | https://calpano.github.io/connected-json/spec.html[this site]
@@ -73,6 +73,14 @@ Copyright 2025 Max Völkel
 
 === Version History and Change Log
 The versions use link:https://semver.org/[semantic versioning].
+
+2025-07-03: Version 3.0.0::
+* Renamed all properties with a dash to camelCase form. This makes is pragmatically easy to represent properties in programming languages as variable names or enum values.
+** `type-node` -> `typeNode`
+** `type-uri` -> `typeUri`
+* Renamed some lowercase properties to camelCase form. This avoids IDEs and editors complaining about spelling.
+** `baseuri` -> `baseUri`
+** `edgedefault` -> `edgeDefault`
 
 2025-06-26: Version 2.0.0::
 * <<multilingual-labels>> switched from a JSON object with language tags as property keys to a more canonical array-form.
@@ -197,9 +205,9 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 |===
 | Property | Type | Description
 
-|baseuri|`string`(URI)| Optional. Is used to fine-tune the xref:rdf-interpretation.adoc[].
+|baseUri|`string`(URI)| Optional. Is used to fine-tune the xref:rdf-interpretation.adoc[].
 
-|edgedefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`.
+|edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`.
 
 |edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges). Default: Empty.
 
@@ -214,7 +222,7 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 |===
 
 .Streaming
-For streaming processing, the property order MUST be: (`baseuri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
+For streaming processing, the property order MUST be: (`baseUri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
 
 
 [[node]]
@@ -323,18 +331,18 @@ Ports are only available in endpoints syntax.
 |`string`
 .3+|Optional. The kind of edge. See <<endpoint>> and xref:rdf-interpretation.adoc[].
 
-|type-uri
+|typeUri
 |`string`
 //|Optional. The kind of edge. See <<endpoint>>.
 
-|type-node
+|typeNode
 |`string` or `number` (integer)
 //|Optional. The kind of edge. See <<endpoint>>.
 
 
 |directed
 | `boolean`
-|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgedefault` on <<graph>>.
+|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgeDefault` on <<graph>>.
 
 |endpoints
 | `array` (<<endpoint>> `[]`)
@@ -344,7 +352,7 @@ Ports are only available in endpoints syntax.
 
 
 .Streaming
-For streaming processing, the property order MUST be: (`id`, `label`, `type`, `type-uri`, `type-node`, `directed`), (`source`, `target`, `endpoints`), `graph`. The order within each brace group is not relevant.
+For streaming processing, the property order MUST be: (`id`, `label`, `type`, `typeUri`, `typeNode`, `directed`), (`source`, `target`, `endpoints`), `graph`. The order within each brace group is not relevant.
 
 
 .Example: Directed Bi-Edge
@@ -463,7 +471,7 @@ is the same as
 
 |direction
 | One of: `in`, `out` or `undir` | Optional.
-Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`. See also: <<graph>> `edgedefault`.
+Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`. See also: <<graph>> `edgeDefault`.
 
 |node| `string` or `number` (integer) | Required. __Node id__.
 Either a `string` containing a single __nodeId__
@@ -473,15 +481,15 @@ or a `number` (auto-converted to string) containing a single node id.
 Port ids are only unique per node/port. See <<ids>>.
 
 |type| `string`| Optional. The type of relation from the edge entity to the endpoint node.
-If a URI is given, us `type-uri` instead. This property states the relation as a string, e.g. `works at` or `knows`. Default is `related`.
+If a URI is given, us `typeUri` instead. This property states the relation as a string, e.g. `works at` or `knows`. Default is `related`.
 
-|type-uri| `string`(URI) | Optional. The type of relation from the edge entity to the endpoint node.
+|typeUri| `string`(URI) | Optional. The type of relation from the edge entity to the endpoint node.
 
-|type-node| `string` or `number` (integer) | Uses a node in the graph (referenced by node id, see <<ids>>) to define the kind of relation. This is the same strategy that RDF uses: property URIs are RDF resources themselves, which can have a label and other edges attached to them.
+|typeNode| `string` or `number` (integer) | Uses a node in the graph (referenced by node id, see <<ids>>) to define the kind of relation. This is the same strategy that RDF uses: property URIs are RDF resources themselves, which can have a label and other edges attached to them.
 |===
 
 .Type
-- Either `type`, `type-uri`, or `type-node` MAY be used. If several are given, `type-uri` has precedence, then `type-node`, then `type`. See also xref:rdf-interpretation.adoc[].
+- Either `type`, `typeUri`, or `typeNode` MAY be used. If several are given, `typeUri` has precedence, then `typeNode`, then `type`. See also xref:rdf-interpretation.adoc[].
 
 
 
@@ -528,19 +536,19 @@ A sub-graph is similar to a top-level graph. However, (1) all nodes in a top-lev
 === Edge Direction
 The edge direction can be stated in three locations:
 
-. Using the `edgedefault` property on the whole <<graph>>.
+. Using the `edgeDefault` property on the whole <<graph>>.
 * If set to `directed`, the edge and endpoint level definitions are evaluated. This is the default.
 * If set to `undirected`, edge and endpoint definitions are __ignored__.
 . Using a `directed` property on an <<edge>>.
 * If set to `true`, the endpoint level definitions are evaluated. This is the default.
 * If set to `false`, all endpoints are treated as `undir`, even if they state otherwise.
 . Using the `direction` property on each <<endpoint>>.
-* The value set here is used if both __graph__ `{"edgedefault": "directed" }` and and __edge__ `"directed":true}` are set (which are also the default values for both properties).
+* The value set here is used if both __graph__ `{"edgeDefault": "directed" }` and and __edge__ `"directed":true}` are set (which are also the default values for both properties).
 
 .Examples
 |===
 3+h| Input h| Result
-| __graph__ `edgedefault`   | __edge__ `directed` | __endpoint__ `direction`  | Result Endpoint Direction
+| __graph__ `edgeDefault`   | __edge__ `directed` | __endpoint__ `direction`  | Result Endpoint Direction
 
 4+d| Graph directed, Edge directed -> Endpoint Direction
 | -- / `directed`  | -- / `true`  | -- / `undir` | `undir`
@@ -638,10 +646,10 @@ The following property names are used by {cj} in certain places.
 [cols="2m,4d"]
 |===
 | Property | Usage
-| baseuri | <<graph>> base URI for RDF interpretation
+| baseUri | <<graph>> base URI for RDF interpretation
 | directed | <<edge>> directedness
 | direction | <<endpoint>> direction (in/out/undir)
-| edgedefault | <<graph>> default edge direction
+| edgeDefault | <<graph>> default edge direction
 | edges | <<graph>> edges
 | endpoints | <<edge>> endpoints
 | graph | <<node>> nested graph, <<edge>> nested graph
@@ -654,8 +662,8 @@ The following property names are used by {cj} in certain places.
 | source | <<edge>>
 | target | <<edge>>
 | type | <<edge>>, <<endpoint>>
-| type-node | <<edge>>, <<endpoint>>
-| type-uri | <<edge>>, <<endpoint>>
+| typeNode | <<edge>>, <<endpoint>>
+| typeUri | <<edge>>, <<endpoint>>
 |===
 
 The following property names are merely suggested.

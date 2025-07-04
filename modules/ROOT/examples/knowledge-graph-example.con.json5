@@ -3,29 +3,29 @@
     {
       "id": "artificial_intelligence",
       "label": "Artificial Intelligence",
-      "text": "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems.",
-      "text-type": "text/plain"
+      "content": "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems.",
+      "contentType": "text/plain"
     },
     {
       "id": "machine_learning",
       "label": "Machine Learning",
-      "text": "Machine Learning is a subset of AI that provides systems the ability to automatically learn and improve from experience without being explicitly programmed.",
-      "text-type": "text/plain"
+      "content": "Machine Learning is a subset of AI that provides systems the ability to automatically learn and improve from experience without being explicitly programmed.",
+      "contentType": "text/plain"
     },
     {
       "id": "deep_learning",
       "label": "Deep Learning",
-      "text": {
+      "content": {
         "en": "Deep Learning is a subset of machine learning that uses neural networks with many layers.",
         "de": "Deep Learning ist ein Teilbereich des maschinellen Lernens, der neuronale Netze mit vielen Schichten verwendet."
       },
-      "text-type": "text/plain"
+      "contentType": "text/plain"
     },
     {
       "id": "neural_networks",
       "label": "Neural Networks",
-      "text": "<p>Neural networks are computing systems inspired by the <strong>biological neural networks</strong> that constitute animal brains.</p>",
-      "text-type": "text/html"
+      "content": "<p>Neural networks are computing systems inspired by the <strong>biological neural networks</strong> that constitute animal brains.</p>",
+      "contentType": "text/html"
     }
   ],
   "edges": [

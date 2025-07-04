@@ -45,7 +45,7 @@ See also xref:migrating-from-json-graph.adoc[].
 .xref:spec.adoc#graph[Graph] Properties
 |===
 h| Alternative h| Parsed as
-| `directed`: `true` | `edgedefault`: `directed`
-| `directed`: `false` | `edgedefault`: `undirected`
+| `directed`: `true` | `edgeDefault`: `directed`
+| `directed`: `false` | `edgeDefault`: `undirected`
 |===
 For compatibility with JSON Graph.

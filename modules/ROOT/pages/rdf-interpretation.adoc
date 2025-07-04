@@ -9,7 +9,7 @@ The JSON document can be exported as RDF. This resembles simply mapping the JSON
 --
 
 == Base URI
-The __graph__.`baseuri` is used to map nodes and edges to RDF. The baseuri is defined like in https://developer.mozilla.org/en-US/docs/Web/API/Node/baseURI[HTML] as "__the absolute base URL of the document containing the node.__" The default value is the local file path using the `file://` scheme, with URL-encoding, where required.
+The __graph__/`baseUri` is used to map nodes and edges to RDF. The baseUri is defined like in https://developer.mozilla.org/en-US/docs/Web/API/Node/baseURI[HTML] as "__the absolute base URL of the document containing the node.__" The default value is the local file path using the `file://` scheme, with URL-encoding, where required.
 
 == Node URI
 Each node id is URL-escaped and then appended to the base URI to form a unique, valid node uri. Similarly, the edge id is appended to the base URI to form a unique edge uri.
@@ -21,24 +21,24 @@ Ports are ignored in RDF.
 The type of an edge can be stated at the edge level and/or at the endpoint level. For bi-edges the edge level works fine and has a clear interpretation, even as RDF. However, an n-ary edge cannot always be interpreted as RDF.
 I.e., the hyper-edge itself is not mapped to triples, but the induced bi-edges are.
 
-The edge type (__edge__.`type`, __edge__.`type-node`, __edge__.`type-uri`) defines a value for each endpoint. It can be overwritten in each endpoint (__endpoint__.`type`, __endpoint__.`type-node`, __endpoint__.`type-uri`).
+The edge type (__edge__.`type`, __edge__.`typeNode`, __edge__.`typeUri`) defines a value for each endpoint. It can be overwritten in each endpoint (__endpoint__.`type`, __endpoint__.`typeNode`, __endpoint__.`typeUri`).
 
 .Algorithm for Interpreting a (Hyper-)Edge as RDF Triples
 - Compute the effective endpoint type by
-** Compute the edge type (resolve __edge__.`type`, __edge__.`type-node` and __edge__.`type-uri` into a single type using precedence rules.
-** Compute the endpoint type (is any of __endpoint__.`type`, __endpoint__.`type-node`, __endpoint__.`type-uri` given?).
+** Compute the edge type (resolve __edge__.`type`, __edge__.`typeNode` and __edge__.`typeUri` into a single type using precedence rules.
+** Compute the endpoint type (is any of __endpoint__.`type`, __endpoint__.`typeNode`, __endpoint__.`typeUri` given?).
 ** Combine into a single, effective endpoint type.
 
 - Process each pair of endpoints (A,B):
 ** Sort pair into first and second, by
-** If `type-uri` is empty and `type-node` is given, then set `type-uri` to the node URI of the node, referenced in `type-node`.
-** For each `type-uri` in the pair generate an RDF triple from `in` to `out`:
+** If `typeUri` is empty and `typeNode` is given, then set `typeUri` to the node URI of the node, referenced in `typeNode`.
+** For each `typeUri` in the pair generate an RDF triple from `in` to `out`:
 +
-If __in.type-uri__ is present, generate +
-(in.node, in.type-uri, out.node).
+If __in.typeUri__ is present, generate +
+(in.node, in.typeUri, out.node).
 +
-If __out.type-uri__ is present, generate +
-(in.node, out.type-uri, out.node).
+If __out.typeUri__ is present, generate +
+(in.node, out.typeUri, out.node).
 
 .Mapping of Endpoint Pair
 [cols="^1m,^1m,1,1"]
@@ -70,7 +70,7 @@ h| A h| B h| Subject h| Object
       "direction": "in"  },
     { "node": "n17",
       "direction": "out",
-      "type-uri": "https://example.org/worksAt" }
+      "typeUri": "https://example.org/worksAt" }
   ]
 }
 ----
@@ -92,9 +92,9 @@ NOTE: The following example uses `source`/`target` and `endpoints`, which is all
   "target": ["n17","n100"],
   "endpoints": [
     { "node": "n100", "direction": "in",
-      "type-uri": "https://example.org/sells" },
+      "typeUri": "https://example.org/sells" },
     { "node": "n12",  "direction": "in",
-      "type-uri": "https://example.org/buys" },
+      "typeUri": "https://example.org/buys" },
     { "node": "n3",   "direction": "undir"  },
     { "node": "item-1",  "direction": "out" }
   ]
