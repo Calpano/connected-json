@@ -6,3 +6,7 @@
 ** xref:migrating-from-graphml.adoc[GraphML]
 * xref:rdf-interpretation.adoc[Interpretation as RDF]
 * https://github.com/Calpano/connected-json/issues[Issues on GitHub]
+* Notes
+** xref:extensible-json.adoc[Extensible JSON]
+*** xref:compact-schema.adoc[A compact schema for extensible JSON?]
+** xref:streaming-json.adoc[Streaming JSON]

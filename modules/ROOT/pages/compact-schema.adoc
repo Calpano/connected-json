@@ -1,11 +1,14 @@
-= Summary
+= Notes on CJ
 :prevent-blank-line:
 include::../partials/_header.adoc[]
 
+This document is not formally part of the {cj} specification.
 
 == CJ as Compact Schema
 Here is a compact view on which properties are interpreted by {cj}.
 It is designed to let humans quickly understand which parts of JSON are 'claimed' by {cj}.
+
+See link:extensible-json.adoc#extension_properties[_Extension Properties_].
 
 .Spec including aliases, multilingual labels and Knowledge Graph extension. [To be added: Styling]
 ----

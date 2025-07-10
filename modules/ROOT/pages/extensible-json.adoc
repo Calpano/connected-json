@@ -1,0 +1,189 @@
+= Extensible JSON
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+This document is not formally part of the {cj} specification.
+
+== Problem Statement
+http://json.org[JSON] defines in the core language only how to represent a single tree of data using arrays and objects for nesting and primitive types for leaves.
+
+https://json-schema.org/[JSON Schema] defines complex data types by constraining a JSON value to a certain structure.
+
+
+=== Example
+Alice defines a JSON format for shopping lists version 1.0:
+
+[source,json]
+----
+[
+  { "item": "milk", "quantity": 2 },
+  { "item": "eggs", "quantity": 12 }
+]
+----
+
+and Bob wants to extend the format with a boolean property `selected` to record if an item should be rendered with a check-mark in his mobile app.
+
+However, Alice is not aware of this and later extends her format in version 2.0 with data on which products are truly exceptional and promoted by the store. To record these hand-selected products, she calls her property `selected`.
+
+Now let us look at how different approaches would solve this problem.
+
+== Solution Ideas
+
+=== Namespaces
+XML has namespaces, which allows several XML tags with the same base-name to be mixed without issues.
+Using the syntax proposed in https://github.com/Calpano/json-namespaces/blob/main/json-namespaces.adoc[JSON Namespaces], we get
+
+[source,json]
+----
+{
+  "_namespaces": {
+    "_": "http://alice.example/ns/",
+    "bob": "https://bob.example"
+  },
+  "items": [
+    { "item": "milk", "quantity":  2, "selected": true,  "bob:selected": false },
+    { "item": "eggs", "quantity": 12, "selected": false, "bob:selected": false }
+  ]
+}
+----
+
+- We had to migrate the array to a JSON object
+
+
+=== Namespaces in JSON-LD
+https://www.w3.org/TR/json-ld/[JSON-LD 1.1] set out to annotate JSON documents just enough to interpret them (or parts of them) as RDF.
+RDF fundamentally builds on URIs, so JSON-LD has a namespace concept for this reason, not to provide JSON extensibility in the first place. It works nevertheless.
+
+In JSON-LD we could have
+
+[source,js]
+----
+{
+	// built-ins
+	"id": "some id, which is unique within this document",
+	"pos": [ 0.12, 0.3 ],
+	"dim": [ 0.5, 0.2 ],
+	// from app A
+	"appA:energy": 13,
+	"appA:compounds": { "water": 0.7, "air": 0.2, "other": 0.1 },
+	// from app B
+	"appB:gradient": ["yellow", "green"]
+}
+----
+
+and we define a mapping
+
+[source,js]
+----
+{
+	"context": {
+		"appA": "https:// ... URI of a JSON schema for the properties"
+	}
+}
+----
+
+
+
+=== Property-Splitting
+The host format claims a set of properties, which trigger interpretation of the contained JSON value. All other properties are free to use by extensions.
+
+In our example, bob would have read the spec 2.0 and knew `selected` is a reserved key.
+
+[source,json]
+----
+{
+  "foo": "an other data by an extension",
+  "bar": 123,
+  "items": [
+    { "item": "milk", "quantity":  2, "selected": true,  "checkbox": false },
+    { "item": "eggs", "quantity": 12, "selected": false, "checkbox": false }
+  ]
+}
+----
+
+- Pro: Readable JSON
+- Con: The file-format is a sub-set of JSON and custom data can appear in any place and (JSON) shape.
+- Con: Different extensions need to coordinate their used property keys.
+
+Unfortunately, our example was Bob reading the spec in version 1.0. In this case, a property collision is unavoidable.
+
+[#extension_properties]
+=== Extension Properties
+The spec defines explicit extension properties which are to be used by extensions.
+
+[source,json]
+----
+{
+  "foo": "an other data by an extension",
+  "bar": 123,
+  "items": [
+    { "item": "milk", "quantity":  2, "selected": true,
+      "data": { "selected": false } },
+    { "item": "eggs", "quantity": 12, "selected": false,
+      "data": { "selected": false } }
+  ]
+}
+----
+
+- Con: Different extensions need to coordinate their used property keys.
+
+=== Extension Objects
+This mechanism is used in https://github.com/ocwg/spec/blob/main/spec/v0.5/spec.md[OCIF].
+It extends the <<extension_properties>> approach by also defining the structure within the JSON value.
+
+- The host format defines extension points.
+** OCIF defines `nodes` to have a `data` property which contains an array of extension objects.
+- Each extension object has a reserved property `type` which maps directly or indirectly to a schema URI.
+- For offline-first, the schemas for the extensions can be embedded in the host document in a defined way.
+
+
+=== Namespace + Extension Properties
+
+[source,json]
+----
+{
+  "foo": "an other data by an extension",
+  "bar": 123,
+  "items": [
+    { "item": "milk", "quantity":  2, "selected": true,
+      "data": {
+        "bob.example.com": { "selected": false },
+        "charly.example.com": { "selected": 33 }
+      }
+    },
+    { "item": "eggs", "quantity": 12, "selected": false,
+      "data": { "selected": false } }
+  ]
+}
+----
+
+
+=== Outlook: Other Approaches
+
+
+
+== Reference
+
+=== Mechanisms in JSON for Extensible JSON
+
+JSON Schema defines
+
+Direct Composition::
+Using `allOf`, `anyOf` or `oneOf` keywords, different schemas can be combined.
+
+anyOf::: "An instance validates successfully against this keyword if it validates successfully against at least one schema defined by this keyword's value."
+
+allOf::: An instance validates successfully against this keyword if it validates successfully against all schemas defined by this keyword's value.
+
+oneOf:::
+An instance validates successfully against this keyword if it validates successfully against exactly one schema defined by this keyword's value.
+
+
+Schema Inheritance::
+Via `extends` keyword.
+This is a bad fit, as in our use case, we need the base schema to be extended by appA and appB, at the same time.
+
+additionalProperties::
+Allows accepting arbitrary properties (except the defined ones).
+
+
