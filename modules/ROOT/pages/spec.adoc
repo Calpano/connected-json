@@ -12,8 +12,8 @@ image::cj-logo.png[width=100%,align="center"]
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
 [cols="2h,12",width=80%]
 |===
-| Version | 3.0.0
-| Date | 2025-07-03
+| Version | 4.0.0
+| Date | 2025-07-10
 | Editor | Dr. Max Völkel
 | Status | Draft
 | Spec | https://calpano.github.io/connected-json/spec.html[this site]
@@ -74,6 +74,9 @@ Copyright 2025 Max Völkel
 === Version History and Change Log
 The versions use link:https://semver.org/[semantic versioning].
 
+2025-07-10: Version 4.0.0::
+* Simplified graph nesting. Now a CJ document _is_ a graph (or array of graphs).
+
 2025-07-03: Version 3.0.0::
 * Renamed all properties with a dash to camelCase form. This makes is pragmatically easy to represent properties in programming languages as variable names or enum values.
 ** `type-node` -> `typeNode`
@@ -127,7 +130,7 @@ Graph ..> "0..1" Edge : contains
 ....
 
 A bi-edge has always exactly 2 endpoints.
-
+A generic hyperedge can have 0 to n endpoints.
 
 .Full Structure
 [plantuml]
@@ -176,25 +179,15 @@ Edge ..> "0..n" Graph : nested\ngraphs
 ....
 
 == Elements
+.Polymorphism
+{cj} uses a JSON polymorphism, i.e. under the property `label` is either a JSON string or a JSON object (multilingual). Many properties allow for either a JSON object or a JSON array with multiple such objects.
 
 [[document]]
 === Document
 Every file is a _document_.
-Technically, a JSON `object`.
-It contains one or more <<graph, graphs>>.
+The structure of a document is the same as the value of the `graph` property inside a <<graph>>: Either a _graph_ object or an array of such objects.
 
-[options="header",cols="^2m,^2,8"]
-|===
-| Property | Type | Description
 
-|graph| `object`(<<graph>>) __or__ `array`(<<graph>> `[]`)
-| Object for 1 graph, array for 1 to n graphs. Default: Empty.
-
-|===
-
-TIP: The pattern of allowing both (a) a single object or (b) an array of a-objects, is used throughout the spec.
-
-NOTE: As an alternative (alias) to `graph` also the plural `graphs` is allowed. A list of allowed alias names is given in the xref:aliases.adoc[] extension.
 
 
 [[graph]]
@@ -211,18 +204,41 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 
 |edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges). Default: Empty.
 
+|graph| `object`(<<graph>>) __or__ `array`(<<graph>> `[]`)
+| Object for 1 graph, array for 1 to n graphs. Default: Empty.
+See <<graph-nesting>>.
+
 |id
 | `string` __or__ `number` (integer) | Optional. Unique identifier for the graph within a <<document>>. See <<ids>>.
 
 |label
-| `string` | Label (name) of the node. Optional.
+| `string` | Label (name) of the graph. Optional.
 
 |nodes| `array`(<<node>> `[]`) | 0 to n nodes. Default: Empty.
 
 |===
 
+TIP: The pattern of allowing both (a) a single object or (b) an array of a-objects, is used throughout the spec.
+
+NOTE: As an alternative (alias) to `graph` also the plural `graphs` is allowed. A list of allowed alias names is given in the xref:aliases.adoc[] extension.
+
+
 .Streaming
 For streaming processing, the property order MUST be: (`baseUri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
+
+
+[[graph-nesting]]
+=== Graph Nesting
+Graphs can be nested within other graphs.
+This allows for hierarchical, recursive graph structures.
+The nesting depth is not limited.
+Also, nodes and edges can contain nested graphs.
+
+There is a slight difference in interpretation:
+
+Graph in graph:: For data management, partitions nodes and edges into sub-sets. The id and label of the sub-graphs are mapped to id and label of an implied compound nodes.
+
+Graph in node/edge:: Here the sub-graph is merely used as a container entity. Its id and label do not contribute to the resulting model.
 
 
 [[node]]
@@ -234,7 +250,7 @@ A node is an atom in the graph.
 | Property | Type | Description
 
 |graph
-| `object` (<<Graph>>) or `array` (<<graph>> `[]`) |Optional. Graph(s) nested within the node. This turns the node into a compound node. The edges in a sub-graph can refer to nodes higher up in the tree of graphs.
+| `object` (<<Graph>>) or `array` (<<graph>> `[]`) |Optional. Graph(s) nested within the node. This turns the node into a compound node. The edges in a sub-graph can refer to nodes higher up in the tree of graphs. See <<graph-nesting>>.
 
 |id
 | `string` __or__ `number` (integer) | Required. Unique identifier for the node. See <<ids>>.
@@ -258,9 +274,9 @@ This is used in practice graphical editors, where a port is a connection point o
 |===
 | Property | Type | Description
 
-|id| `string` | ID unique within the <<node>>. All ports, even nested one, share the same ID space per node. See also <<ids>>.
+|id| `string` | Required. ID unique within the <<node>>. All ports, even nested one, share the same ID space per node. See also <<ids>>.
 
-|label|`string`| Optional
+|label|`string`| Optional.
 
 |ports| `array`(<<port>> `[]`) | Optional array of sub-ports. Recursively.
 |===
