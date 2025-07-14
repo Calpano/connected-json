@@ -6,17 +6,18 @@ include::../partials/_header.adoc[]
 :toclevels: 4
 
 A specification how to interpret various JSON constructs as
-link:spec.adoc[{cj}].
+link:spec-cj.adoc[{cj}].
 
-image::cj-logo.png[width=100%,align="center"]
+image::ecj-logo.png[width=100%,align="center"]
 
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
+
 [cols="2h,12",width=80%]
 |===
-| Version | 4.x.x (http://semver.org[SemVer]) **UNDER CONSTRUCTION**
+| Version | 5.0.0 (http://semver.org[SemVer])
 | Date | 2025-07-14
 | Editor | Dr. Max Völkel
-| Status | Draft -- **UNDER CONSTRUCTION**
+| Status | Draft
 | Spec | https://calpano.github.io/connected-json/extended-cj.html[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
@@ -25,58 +26,49 @@ toc::[]
 
 
 == Introduction
+
+=== Goals and Motivation
 Real-world JSON comes in many dialects and variants.
-This document defines how to interpret various JSON structures unambiguously as a graph of nodes and edges. For clarity, the interpretation as {cj} is given. Many formats in the wild are already quite close to {cj} anyway.
+This document defines how to interpret various JSON structures unambiguously as a graph of nodes and edges.
+For clarity, the interpretation as {cj} is given.
+Many formats in the wild are already quite close to {ecj} anyway.
+{ecj} is a superset of https://github.com/jsongraph/json-graph-specification[JSON Graph Format].
 
-Together with the xref:aliases.adoc[] extension, it is even a superset of JSON Graph Format.
-
-Different from GraphML, this format prioritizes flexible data attachment directly onto elements, alongside the core graph structure:
+Different from GraphML and {cj}, this format allows flexible data attachment directly onto elements alongside the core graph structure:
 **Any element can carry arbitrary additional properties**.
+No intermediate `data` required.
 
-As this format is meant for relaxed parsing of various CJ-like JSON dialects, it does not define rules for stream processing. See link:streaming-json.adoc[] and especially link:spec.adoc#streaming[Streaming in CJ] for details.
+As this format is meant for relaxed parsing of various CJ-like JSON dialects, it does not define rules for stream processing. See link:notes/streaming-json.adoc[] and especially link:spec-cj.adoc#streaming[Streaming in CJ] for details.
 
-== Structure Overview
-.Simplified Structure for Bi-Edges, without Ports, without Nested Graphs
-[plantuml]
-....
-hide empty members
-hide circle
+=== Example
+First of all, all {cj} files are valid {ecj}.
+So look at link:spec-cj.adoc#example[the example in the CJ specification].
 
-interface Document
-interface Graph {
-    id?
-    label?
-}
-interface Node {
-    id
-    label?
-}
-interface Edge {
-    id?
-    label?
-    type?
-    directed?
-}
+Here is a simple example showcasing some additional features:
 
-Document *--> "n" Graph
-Graph *--> "n" Node
-Graph *--> "n" Edge
-Edge --> "2" Node : source,\ntarget
-Graph ..> "0..1" Node :  contains
-Graph ..> "0..1" Edge : contains
-....
+.{ecj} Example File
+[source,json]
+----
+include::example$example-1.ecj.json5[]
+----
 
-A bi-edge has always exactly 2 endpoints.
-A generic hyperedge can have 0 to n endpoints.
+=== Change Log
+2025-07-14: Version 5.0.0::
+* Split spec into two parts: {cj} for writing strict files, where there is always only one option to encode a structure and {ecj} which is much more liberal and flexible in parsing.
+* Moved `edgeDefault` to {ecj}.
 
 
-== Conventions
+== Overview
+{ecj} uses the same link:spec-cj.adoc#conceptual_model[conceptual model] as {cj}, but it maps a broader range of JSON structures to the graph model.
+It is a superset of {cj}.
+
+=== Conventions
 Where a property is just copied over from the {cj} specification with the exact same semantics, we use the symbolic `->` to indicate this, followed by a link to the documentation in the Cj spec, prefixed with `CJ:`.
 
 === Polymorphism
-{ccj} uses a kind of 'JSON polymorphism': A property allows multiple JSON types to be used. Interpretation of that JSON value depends on the used type.
+{ecj} uses a kind of 'JSON polymorphism': A property allows multiple JSON types to be used. Interpretation of that JSON value depends on the used type.
 
-- For example, the property `label` is in {ecj} either a JSON string or a JSON object (multilingual). Interpretation is defined per property.
+- For example, the property `label` is in {ecj} either a JSON string or a JSON object (multilingual like in {cj}). Interpretation is defined per property.
 - Some properties allow for either a JSON object or a JSON array with multiple such objects.
 Example: `graph` and `graphs`. Their interpretation is described below.
 
@@ -110,6 +102,8 @@ The interpretation of an object-vs-array property is by creating an implicit arr
 ----
 |===
 
+
+
 == Elements
 NOTE: Every element can carry arbitrary JSON properties besides the ones interpreted by this spec. The interplay with the explicit `data` property is described in <<data>>.
 
@@ -132,7 +126,7 @@ If subgraphs are created, those properties inherit downwards as usual.
 
 |baseUri|`string`(URI)| Optional. Document-level. Documented in {cj-document}.
 
-|connectedJson| `object` | Optional. Document-level. Documented in link:spec.adoc#meta-document[CJ Document Metadata].
+|connectedJson| `object` | Optional. Document-level. Documented in link:spec-cj.adoc#meta-document[CJ Document Metadata].
 
 |compoundNode| `boolean` | Optional. Graph-level. Documented in {cj-graph}.
 
@@ -156,7 +150,7 @@ If subgraphs are created, those properties inherit downwards as usual.
 |label| `object` | Optional. Graph-level. Documented in {cj-graph}.
 |label| `string` | Optional. Graph-level. See <<label>>.
 
-|meta| `object`(link:spec.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec.adoc#meta-graph[Graph Metadata]].
+|meta| `object`(link:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec-cj.adoc#meta-graph[Graph Metadata]].
 
 |nodes| `array`(<<node>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
 
@@ -191,7 +185,7 @@ In other words: A {cj-label} without language.
 
 [[graph]]
 === Graph
-For the default graph structure, see link:spec.adoc#graph[Graph] in {cj}.
+For the default graph structure, see link:spec-cj.adoc#graph[Graph] in {cj}.
 {ecj} adds some aliases.
 
 .Property Table
@@ -221,7 +215,7 @@ This is similar to link:https://graphviz.org/Gallery/directed/cluster.html[DOT s
 |label| `string` | Optional. See <<label>>.
 
 
-|meta| `object`(link:spec.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec.adoc#meta-graph[Graph Metadata]].
+|meta| `object`(link:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec-cj.adoc#meta-graph[Graph Metadata]].
 
 
 // Streaming Data
@@ -237,13 +231,13 @@ This is similar to link:https://graphviz.org/Gallery/directed/cluster.html[DOT s
 |===
 
 [#compound_node]
-==== Compound Node
+==== Nested Graph as Compound Node
 The graph-level `compoundNode` property can be used on a graph (or document) to force processing as if the subgraph had been nested in a node.
 
 .Inheritance
 The `compoundNode` setting is inherited downwards from parent to child graphs, for all kinds of nesting. Child graphs may overwrite a parent setting. In this case, the redefined value is inherited downwards.
 
-
+.Example for Nested Graph as Compound Node
 [cols="a,a"]
 |===
 |
@@ -304,7 +298,7 @@ The `compoundNode` setting is inherited downwards from parent to child graphs, f
 
 [[node]]
 === Node
-For the default node structure, see link:spec.adoc#node[Node] in {cj}.
+For the default node structure, see link:spec-cj.adoc#node[Node] in {cj}.
 
 .Property Table
 [options="header",cols="^3m,^2,8"]
@@ -328,7 +322,7 @@ For the default node structure, see link:spec.adoc#node[Node] in {cj}.
 
 [[port]]
 === Port
-For the default port structure, see link:spec.adoc#port[Port] in {cj}.
+For the default port structure, see link:spec-cj.adoc#port[Port] in {cj}.
 
 [options="header",cols="^3m,^2,8"]
 |===
@@ -348,7 +342,7 @@ For the default port structure, see link:spec.adoc#port[Port] in {cj}.
 
 [[edge]]
 === Edge
-For the default edge structure, see link:spec.adoc#edge[Edge] in {cj}.
+For the default edge structure, see link:spec-cj.adoc#edge[Edge] in {cj}.
 
 [options="header",cols="^2m,^5,8"]
 |===
@@ -401,6 +395,42 @@ Ports are only available in endpoints syntax.
 
 | This is the canonical way to express edges.
 |===
+
+All endpoint-generating properties are evaluated and generate endpoints.
+
+==== Bi-Edges
+.Simplified Structure for Bi-Edges, without Ports, without Nested Graphs
+[plantuml]
+....
+hide empty members
+hide circle
+
+interface Document
+interface Graph {
+    id?
+    label?
+}
+interface Node {
+    id
+    label?
+}
+interface Edge {
+    id?
+    label?
+    type?
+    directed?
+}
+
+Document *--> "n" Graph
+Graph *--> "n" Node
+Graph *--> "n" Edge
+Edge --> "2" Node : source,\ntarget
+Graph ..> "0..1" Node :  contains
+Graph ..> "0..1" Edge : contains
+....
+
+A bi-edge always has exactly 2 endpoints.
+A generic hyperedge can have 0 to n endpoints.
 
 
 .Example: Directed Bi-Edge
@@ -512,7 +542,7 @@ is the same as
 
 [[endpoint]]
 === Edge Endpoint
-For the default endpoint structure, see link:spec.adoc#endpoint[Endpoint] in {cj}.
+For the default endpoint structure, see link:spec-cj.adoc#endpoint[Endpoint] in {cj}.
 
 [options="header",cols="^3m,^2,8"]
 |===
@@ -533,9 +563,10 @@ For the default endpoint structure, see link:spec.adoc#endpoint[Endpoint] in {cj
 
 |===
 
+
 == Features
 
-
+[#data]
 === Data
 In {cj}, extended data can only be attached to elements via the `data` property.
 
@@ -547,6 +578,7 @@ Nested JSON is allowed.
 Any other properties are copied over as user-data.
 Values within the `data` property remain.
 
+.Moving User-Defined Properties to `data`
 [cols="a,a"]
 |===
 |
@@ -577,10 +609,9 @@ Values within the `data` property remain.
 ----
 |===
 
-
-
 Edge case: If an object, e.g., a node, is using _both_ a direct JSON property and the same time the same property key within the `data` object, but with a different value, then both properties are 'shifted outwards'.
 
+.Edge Case: Conflicting Properties
 [cols="a,a"]
 |===
 |
@@ -655,6 +686,50 @@ This option is the only one supported by {cj}.
 |===
 
 
+=== Alias Properties
+Some properties, such as <<endpoint>> `dir`, are an alias for another property (here: `direction`).
+
+* If both aliases and the original property are stated, alias values are ignored. See exceptions below.
+And a parser warning is emitted if the values differ.
+
+.Exceptions
+* Arrays: When one is a single-value and the other is an array, the single value is **pre**pended to the array. The resulting merged array is used. If both state arrays, the arrays are merged. First lexicographically sorted aliases, then the original property.
+
+.Single and Multi-Value Aliases
+[cols="a,a"]
+|===
+|
+.{ecj} Graph Input
+[source,json]
+----
+{
+  "id": "graph-1",
+  "nodes": [
+    { "id": "node-123" },
+    { "id": "node-456" }
+  ],
+  "node": "node-789"
+}
+----
+
+|.{cj} Interpretation
+[source,json]
+----
+{
+  "id": "graph-1",
+  "nodes": [
+    { "id": "node-789" },
+    { "id": "node-123" },
+    { "id": "node-456" }
+  ]
+}
+----
+|===
+
+- If multiple aliases are defined, but no original property, the lexicographically first such alias is used.
+And a parser warning is emitted if the values differ.
+
+- Endpoints: _All_ endpoint properties generate endpoints of an edge. So `source` neither is not overwritten by `endpoints`.
 
 
 [appendix]
@@ -662,36 +737,53 @@ This option is the only one supported by {cj}.
 
 The following property names are used by {cj} in certain places.
 
-[cols="2m,4d"]
+[cols="2m,6d"]
 |===
 | Property | Usage
 
-| baseUri | <<graph>> base URI for RDF interpretation
-| directed | <<edge>> directedness
-| direction | <<endpoint>> direction (in/out/undir)
+| baseUri | CJ: <<graph>> base URI for RDF interpretation
+| description | Suggested for <<node>>, <<edge>>, <<graph>>, <<port>>, <<endpoint>> description. Will end up in `data`.
+|dir| Alias for <<edge>> `direction`
+.3+| directed | <<edge>> directedness
+  | <<graph>>  `directed`: `true` -> `edgeDefault`: `directed`
+    | <<graph>>  `directed`: `false` -> `edgeDefault`: `undirected`
+
+| direction | CJ: <<endpoint>> direction (in/out/undir)
 | edgeDefault | <<graph>> default edge direction
-| edges | <<graph>> edges
-| endpoints | <<edge>> endpoints
-| graphs | <<node>> nested graphs, <<edge>> nested graphs
-| id | <<node>> id, <<edge>> id, <<graph>> id, <<port>> id
-| label | <<node>>, <<edge>>, <<graph>>, <<port>>
-| language | <<label>>
-| node | <<endpoint>> referenced node id
-| nodes | <<graph>> nodes
-| port | <<endpoint>> referenced port id
-| ports | <<node>> ports
+| edge | Alias for <<edge>> `edges`
+| edges | CJ: <<graph>> edges
+| endpoint | Alias for <<edge>> `endpoints`
+| endpoints | CJ: <<edge>> endpoints
+| from | Alias for <<edge>> `source`
+| graph | Alias for <<graph>> `graphs`
+| graphs | CJ: <<node>> nested graphs, <<edge>> nested graphs
+| hyperedges | Alias for <<edge>> `edges`. For _JSON Graph_ compatibility.
+| id | CJ: <<node>> id, <<edge>> id, <<graph>> id, <<port>> id
+| label | CJ: <<node>>, <<edge>>, <<graph>>, <<port>>
+| language | CJ: <<label>>
+.2+| node | CJ: <<endpoint>> referenced node id
+  | Alias for <<graph>> `nodes`
+| nodes | CJ: <<graph>> nodes
+| port | CJ: <<endpoint>> referenced port id
+| ports | CJ: <<node>> ports
 | source | <<edge>>
+| sources | Alias for <<edge>> `source`
 | target | <<edge>>
-| type | <<edge>>, <<endpoint>>
-| typeNode | <<edge>>, <<endpoint>>
-| typeUri | <<edge>>, <<endpoint>>
-| value | <<label>>
-
+| targets | Alias for <<edge>> `target`
+| to | Alias for <<edge>> `target`
+| type | CJ: <<edge>>, <<endpoint>>
+| typeNode | CJ: <<edge>>, <<endpoint>>
+| typeUri | CJ: <<edge>>, <<endpoint>>
+| value | CJ: <<label>>
 |===
 
-The following property names are merely suggested.
+.Values for xref:spec-cj.adoc#endpoint[Endpoint] `direction`
+[options="header",cols="^4m,^4m,4",width=60%]
+|===
+| Value | Is Aliases For | Usage in
+|incoming|in| xref:spec-cj.adoc#endpoint[Endpoint]
+|none|undir| xref:spec-cj.adoc#endpoint[Endpoint]
+|outgoing|out| xref:spec-cj.adoc#endpoint[Endpoint]
+|undirected|undir| xref:spec-cj.adoc#endpoint[Endpoint]
+|===
 
-[cols="2m,4d"]
-|===
-| description | Suggested for <<node>>, <<edge>>, <<graph>>, <<port>>, <<endpoint>> description
-|===

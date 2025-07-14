@@ -1,12 +1,12 @@
-* xref:ROOT:spec.adoc[]
-* Extensions
-** xref:aliases.adoc[Aliases]
+* xref:ROOT:spec.adoc[Specifications]
+** xref:ROOT:spec-cj.adoc[Connected JSON (CJ)]
+** xref:ROOT:spec-ecj.adoc[Extended CJ]
+* https://github.com/Calpano/connected-json/issues[Issues on GitHub]
 * Migrating from
 ** xref:migrating-from-json-graph.adoc[JSON Graph Format]
 ** xref:migrating-from-graphml.adoc[GraphML]
 * xref:rdf-interpretation.adoc[Interpretation as RDF]
-* https://github.com/Calpano/connected-json/issues[Issues on GitHub]
 * Notes
-** xref:extensible-json.adoc[Extensible JSON]
-*** xref:compact-schema.adoc[A compact schema for extensible JSON?]
-** xref:streaming-json.adoc[Streaming JSON]
+** xref:notes/extensible-json.adoc[Extensible JSON]
+//** xref:notes/compact-schema.adoc[A compact schema for extensible JSON?]
+** xref:notes/streaming-json.adoc[Streaming JSON]

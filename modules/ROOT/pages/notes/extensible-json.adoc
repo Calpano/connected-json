@@ -1,8 +1,8 @@
 = Extensible JSON
 :prevent-blank-line:
-include::../partials/_header.adoc[]
+include::../../partials/_header.adoc[]
 
-This document is not formally part of the {cj} specification.
+This document is not formally part of the {cj} or {ecj} specification.
 
 == Problem Statement
 http://json.org[JSON] defines in the core language only how to represent a single tree of data using arrays and objects for nesting and primitive types for leaves.

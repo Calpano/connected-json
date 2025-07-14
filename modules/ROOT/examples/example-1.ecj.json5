@@ -1,5 +1,6 @@
 {
   "nodes": [
+    // can use a number for an ID
     { "id":  12 },
     { "id":  "a",
       "ports": [ "a1",
@@ -12,11 +13,12 @@
     { "id":  "e" },
     { "id":  "f" }
   ],
-  // Extensible. Only some keys reserved for CJ.
+  // Have any JSON just here, not `data` wrapping
   "hello": ["My data","can be","here"],
   "edges": [
+    // source & target shortcuts
     { "source": 12, "target": "a"},
-    // in canonical form, can have ports:
+    // normal CJ endpoints
     { "endpoints":  [
       { "direction": "in", "node": 12, "port":  "a2-1"},
       { "direction": "out", "node": "a"}

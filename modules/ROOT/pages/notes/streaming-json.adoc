@@ -1,11 +1,11 @@
 = Notes on Streaming JSON
 :prevent-blank-line:
-include::../partials/_header.adoc[]
+include::../../partials/_header.adoc[]
 
-This document is not formally part of the {cj} specification.
+This document is not formThis document is not formally part of the {cj} or {ecj} specification.
 
 It describes the rationale for the _Streaming_ recommendations within the {cj} spec.
-The concepts in this document apply to all JSON formats, that might get streamed.
+The concepts in this document apply to all JSON formats that might get streamed.
 
 .Recommendations for streaming JSON.
 Streaming JSON is easy with formats like https://jsonlines.org/[JSON Lines] (aka _JsonL_). However, formats like {cj} have a more complex nesting structure. With some care, such formats can also be streamed.

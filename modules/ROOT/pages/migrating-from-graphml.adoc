@@ -6,6 +6,7 @@ A GraphML `<data>` section is migrated by attaching the values directly to the s
 
 Here is a GraphML keys declaration section using all possible data types:
 
+.GraphML
 [source,xml]
 ----
 <graph>
@@ -19,6 +20,7 @@ Here is a GraphML keys declaration section using all possible data types:
 ----
 and here is the section where we assign a node 'n1' all this data:
 
+.GraphML
 [source,xml]
 ----
 <node id="n1">
@@ -31,18 +33,22 @@ and here is the section where we assign a node 'n1' all this data:
 </node>
 ----
 this is expressed in {cj} as
+
+.Connected JSON
 [source,json]
 ----
 {
     "nodes": [
       {
         "id": "n1",
-        "myString": "Hello",
-        "myInt": 42,
-        "myDouble": 3.14,
-        "myBoolean": true,
-        "myLong": 12345678901234567890,
-        "myFloat": 1.23
+        "data": {
+            "myString": "Hello",
+            "myInt": 42,
+            "myDouble": 3.14,
+            "myBoolean": true,
+            "myLong": 12345678901234567890,
+            "myFloat": 1.23
+        }
       }
     ]
 }
@@ -51,7 +57,7 @@ and the `<keys>` section is omitted. JSON carries enough type information in its
 
 NOTE: Some tools extend GraphML by using XML namespaces and embedding, e.g., layout or style data within a graphml file. Such data should be expressed as JSON in any properties, not defined by this spec.
 
-TIP: GraphML has _description_ element in several places. These simply map to a _description_ property in {cj}.
+TIP: GraphML has _description_ element in several places. These simply map to a `data/description` property in {cj}.
 
 .Ideas On Mapping CJ to GraphML
 ****

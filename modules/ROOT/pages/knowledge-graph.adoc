@@ -15,7 +15,7 @@ CJ already defines a network of nodes, including node and link labels. Furthermo
 
 [[node]]
 === Node
-We extend the xref:spec.adoc#node[CJ node] with these properties:
+We extend the xref:spec-cj.adoc#node[CJ node] with these properties in its `data` object:
 
 [options="header",cols="^3m,^2,8"]
 |===
@@ -23,7 +23,7 @@ We extend the xref:spec.adoc#node[CJ node] with these properties:
 
 | content
 | `string` or `object` | Content. Optional.
-If an `object` is used, it is for xref:spec.adoc#label[multilingual text]. For binary content, use `content` as a `string` with BASE64 encoded value.
+If an `object` is used, it is for xref:spec-cj.adoc#label[multilingual text]. For binary content, use `content` as a `string` with BASE64 encoded value.
 
 | contentType
 | `string` | MIME type of the text format, e.g. `text/plain`, `text/html`, `text/markdown`, or `text/asciidoc`. A contentType of, e.g., `application/octet-stream` or `image/png` can be used for binary data.
@@ -39,7 +39,7 @@ The following example demonstrates how to model a knowledge graph using Connecte
 .Knowledge Graph Example
 [source,json]
 ----
-include::example$knowledge-graph-example.con.json5[]
+include::example$knowledge-graph-example.cj.json[]
 ----
 
 This example shows:

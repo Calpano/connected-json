@@ -59,12 +59,10 @@ h| A h| B h| Subject h| Object
 
 
 == Examples
-.Example: Bi-Edge with One Type
+.Example: Bi-Edge with One Type in {cj}
 [source,json]
 ----
 {
-  "source": "n12",
-  "target": "n17",
   "endpoints": [
     { "node": "n12",
       "direction": "in"  },
@@ -81,7 +79,7 @@ interpretation as RDF (Turtle Syntax)
 ex:n12 ex:worksAt ex:n17 .
 ----
 
-NOTE: The following example uses `source`/`target` and `endpoints`, which is allowed but uncommon. The endpoints stated using `source`/`target` have no endpoint types defined.
+NOTE: The following {ecj} example uses `source`/`target` and `endpoints`, which is allowed but uncommon. The endpoints stated using `source`/`target` have no endpoint types defined.
 
 .Example: Hyper-Edge
 [source,json]

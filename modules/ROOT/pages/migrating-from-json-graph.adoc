@@ -2,9 +2,12 @@
 :prevent-blank-line:
 include::../partials/_header.adoc[]
 
+@@TODO include in {ecj} spec
+
 https://github.com/jsongraph/json-graph-specification[JSON Graph v2] is the best JSON Graph format before this one. It lacks some features from GraphML (i.e., mixed direction hyperedges).
 
-JSON Graph should be parsed using the xref:aliases.adoc[] extension. The `metadata` property is allowed at any structural element (see xref:spec.adoc#data[Data]).
+JSON Graph should be parsed using {ecj}.
+The `metadata` property is allowed at any structural element (see xref:spec-cj.adoc#data[Data]).
 
 Required changes to put existing JSON Graph data in {cj}:
 
