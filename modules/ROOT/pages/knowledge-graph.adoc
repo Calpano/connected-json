@@ -23,7 +23,7 @@ We extend the xref:spec.adoc#node[CJ node] with these properties:
 
 | content
 | `string` or `object` | Content. Optional.
-If an `object` is used, it is for xref:spec.adoc#multilingual-labels[multilingual text]. For binary content, use `content` as a `string` with BASE64 encoded value.
+If an `object` is used, it is for xref:spec.adoc#label[multilingual text]. For binary content, use `content` as a `string` with BASE64 encoded value.
 
 | contentType
 | `string` | MIME type of the text format, e.g. `text/plain`, `text/html`, `text/markdown`, or `text/asciidoc`. A contentType of, e.g., `application/octet-stream` or `image/png` can be used for binary data.

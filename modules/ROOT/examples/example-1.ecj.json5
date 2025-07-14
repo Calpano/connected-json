@@ -13,7 +13,7 @@
     { "id":  "f" }
   ],
   // Extensible. Only some keys reserved for CJ.
-  "hello": ["My data","can be","everywhere"],
+  "hello": ["My data","can be","here"],
   "edges": [
     { "source": 12, "target": "a"},
     // in canonical form, can have ports:

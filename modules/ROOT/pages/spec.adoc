@@ -9,13 +9,15 @@ A JSON Format for exchanging connected data (graphs, networks).
 
 image::cj-logo.png[width=100%,align="center"]
 
-Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
+Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**.
+Remember it as the connected version of https://json.org[JSON.org]
+
 [cols="2h,12",width=80%]
 |===
-| Version | 4.0.0
-| Date | 2025-07-10
+| Version | 5.0.0
+| Date | 2025-07-14
 | Editor | Dr. Max Völkel
-| Status | Draft
+| Status | Last Call Working Drafts (Until 2025-09-31)
 | Spec | https://calpano.github.io/connected-json/spec.html[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
@@ -29,56 +31,44 @@ toc::[]
 We want a JSON-based document for exchanging graphs.
 Graphs contain nodes and edges.
 Undirected edges, directed edges (DAG), typed edges (Hello RDF), weighted edges (Hello flow algorithms) and even hyper-edges (Hello biologists).
-We want sub-graphs (Hello diagrams).
+We want subgraphs (Hello diagrams).
 We want data attached to nodes and edges (Hello knowledge graphs).
 
 === Goals and Motivation
-Yes, https://xkcd.com/927/[we know], but the last effort (https://jsongraphformat.info/[JSON Graph Format]) is over 10 years old and GraphML over 20 years by now. And some GraphML features (mixed hyper-edges, nested graphs) are not supported in JGF.
-In fact, none of the existing JSON graph interchange formats has the same depth of features as the over 20-year-old XML-based http://graphml.graphdrawing.org/[GraphML].
+Yes, https://xkcd.com/927/[we know], but the last effort (JGF, the https://jsongraphformat.info/[JSON Graph Format]) is over 10 years old and GraphML over 20 years by now.
+And some GraphML features (mixed hyper-edges, nested graphs) are not supported in JGF.
+In fact, none of the existing JSON graph interchange formats has the same breadth of features as the over 20-year-old XML-based http://graphml.graphdrawing.org/[GraphML].
 
 _{cj}_ aims to be a full GraphML replacement.
 It supports the semantic capabilities and data representation found in GraphML, while adopting a more flexible, schema-less JSON approach.
-Different from GraphML, this format prioritizes flexible data attachment directly onto elements, alongside the core graph structure:
-Any element can carry arbitrary additional properties.
 
-This format is intended as the universal interchange format for all kinds of graphs, which can be as complex, as what GraphML allows -- and that is a lot.
-Together with the xref:aliases.adoc[] extension, it is even a super-set of JSON Graph Format.
+This format is intended as a universal interchange format for all kinds of graphs, which can be as complex as what GraphML allows -- and that is a lot.
 
-.Non-goals
-- Massive-scale (> 1 GB) graphs requiring streaming (its a JSON format after all)
-- Highly dynamic graphs, which change more often than every minute. Those require a delta protocol, not a file format.
+For ways how to interpret similar, much more flexible formats unambiguously as {cj}, look into link:extended-cj.adoc[Extended CJ].
+
+To support streaming for large graphs (> 1 GB) and to make textual diffing {cj} files easy, we also define **<<canonical_connected_json>>**.
+
+// .Non-goals
+// - Highly dynamic graphs, which change more often than every minute. Those require a delta protocol, not a file format.
 
 
 === Example
 .Connected JSON Example File
 [source,json]
 ----
-include::example$example-1.con.json5[]
+include::example$example-1.cj.json[]
 ----
 
-=== About
-- File extension: `.con.json` or `.con.json5` (https://json5.org/[JSON5] allows comments).
-- MIME type: `application/connected+json`
-- MIME type: `application/connected+json5` (allowing comments)
-
-See https://datatracker.ietf.org/doc/html/rfc6839[RFC 6839] for `+json`.
-
-.Feedback/Contribute
-GitHub: https://github.com/Calpano/connected-json[]
-
-.License
-https://opensource.org/license/mit[MIT] License +
-Copyright 2025 Max Völkel
-
-
-=== Version History and Change Log
-The versions use link:https://semver.org/[semantic versioning].
+=== Change Log
+2025-07-14: Version 5.0.0::
+* Split spec into two parts: {cj} for writing strict files, where there is always only one option to encode a structure and {ecj} which is much more liberal and flexible in parsing.
+* Moved `edgeDefault` to {ecj}.
 
 2025-07-10: Version 4.0.0::
 * Simplified graph nesting. Now a CJ document _is_ a graph (or array of graphs).
 
 2025-07-03: Version 3.0.0::
-* Renamed all properties with a dash to camelCase form. This makes is pragmatically easy to represent properties in programming languages as variable names or enum values.
+* Renamed all properties with a dash to camelCase form. This makes it pragmatically more easy to represent properties in programming languages as variable names or enum values.
 ** `type-node` -> `typeNode`
 ** `type-uri` -> `typeUri`
 * Renamed some lowercase properties to camelCase form. This avoids IDEs and editors complaining about spelling.
@@ -86,183 +76,294 @@ The versions use link:https://semver.org/[semantic versioning].
 ** `edgedefault` -> `edgeDefault`
 
 2025-06-26: Version 2.0.0::
-* <<multilingual-labels>> switched from a JSON object with language tags as property keys to a more canonical array-form.
+* Multilingual labels (<<label>>): switched from a JSON object with language tags as property keys to a more canonical array-form.
 
 2025-04-30: Version 1.1.0::
-* Clearer <<ids>> section
+* Clearer <<id>> section
 * Allow graph inside edge (consistent with diagram an GraphML)
 
 2025-04-08: Version 1.0.0:: Initial public release
 
 
-== Structure Overview
+== Overview
+Suggested MIME type: `application/connected+json` (not yet registered).
 
-NOTE: Every element can carry arbitrary JSON properties besides the ones interpreted by this spec.
+We define two main formats:
 
-.Structure for Bi-Edges, without Ports, without Nested Graphs
+{cj} (CJ):: A strict format for writing. There is always only one option to encode a structure.
+{ecj} (ECJ):: A relaxed superset of CJ for reading. It offers many aliases, shortcuts and variants to interpret JSON as as graph.
+
+
+These main formats are refined based on allowing comments (https://json5.org/[JSON5] adds comments to JSON) and canonicalization:
+
+.The Connected JSON Formats
+[%header,cols="3h,1d,3d,1d"]
+|===
+| Name | Default file extension | Purpose | Allows JSON Comments
+
+4+| Defined in {cj} (this specification)
+| Connected JSON | `.cj` or `.cj.json` | Written by tools | no
+| Connected JSON | `.cj.json5` | Written by tools, commented by humans.  | yes
+| Canonical Connected JSON | `.cj` | Optimized for streaming and diffing | no
+
+4+| Defined in link:extended-cj.adoc[Extended CJ]
+| Extended Connected JSON | `.json` | Read diverse JSON files | no
+| Extended Connected JSON | `.json5` | Read diverse JSON files | yes
+|===
+
+All formats restrict JSON to the I-JSON subset defined in https://www.rfc-editor.org/rfc/rfc7493.html[RFC 7493]: No duplicate object properties, UTF-8 encoding, no unpaired UTF-8 surrogate pairs.
+
+
+
+=== Conceptual Model
+Before diving into JSON structures, it is  helpful to describe how {cj} sees a graph.
+In general, {cj} supports hyperedges with mixed directionality, like GraphML.
+It also keeps the node and optional port model from GraphML.
+It supports two ways of <<graph-nesting>>.
+{cj} allows (multilingual) labels on many elements.
+
+- A document contains graphs.
+- A graph contains nodes and edges.
+- A node may optionally consist of a hierarchical tree of ports.
+- An edge refers to nodes via endpoints.
+- An endpoint defines for each edge-node connection, what the direction is (is the node going into the edge, out of the edge or has no direction)
+- An endpoint can connect to a node and optionally fine-tune to a port within that node.
+
+.Conceptual Model
 [plantuml]
 ....
 hide empty members
 hide circle
 
-interface Document
+interface Document {
+    Meta?
+    Data?
+}
 interface Graph {
-    id?
-    label?
+    Id?
+    Label?
+    Data?
 }
 interface Node {
-    id
-    label?
+    Id?
+    Label?
+    Data?
 }
-interface Edge {
-    id?
-    label?
-    type?
-    directed?
-}
-
-Document *--> "n" Graph
-Graph *--> "n" Node
-Graph *--> "n" Edge
-Edge --> "2" Node : source,\ntarget
-Graph ..> "0..1" Node :  contains
-Graph ..> "0..1" Edge : contains
-....
-
-A bi-edge has always exactly 2 endpoints.
-A generic hyperedge can have 0 to n endpoints.
-
-.Full Structure
-[plantuml]
-....
-hide empty members
-hide circle
-
-interface Document
-interface Graph {
-    id?
-    label?
-}
-interface Node {
-    id
-    label?
-}
-interface Edge {
-    id?
-    label?
-    type?
-}
-interface Endpoint
 interface Port {
-    portId
-    label?
+    Id?
+    Label?
+    Data?
+}
+interface Edge {
+    Id?
+    Label?
+    Data?
+}
+interface Endpoint {
+    Type?
+    Data?
 }
 enum Direction {
-    incoming
-    outgoing
-    undirected
+    Incoming
+    Outgoing
+    Undirected
 }
-
-Document *--> "n" Graph
+Document *-> "n" Graph
+Graph *--> "n" Graph
+Graph *-> "n" Edge
 Graph *--> "n" Node
-Graph *--> "n" Edge
-Node *--> "n" Port
+
+Node *-> "n" Port
 Port *--> "n" Port
-Endpoint *--> Direction
-Node <-- Endpoint
-Port <.. Endpoint
-Edge --> "n" Endpoint
-Graph ..> "0..1" Node :  contains
-Graph ..> "0..1" Edge : contains
-Node ..> "0..n" Graph : nested\ngraphs
-Edge ..> "0..n" Graph : nested\ngraphs
+Edge *-> Endpoint
+Endpoint --> Node
+Endpoint ..> Port : optional
+Node *--> "n" Graph
+Edge *--> "n" Graph
+Endpoint *-> Direction
 ....
 
+
+
 == Elements
-.Polymorphism
-{cj} uses a JSON polymorphism, i.e. under the property `label` is either a JSON string or a JSON object (multilingual). Many properties allow for either a JSON object or a JSON array with multiple such objects.
 
 [[document]]
 === Document
 Every file is a _document_.
-The structure of a document is the same as the value of the `graph` property inside a <<graph>>: Either a _graph_ object or an array of such objects.
+
+.Property Table in Canonical / Streaming Order
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|connectedJson| `object`(<<meta-document>>) | Optional. <<meta-document>>
+
+|baseUri|`string`(URI)| Optional. Is used to fine-tune the xref:rdf-interpretation.adoc[].
+
+|data| `any` | Optional. Allows user-attached <<data>>.
+
+|graphs| `array`(<<graph>> `[]`)| Default: Empty. See also <<graph-nesting>>.
+
+|===
 
 
+[[meta-document]]
+==== Document Metadata
+A graph may state a `connectedJson` property, which is only interpreted at root level.
+
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|versionDate
+| `string` | Optional. Version date identifier to define the {cj} version used by the document. E.g. `2025-07-10`
+
+|versionNumber
+| `string` | Optional. Version number identifier to define the {cj} version used by the document. E.g. `4.0.0`
+
+|===
+
+
+
+[[id]]
+=== ID
+IDs (identifiers) are used in {cj} to address <<node,nodes>>, <<port,ports>>, <<edge,edges>> and <<graph,graphs>>.
+Ids are strings.
+
+If an array contains elements with an `id` (this mechanism is used in `graphs`, `nodes`, `edges`) then the ids must be unique within that array.
+If an `id` is for multiple entries in the array, later entries are interpreted as JSON Merge Patch on the earlier ones and a parse warning MUST be emitted.
+The merging is done as defined in https://datatracker.ietf.org/doc/html/rfc7386[RFC 7386].
+
+[[idScope]]
+==== Identifier Scope
+The identifiers for different elements have different scopes in which they must be unique.
+
+[cols="2,6"]
+|===
+h| Scope h| Comment
+| <<document>> | <<node>> ids, <<edge>> ids and  <<graph>> ids are unique per document.
+Nested graphs do not provide a new id scope.
+| <<node>> | <<port>> ids are only unique within their corresponding <<node>>.
+|===
+
+
+
+[[label]]
+=== Label
+Labels are used in {cj} to label <<node,nodes>>, <<port,ports>>, <<edge,edges>> and <<graph,graphs>>.
+In {cj}, labels are multilingual: They consist of an object with an optional `language` property and a required `value` property.
+The label itself is an array of such label entries.
+
+[source,json5]
+----
+[
+    {"language":"de", "value": "Hallo, Welt"},
+    {"language":"en", "value": "Hello, World"},
+    // a value without language information is also allowed
+    { "value": "Hi"}
+]
+----
+
+If a language tag (including the empty one) is used multiple times, later entries are interpreted as JSON Merge Patch on the earlier ones and a parse warning MUST be emitted.
+The merging is done as defined in https://datatracker.ietf.org/doc/html/rfc7386[RFC 7386].
+
+.Property Table in Canonical / Streaming Order
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|language|`string` | Optional. Language tag. Usually according to https://www.w3.org/International/articles/language-tags/[BCP 47].
+
+|value|`string` | Required. The label value.
+
+|data| `any` | Optional. Allows user-attached <<data>>.
+
+|===
+
+Multilingual labels in {cj} have been modelled similar to labels in https://www.w3.org/TR/json-ld/#language-indexing[JSON-LD 1.1, expanded form].
 
 
 [[graph]]
 === Graph
 Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 
+.Property Table in Canonical / Streaming Order
 [options="header",cols="^3m,^2,8"]
 |===
 | Property | Type | Description
 
-|baseUri|`string`(URI)| Optional. Is used to fine-tune the xref:rdf-interpretation.adoc[].
+// Streaming Header
 
-|edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`.
+|id| `string` | Optional. Unique identifier for the graph within a <<document>>. See <<id>>.
 
-|edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges). Default: Empty.
+|meta| `object`(<<meta-graph>>) | Optional. <<meta-graph>>
 
-|graph| `object`(<<graph>>) __or__ `array`(<<graph>> `[]`)
-| Object for 1 graph, array for 1 to n graphs. Default: Empty.
-See <<graph-nesting>>.
+|label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
-|id
-| `string` __or__ `number` (integer) | Optional. Unique identifier for the graph within a <<document>>. See <<ids>>.
+// Streaming Data
 
-|label
-| `string` | Label (name) of the graph. Optional.
+|data| `any` | Optional. Allows user-attached <<data>>.
 
 |nodes| `array`(<<node>> `[]`) | 0 to n nodes. Default: Empty.
 
+|edges| `array`(<<edge>> `[]`) | 0 to n edges (which may be bi- oder hyperedges). Default: Empty.
+
+|graphs| `array`(<<graph>> `[]`)| Default: Empty.
+See <<graph-nesting>>.
+
 |===
 
-TIP: The pattern of allowing both (a) a single object or (b) an array of a-objects, is used throughout the spec.
-
-NOTE: As an alternative (alias) to `graph` also the plural `graphs` is allowed. A list of allowed alias names is given in the xref:aliases.adoc[] extension.
 
 
-.Streaming
-For streaming processing, the property order MUST be: (`baseUri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
+[[meta-graph]]
+==== Graph Metadata
+To make handling large graphs easier, a graph may include a `meta` header. This head is most useful at the root graph, before any nodes and edges are stated.
+
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|canonical| `boolean` | Optional. If `true`, this graph is considered a canonical representation of the graph.
+I.e., all properties are ordered according to the property tables.
+Default: `false`.
+
+|nodeCountTotal
+| `number`(integer) | Optional. Total count of nodes in this graph including all nodes in subgraphs.
+
+|edgeCountTotal
+| `number`(integer) | Optional. Total count of edges in this graph including all edges in subgraphs.
+
+|nodeCountInGraph
+| `number`(integer) | Optional. The count of nodes directly in this graph excluding nodes in subgraphs.
+
+|edgeCountInGraph
+| `number`(integer) | Optional. The count of edges directly in this graph excluding edges in subgraphs.
+
+|===
 
 
-[[graph-nesting]]
-=== Graph Nesting
-Graphs can be nested within other graphs.
-This allows for hierarchical, recursive graph structures.
-The nesting depth is not limited.
-Also, nodes and edges can contain nested graphs.
-
-There is a slight difference in interpretation:
-
-Graph in graph:: For data management, partitions nodes and edges into sub-sets. The id and label of the sub-graphs are mapped to id and label of an implied compound nodes.
-
-Graph in node/edge:: Here the sub-graph is merely used as a container entity. Its id and label do not contribute to the resulting model.
 
 
 [[node]]
 === Node
 A node is an atom in the graph.
 
+.Property Table in Canonical / Streaming Order
 [options="header",cols="^3m,^2,8"]
 |===
 | Property | Type | Description
 
-|graph
-| `object` (<<Graph>>) or `array` (<<graph>> `[]`) |Optional. Graph(s) nested within the node. This turns the node into a compound node. The edges in a sub-graph can refer to nodes higher up in the tree of graphs. See <<graph-nesting>>.
+|id| `string` | Required. Unique identifier for the node. See <<id>>.
 
-|id
-| `string` __or__ `number` (integer) | Required. Unique identifier for the node. See <<ids>>.
+|label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
-|label
-| `string` or `object` | Label (name) of the node. Optional. The `object` is used for <<multilingual-labels>>.
+|ports| `array`(<<port>> `[]`) | Optional array of <<port>>.
 
-| ports| `array`(<<port>> `[]`) | Optional array of ports.
+|data| `any` | Optional. Allows user-attached <<data>>.
+
+|graphs| `array` (<<graph>> `[]`) | Optional. Graph(s) nested within the node. This turns the node into a compound node. The edges in a subgraph can refer to nodes higher up in the tree of graphs. See <<graph-nesting>>.
+
 |===
-
-.Streaming
-For streaming processing, the property order MUST be: (`id`, `label`), `ports`, `graph`. The order within the brace group is not relevant.
 
 
 [[port]]
@@ -270,19 +371,20 @@ For streaming processing, the property order MUST be: (`id`, `label`), `ports`, 
 A port is always a part of a <<node>>. A layout should place a port on the border of the node widget. Ports may be hierarchically nested.
 This is used in practice graphical editors, where a port is a connection point on a node.
 
+.Property Table in Canonical / Streaming Order
 [options="header",cols="^3m,^2,8"]
 |===
 | Property | Type | Description
 
-|id| `string` | Required. ID unique within the <<node>>. All ports, even nested one, share the same ID space per node. See also <<ids>>.
+|id| `string` | Required. ID unique within the <<node>>. All ports, even nested one, share the same ID space per node. See also <<id>>.
 
-|label|`string`| Optional.
+|label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
 |ports| `array`(<<port>> `[]`) | Optional array of sub-ports. Recursively.
-|===
 
-.Streaming
-For streaming processing, the property order MUST be: (`id`, `label`), `ports`. The order within the brace group is not relevant.
+|data| `any` | Optional. Allows user-attached <<data>>.
+
+|===
 
 
 [[edge]]
@@ -314,345 +416,288 @@ Edge *--> "n" Endpoint
 
 NOTE: Edges have been modelled like GraphML. They have been extended with a `type`-property, to make it easier to express RDF.
 
+.Property Table in Canonical / Streaming Order
 [options="header",cols="^2m,^5,8"]
 |===
 | Property | Type | Description
 
-|graph
-| `object` (<<Graph>>) or `array` (<<graph>> `[]`) |Optional. Graph(s) nested within the edge. This turns the edge into a compound edge. The edges in a sub-graph can refer to nodes higher up in the tree of graphs.
+|id|`string` |Optional id. Unique per graph. See <<id>>.
 
-|id|`string` or `number` (integer) |Optional id. Unique per graph. See <<ids>>.
-
-|label
-| `string` or `object` | Label for the edge. Optional. The `object` is used for <<multilingual-labels>>.
-
-|source
-.2+| `string` or `number` (integer) or `array`(node id `[]`). +
- +
-Either a single node id +
-or an `array` of node ids.
-| Shortcut syntax: All created endpoints are interpreted as _incoming_. I.e. `"source": "n17"` has the same effect as +
-`"endpoint": { "node":"n17", "direction": "in" }`. Ports are only available in endpoints syntax.
-
-| target
-//| Either a single node id or +
-//an `array` of node ids.
-| Shortcut syntax: All created endpoints are interpreted as _outgoing_.
-I.e. +
-`"target": "n12"` has the same effect as +
-`"endpoint": { "node":"n12", "direction": "out" }`.
-Ports are only available in endpoints syntax.
-
-|type
-|`string`
-.3+|Optional. The kind of edge. See <<endpoint>> and xref:rdf-interpretation.adoc[].
-
-|typeUri
-|`string`
-//|Optional. The kind of edge. See <<endpoint>>.
-
-|typeNode
-|`string` or `number` (integer)
-//|Optional. The kind of edge. See <<endpoint>>.
+|label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
 
-|directed
-| `boolean`
-|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgeDefault` on <<graph>>.
+|type|`string`
+.3+|Optional. The kind of edge.
+Any type define here applies to all endpoints.
+Endpoints override this type, if set.
+See <<endpoint>> and xref:rdf-interpretation.adoc[].
+|typeUri|`string`
+|typeNode|`string`
 
-|endpoints
-| `array` (<<endpoint>> `[]`)
+|endpoints| `array` (<<endpoint>> `[]`)| The endpoints define the nodes to which this edge is attached.
 
-| This is the canonical way to express edges.
+|data| `any` | Optional. Allows user-attached <<data>>.
+
+|graphs| `array` (<<graph>> `[]`) | Optional. Graph(s) nested within the edge. This turns the edge into a compound edge. The edges in a sub-graph can refer to edges higher up in the tree of graphs. See <<graph-nesting>>.
+
 |===
 
-
-.Streaming
-For streaming processing, the property order MUST be: (`id`, `label`, `type`, `typeUri`, `typeNode`, `directed`), (`source`, `target`, `endpoints`), `graph`. The order within each brace group is not relevant.
+Precedence between `type`, `typeUri` and `typeNode` is the same as defined for <<endpoint>>.
 
 
-.Example: Directed Bi-Edge
-****
-[source,json]
-----
-{
-  "source": "n12",
-  "target": "n17"
-}
-----
-is the same as
-
-[source,json]
-----
-{
-  "endpoints": [
-    { "node": "n12",  "direction": "in"  },
-    { "node": "n17",  "direction": "out" }
-  ]
-}
-----
-or
-[source,json]
-----
-{
-  "source": "n12",
-  "target": "n17",
-  "directed": true
-}
-----
-
-****
-
-.Example: Undirected Bi-Edge
-****
-[source,json]
-----
-{
-  "source": "n12",
-  "target": "n17",
-  "directed": false
-}
-----
-is the same as
-
-[source,json]
-----
-{
-  "endpoints": [
-    { "node": "n12",  "direction": "undir" },
-    { "node": "n17",  "direction": "undir" }
-  ]
-}
-----
-****
 
 
-.Example: Directed Hyper-Edge
-****
-[source,json]
-----
-{
-  "source": ["n12","n3","n123"],
-  "target": ["n17","n100"]
-}
-----
-is the same as
-
-[source,json]
-----
-{
-  "endpoints": [
-    { "node": "n12",  "direction": "in"  },
-    { "node": "n3",   "direction": "in"  },
-    { "node": "n123", "direction": "in"  },
-    { "node": "n17",  "direction": "out" },
-    { "node": "n100", "direction": "out" }
-  ]
-}
-----
-****
-
-.Example: Undirected Hyper-Edge
-****
-[source,json]
-----
-{
-  "source": ["n12","n3","n123"],
-  "target": ["n17","n100"],
-  "directed": false
-}
-----
-is the same as
-
-[source,json]
-----
-{
-  "endpoints": [
-    { "node": "n12",  "direction": "undir" },
-    { "node": "n3",   "direction": "undir" },
-    { "node": "n123", "direction": "undir" },
-    { "node": "n17",  "direction": "undir" },
-    { "node": "n100", "direction": "undir" }
-  ]
-}
-----
-****
 
 
 [[endpoint]]
 === Edge Endpoint
+
+.Property Table in Canonical / Streaming Order
 [options="header",cols="^3m,^2,8"]
 |===
 | Property | Type | Description
 
+|node| `string` | Required. __Node id__.
+A `string` containing a single __nodeId__ (<<id>>). This is the id of the <<node>> to which this endpoint is attached.
+
+|port| `string` | Optional. __Port id__.
+Port ids are only unique per node/port. See <<id>>. If a port is referenced, it defines in addition to the node where precisely the endpoint is attached. NOTE: All port ids are unique within a node (see <<idScope>>), so that a single string can address all ports directly.
+
 |direction
 | One of: `in`, `out` or `undir` | Optional.
-Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`. See also: <<graph>> `edgeDefault`.
-
-|node| `string` or `number` (integer) | Required. __Node id__.
-Either a `string` containing a single __nodeId__
-or a `number` (auto-converted to string) containing a single node id.
-
-|port| `string` or `number` (integer) | Optional. __Port id__.
-Port ids are only unique per node/port. See <<ids>>.
+Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`.
 
 |type| `string`| Optional. The type of relation from the edge entity to the endpoint node.
 If a URI is given, us `typeUri` instead. This property states the relation as a string, e.g. `works at` or `knows`. Default is `related`.
 
 |typeUri| `string`(URI) | Optional. The type of relation from the edge entity to the endpoint node.
 
-|typeNode| `string` or `number` (integer) | Uses a node in the graph (referenced by node id, see <<ids>>) to define the kind of relation. This is the same strategy that RDF uses: property URIs are RDF resources themselves, which can have a label and other edges attached to them.
+|typeNode| `string` | Uses a node in the graph (referenced by node id, see <<id>>) to define the kind of relation. +
+This is the same strategy that RDF uses:
+property URIs are themselves RDF resources, which can have a label and other edges attached to them.
+
+|data| `any` | Optional. Allows user-attached <<data>>.
 |===
 
-.Type
-- Either `type`, `typeUri`, or `typeNode` MAY be used. If several are given, `typeUri` has precedence, then `typeNode`, then `type`. See also xref:rdf-interpretation.adoc[].
+.Edge Type (`type`, `typeUri`, `typeNode`)
+- Either `type`, `typeUri`, or `typeNode` MAY be used. If several are given, `typeUri` has precedence, then `typeNode`, then `type`.
+Usually, the type of edge is defined at the <<edge>> level.
+However, in hyper-edges more complex relations (tuples) may need to be expressed.
+In this case, endpoint-level typing can be used. +
+If both edge and endpoint types are given, the endpoint type has precedence.
+See also xref:rdf-interpretation.adoc[].
+
+
+
+
+
+
+
 
 
 
 == Features
+
+
+
+
 [#data]
 === Data
-The structural elements are:
+User-defined data can be attached to <<document>>, <<graph>>, <<node>>, <<edge>>, <<port>> and <<endpoint>> via the `data` property.The value may be any JSON value.
+An array can be used, together with the OCIF extension mechanism.
 
-- Document
-- Graph
-- Node
-- Port
-- Edge
-- Endpoint
-
-Each of these can have arbitrary additional JSON properties, besides the ones defined in this spec.
-All additional properties are interpreted as data attached to the structural element.
-Nested JSON is allowed.
-
-This can be used for style data (e.g. `line-color`) or domain data (e.g. `population`, `sales volume`).
-
-[[multilingual-labels]]
-=== Multi-Lingual Labels
-A standard label `"label": "Hello, World"` has no language information.
-Multilingual labels in {cj} are stated like https://www.w3.org/TR/json-ld/#language-indexing[JSON-LD 1.1] (expanded)footnote:[The compacted form looks much cleaner, but prevents attaching metadata. Multi-language labels are rarely hand-authored and the array form is self-explanatory.] does it:
-[source,json]
-----
-{
-  "label": [
-    {"language":"de", "value": "Hallo, Welt"},
-    {"language":"en", "value": "Hello, World"}
-  ]
-}
-----
-
-[[nested-graphs]]
-=== Nested Graphs
-In {cj}, like in GraphML, nodes and edges can contain sub-graphs.
-Recursively.
-A sub-graph is similar to a top-level graph. However, (1) all nodes in a top-level graph, including all nodes nested within sub-graphs, recursively, share the same ID space. The same for edges. (2) Any edges, including those nested in nested graphs, may link to any node within the top-level graph, including those within nested graphs.
+This can be used, for example, to attach style data (e.g. `line-color`), domain data (e.g. `population`, `sales volume`), provennance data (e.g. `source`), or any other relevant information.
 
 
-[[edge-direction]]
-=== Edge Direction
-The edge direction can be stated in three locations:
 
-. Using the `edgeDefault` property on the whole <<graph>>.
-* If set to `directed`, the edge and endpoint level definitions are evaluated. This is the default.
-* If set to `undirected`, edge and endpoint definitions are __ignored__.
-. Using a `directed` property on an <<edge>>.
-* If set to `true`, the endpoint level definitions are evaluated. This is the default.
-* If set to `false`, all endpoints are treated as `undir`, even if they state otherwise.
-. Using the `direction` property on each <<endpoint>>.
-* The value set here is used if both __graph__ `{"edgeDefault": "directed" }` and and __edge__ `"directed":true}` are set (which are also the default values for both properties).
 
-.Examples
-|===
-3+h| Input h| Result
-| __graph__ `edgeDefault`   | __edge__ `directed` | __endpoint__ `direction`  | Result Endpoint Direction
 
-4+d| Graph directed, Edge directed -> Endpoint Direction
-| -- / `directed`  | -- / `true`  | -- / `undir` | `undir`
-| -- / `directed`  | -- / `true`  | `in` | `in`
-| -- / `directed`  | -- / `true`  | `out` | `out`
 
-4+d| Graph directed, Edge undirected -> undirected
-| -- / `directed` | `false` | -- / `undir` | `undir`
-| -- / `directed` | `false` | `in` | `undir`
-| -- / `directed` | `false` | `out` | `undir`
 
-4+d| Graph undirected -> undirected
-| `undirected` | -- / `true` | -- / `undir` | `undir`
-| `undirected` | -- / `true` | `in` | `undir`
-| `undirected` | -- / `true` | `out` | `undir`
-| `undirected` | `false` | -- / `undir` | `undir`
-| `undirected` | `false` | `in` | `undir`
-| `undirected` | `false` | `out` | `undir`
-|===
+[[graph-nesting]]
+=== Graph Nesting
+Graphs can be nested within other graphs (<<graph-in-graph>>) or within other nodes and edges (<<graphs-in-nodes-and-edges>>; a GraphML mechanism).
+The nesting depth is not limited.
+This allows for hierarchical, recursive graph structures.
 
-[[ids]]
-=== Identifiers
-For <<graph>>, <<node>>, and <<edge>> ids, the allowed JSON type is `string` or `number`(integer).
-A number is converted at import time to a string.
-E.g., the number `3` is convered to the string id `"3"`.
-Floating-point numbers or negative numbers are not allowed.
+All nodes in a top-level graph, including all nodes nested within subgraphs, recursively, share the same ID space.
+The same is true for edges.
+Any edges, including those nested in nested graphs, may link to any node within the top-level graph, including those within nested graphs.
 
-If no identifier is given, an implementation can create any unique identifiers. Common strategies are:
-
-- use the array position as id, or
-- use an auto-incremented integer, or
-- use a UUID.
-
-[[idScope]]
-==== Identifier Scope
-The identifiers for different elements have different scopes in which they must be unique.
-
-[cols="2,6"]
-|===
-h| Scope h| Comment
-| <<document>> | A document contains a set of top-level graphs. <<graph>> ids, if used, MUST be unique per document.
-| Top-Level <<graph>> | <<node>> ids, <<edge>> ids and nested <<graph>> ids are unique per top-level graph. Nested graphs do not provide a new id scope.
-| <<node>> | <<port>> ids are only unique within their corresponding <<node>>.
-|===
-
-[[streaming]]
-==== Streaming Assumptions
-{cj} has some assumptions about the size and shape of the input data.
-These assumptions make it easier to build performant parsers.
-
-Most entities are expected to be resonably small, so that they can be completely processed in memory. Some entities may occur a large number of times.
-As indicated by the _Streaming_ notes below some property tables, the order of properties is also important. In general, small properties must come before the large properties (due to values with many child elements).
-Here is the conceptual grammar:
-
-.Elements with Large Number of Children
+.Graph Nesting
 [plantuml]
 ....
 hide empty members
 hide circle
 
 interface Document
-interface Graph
-interface Node
-interface Edge
+interface Graph {
+    Id?
+    Label?
+}
+interface Node {
+}
+interface Edge {
+}
+
 Document *--> "n" Graph
-Graph *-> "n" Node
+Graph *--> "n" Graph : nested\ngraphs
+Graph *--> "n" Node
 Graph *--> "n" Edge
-Node *--> "n" Graph
-Edge *--> "n" Graph
+Graph ..> "0..1" Node :  contains
+Graph ..> "0..1" Edge : contains
+Node ..> "0..n" Graph : nested\ngraphs
+Edge ..> "0..n" Graph : nested\ngraphs
 ....
 
-Note that attached JSON data is especially excluded from being overly large.
+[[graph-in-graph]]
+==== Graphs In Graphs
+// Used for data management.
+It partitions nodes and edges into subsets.
+All nodes and edges are treated as one large graph.
+Any edge can refer to any node.
+The subgraph is merely used as a container entity.
+Its id and label do not contribute to the resulting nodes and edges model.
+
+[[graphs-in-nodes-and-edges]]
+==== Graphs In Nodes And Edges
+In {cj}, like in GraphML, nodes and edges can also contain subgraphs.
+Those subgraphs are additionally turning their container node into a _compound node_ (or their container edge into a _compound edge_).
+
+In a compound node, the <<id>> and <<label>> of the subgraph(s) are mapped to id and label of synthetic, implied compound node(s).
+Typically, this is represented in an application by adding synthetic 'contains'-edges from container element to contained elements.
+
+
+
+
+
+[#streaming]
+=== Streaming
+JSON in general is not ideal for streaming data, see also link:streaming-json.adoc[Notes on Streaming JSON].
+However, {ccj} is designed to be streamed efficiently.
+The property tables are sorted for optimized stream processing.
+This order is in contrast to https://www.rfc-editor.org/rfc/rfc8785[RFC 8785] (JSON Canonicalization Scheme, JCS), which defines strict lexicographical order.
+{ccj} requires the order of properties to be followed exactly.
+
+.Rationale
+Most entities are expected to be reasonably small, so that they can be completely processed in memory.
+Some entities may occur a large number of times.
+In general, small properties must come before the large properties (due to values with many child elements).
+
+// .Elements with Large Number of Children
+// [plantuml]
+// ....
+// hide empty members
+// hide circle
+//
+// interface Document
+// interface Graph
+// interface Node
+// interface Edge
+// Document *--> "n" Graph
+// Graph *-> "n" Node
+// Graph *--> "n" Edge
+// Node *--> "n" Graph
+// Edge *--> "n" Graph
+// ....
+
+
+
+[#canonical_connected_json]
+== Canonical Connected JSON
+{ccj} defines a strict order on property keys, compatible with <<streaming>>, so that files can also be used in textual diffs.
+{ccj} is a strict subset of {cj}.
+It forbids using comments (no JSON5).
+{ccj} mandates a strict formatting, described below.
+
+Properties in which the value is an empty array should be omitted.
+
+=== Formatting
+There is no RFC defining JSON pretty-printing.
+So here is a small spec.
+We need a compact, defined, format, so that different CJ tools create the exact same syntax.
+Also, we need line-breaks to make textual diffing work.
+{ccj} compliant tools MUST adhere to these rules:
+
+Indentation::
+* Each level of nesting within an object or array must be indented.
+* The indentation must consist of two spaces. Tabs must not be used.
+Line-Breaks::
+* The opening brace `{` of an object and the opening bracket `[` of an array must be placed on the same line as their corresponding key or at the beginning of the document.
+* Each key-value pair in an object and each element in an array must be placed on its own line.
+* The closing brace `}` or bracket `]` must be placed on a new line, aligned with the indentation level of its opening brace or bracket.
+Spacing::
+* There must be one space after the colon `:` in a key-value pair.
+* No other whitespace (except the indentation spaces and line-breaks) is permitted.
+Commas::
+* A comma `,` must follow every element in an array and every key-value pair in an object, except for the last one.
+
+.Example
+[source,json]
+----
+{
+  "connectedJson": {
+    "versionDate": "2025-07-14",
+    "versionNumber": "5.0.0"
+  },
+  "baseUri": "http://example.org/",
+  "data": {
+    "author": "Max Völkel"
+  },
+  "graphs": [
+    {
+      "id": "graph1",
+      "meta": {
+        "canonical": true
+      },
+      "label": {
+        "language": "en",
+         "value": "Example Graph"
+      },
+      "nodes": [
+        {
+          "id": "node1",
+          "label": {
+            "language": "en",
+            "value": "Node 1"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge1",
+          "label": {
+            "language": "en",
+            "value": "Edge from Node 1 to Node 2"
+          },
+          "endpoints": [
+            {
+              "node": "node1",
+              "direction": "out"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+----
+
 
 
 
 [appendix]
 == JSON Schema
-The following schema has no support for aliases.
 
 .Download
-- xref:attachment$connected-json-schema.json[JSON Schema]
-- xref:attachment$connected-schema-with-aliases.json[JSON Schema with Aliases]
+- xref:attachment$cj-schema.json[JSON Schema]
+- xref:attachment$cj-schema.json5[JSON Schema a JSON5, with comments]
 
-.JSON Schema for {cj}
-[source,json]
-----
-include::../attachments/connected-json-schema.json[]
-----
+// .JSON Schema for {cj}
+// [source,json]
+// ----
+// include::../attachments/connected-json-schema.json[]
+// ----
 
 [appendix]
 == Reserved Property Names
@@ -662,29 +707,26 @@ The following property names are used by {cj} in certain places.
 [cols="2m,4d"]
 |===
 | Property | Usage
+
 | baseUri | <<graph>> base URI for RDF interpretation
-| directed | <<edge>> directedness
+| canonical | <<graph>>
+| data | Reserved property for user data. {cj} does not interpret this property for any element.
 | direction | <<endpoint>> direction (in/out/undir)
-| edgeDefault | <<graph>> default edge direction
 | edges | <<graph>> edges
 | endpoints | <<edge>> endpoints
-| graph | <<node>> nested graph, <<edge>> nested graph
-| id | <<node>> id, <<edge>> id, <<graph>> id
-| label | <<node>>, <<edge>>, <<graph>>
+| graphs | <<node>> nested graphs, <<edge>> nested graphs
+| id | <<node>> id, <<edge>> id, <<graph>> id, <<port>> id
+| label | <<node>>, <<edge>>, <<graph>>, <<port>>
+| language | <<label>>
+| meta | <<graph>>
 | node | <<endpoint>> referenced node id
 | nodes | <<graph>> nodes
 | port | <<endpoint>> referenced port id
 | ports | <<node>> ports
-| source | <<edge>>
-| target | <<edge>>
 | type | <<edge>>, <<endpoint>>
 | typeNode | <<edge>>, <<endpoint>>
 | typeUri | <<edge>>, <<endpoint>>
+| value | <<label>>
+
 |===
 
-The following property names are merely suggested.
-
-[cols="2m,4d"]
-|===
-| description | Suggested for <<node>>, <<edge>>, <<graph>>, <<port>>, <<endpoint>> description
-|===

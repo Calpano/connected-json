@@ -1,0 +1,696 @@
+= Extended Connected JSON Specification
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+:reftext: Spec
+:toc: macro
+:toclevels: 4
+
+A specification how to interpret various JSON constructs as
+link:spec.adoc[{cj}].
+
+image::cj-logo.png[width=100%,align="center"]
+
+Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
+[cols="2h,12",width=80%]
+|===
+| Version | 4.x.x (http://semver.org[SemVer]) **UNDER CONSTRUCTION**
+| Date | 2025-07-14
+| Editor | Dr. Max Völkel
+| Status | Draft -- **UNDER CONSTRUCTION**
+| Spec | https://calpano.github.io/connected-json/extended-cj.html[this site]
+| Git | https://github.com/Calpano/connected-json.git[]
+|===
+
+toc::[]
+
+== Introduction
+Real-world JSON comes in many dialects and variants.
+This document defines how to interpret various JSON structures unambiguously as a graph of nodes and edges. For clarity, the interpretation as {cj} is given. Many formats in the wild are already quite close to {cj} anyway.
+
+Together with the xref:aliases.adoc[] extension, it is even a superset of JSON Graph Format.
+
+Different from GraphML, this format prioritizes flexible data attachment directly onto elements, alongside the core graph structure:
+**Any element can carry arbitrary additional properties**.
+
+As this format is meant for relaxed parsing of various CJ-like JSON dialects, it does not define rules for stream processing. See link:streaming-json.adoc[] and especially link:spec.adoc#streaming[Streaming in CJ] for details.
+
+== Structure Overview
+.Simplified Structure for Bi-Edges, without Ports, without Nested Graphs
+[plantuml]
+....
+hide empty members
+hide circle
+
+interface Document
+interface Graph {
+    id?
+    label?
+}
+interface Node {
+    id
+    label?
+}
+interface Edge {
+    id?
+    label?
+    type?
+    directed?
+}
+
+Document *--> "n" Graph
+Graph *--> "n" Node
+Graph *--> "n" Edge
+Edge --> "2" Node : source,\ntarget
+Graph ..> "0..1" Node :  contains
+Graph ..> "0..1" Edge : contains
+....
+
+A bi-edge has always exactly 2 endpoints.
+A generic hyperedge can have 0 to n endpoints.
+
+
+== Conventions
+Where a property is just copied over from the {cj} specification with the exact same semantics, we use the symbolic `->` to indicate this, followed by a link to the documentation in the Cj spec, prefixed with `CJ:`.
+
+=== Polymorphism
+{ccj} uses a kind of 'JSON polymorphism': A property allows multiple JSON types to be used. Interpretation of that JSON value depends on the used type.
+
+- For example, the property `label` is in {ecj} either a JSON string or a JSON object (multilingual). Interpretation is defined per property.
+- Some properties allow for either a JSON object or a JSON array with multiple such objects.
+Example: `graph` and `graphs`. Their interpretation is described below.
+
+[#object_vs_array]
+==== Object vs. Array
+The interpretation of an object-vs-array property is by creating an implicit array with one member, the stated object.
+
+[cols="a,a"]
+|===
+|
+.{ecj} Input
+[source,json]
+----
+{
+  "graphs": {
+    /* graph A */
+  }
+}
+----
+
+|.{cj} Interpretation
+[source,json]
+----
+{
+  "graphs": [
+    {
+      /* graph A */
+    }
+  ]
+}
+----
+|===
+
+== Elements
+NOTE: Every element can carry arbitrary JSON properties besides the ones interpreted by this spec. The interplay with the explicit `data` property is described in <<data>>.
+
+
+[[document]]
+=== Document
+For the default document structure, see {cj-document}.
+
+.Root Object as Graph Object
+In {ecj}, a graph can be stated at the root level, without using a `graph` property.
+Using a `graph` property is additionally allowed, effectively creating subgraphs.
+If any _Graph-level_ attributes are used, a synthetic root graph is created.
+The graph-level properties are applied to this synthetic root graph.
+If subgraphs are created, those properties inherit downwards as usual.
+
+.Property Table
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|baseUri|`string`(URI)| Optional. Document-level. Documented in {cj-document}.
+
+|connectedJson| `object` | Optional. Document-level. Documented in link:spec.adoc#meta-document[CJ Document Metadata].
+
+|compoundNode| `boolean` | Optional. Graph-level. Documented in {cj-graph}.
+
+|edgeDefault| `string` | Optional. Graph-level. Documented in {cj-graph}.
+
+|edges| `array`(<<edge>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
+
+|graph| `object`(<<graph>>)
+.4+| Optional. Document-level. Can also be used inside graphs. Documented in {cj-document} and {cj-graph}.
+
+|graphs| `object`(<<graph>>)
+
+|graph| `array`(<<graph>> `[]`)
+
+|graphs| `array`(<<graph>> `[]`)
+
+|id| `string`
+.2+| Optional. Graph-level. Documented in {cj-graph}. A number is converted to string to be used as ID.
+|id| `number` (integer)
+
+|label| `object` | Optional. Graph-level. Documented in {cj-graph}.
+|label| `string` | Optional. Graph-level. See <<label>>.
+
+|meta| `object`(link:spec.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec.adoc#meta-graph[Graph Metadata]].
+
+|nodes| `array`(<<node>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
+
+|===
+
+.Streaming
+For streaming processing, the property order MUST be: (`baseUri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
+
+
+`graph` and `graphs`::
+If both are used, a single array is constructed with the entry of `graph` first, followed by the entries of `graphs`. The whole array is then considered the value of `graphs`.
+
+TIP: The pattern of allowing both (a) a single object or (b) an array of a-objects, is used throughout the spec.
+
+NOTE: A list of allowed alias names is given in the xref:aliases.adoc[] extension.
+@@TODO inline here
+
+[[id]]
+=== ID
+In all places where a {cj-id} can be used, {ecj} also allows to state the ID using a JSON `number`.
+This number is converted at parse-time into the corresponding string.
+E.g., the number `3` is convered to the string id `"3"`.
+Floating-point numbers or negative numbers are not allowed.
+
+
+[[label]]
+=== Label
+.Shorthand
+A label definition like `"label": "Hello, World"` has no language information.
+It is interpreted as `{ "value": x }` with _x_ being the string value.
+In other words: A {cj-label} without language.
+
+[[graph]]
+=== Graph
+For the default graph structure, see link:spec.adoc#graph[Graph] in {cj}.
+{ecj} adds some aliases.
+
+.Property Table
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+// Streaming Header
+|baseUri|`string`(URI)| -> {cj-graph} `baseUri`.
+
+|connectedJson| `object` | -> {cj-graph} `connectedJson`
+
+|compoundNode| `boolean` |
+Optional.
+Default: `false`. +
+If `true`, and a graph directly contains another graph, the subgraph is interpreted as a __synthetic compound node__, using the graph id and label.
+The handling of compound nodes is application-specific.
+See <<compound_node>> below.
+This is similar to link:https://graphviz.org/Gallery/directed/cluster.html[DOT syntax] using `cluster` as a prefix for subgraphs. Having a cluster prefix is like `"compoundNode": true`.
+
+|edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges in this graph and all subgraphs. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`. See <<edge-direction>>.
+
+|id| `string` | -> {cj-node}.`id`: a {cj-id}
+|id|`number` (integer) | Is converted to string and interpreted as a {cj-id}.
+
+|label| `object` | -> {cj-node}.`label`: A {cj-label}.
+|label| `string` | Optional. See <<label>>.
+
+
+|meta| `object`(link:spec.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec.adoc#meta-graph[Graph Metadata]].
+
+
+// Streaming Data
+|nodes| `array`(<<node>> `[]`) | 0 to n nodes. Default: Empty.
+
+|edges| `array`(<<edge>> `[]`) | -> {cj-graph}.`edges`: An array of {cj-edge}
+
+|graph| `object`(<<graph>>) | `graph` allowed as alias for `graphs`
+|graph| `array`(<<graph>> `[]`) | `graph` allowed as alias for `graphs`
+|graphs| `object`(<<graph>>) | Polymorph object and array
+|graphs| `array`(<<graph>> `[]`) | -> {cj-graph}.`graphs`: An array of {cj-graph}s.
+
+|===
+
+[#compound_node]
+==== Compound Node
+The graph-level `compoundNode` property can be used on a graph (or document) to force processing as if the subgraph had been nested in a node.
+
+.Inheritance
+The `compoundNode` setting is inherited downwards from parent to child graphs, for all kinds of nesting. Child graphs may overwrite a parent setting. In this case, the redefined value is inherited downwards.
+
+
+[cols="a,a"]
+|===
+|
+.{ecj} Input
+[source,json]
+----
+{
+  "graphs": [{
+    "id": "graph-A",
+    "nodes": [{ "id": "node-A1" }],
+    "graphs": [{
+        "compoundNode": true,
+        "id": "graph-B",
+        "label": {
+          "en": "Graph B"
+        },
+        "nodes": [
+          { "id": "node-B1" },
+          { "id": "node-B2" }
+        ]
+    }]
+  }]
+}
+----
+
+|.{cj} Interpretation
+[source,json]
+----
+{
+  "graphs": [{
+    "id": "graph-A",
+    "nodes": [
+      { "id": "node-A1" },
+      { "id": "graph-B",
+        "graphs": [{
+            "compoundNode": true,
+            "id": "graph-B",
+            "label": {
+              "en": "Graph B"
+            },
+            "nodes": [
+              { "id": "node-B1" },
+              { "id": "node-B2" }
+            ]
+        }]
+      }
+    ]
+  }]
+}
+----
+
+
+|===
+
+
+
+
+
+[[node]]
+=== Node
+For the default node structure, see link:spec.adoc#node[Node] in {cj}.
+
+.Property Table
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|id| `string` | -> {cj-node}.`id`: a {cj-id}
+|id|`number` (integer) | Is converted to string and interpreted as a {cj-id}.
+
+|label|`string`| Interpreted as `{ "value": x }` with _x_ being the string value. In other words: A {cj-label} without language.
+
+| ports| `array`(<<port>> `[]`) | -> {cj-node}.`ports`: an array of {cj-port}
+
+|graphs| `array` (<<Graph>>[]) | -> {cj-node} `graphs`: An array of {cj-graph}s.
+|graph| `object`(<<graph>>) | `graph` allowed as alias for `graphs`
+|graph| `array`(<<graph>> `[]`) | `graph` allowed as alias for `graphs`
+|graphs| `object`(<<graph>>) | Polymorph object and array
+
+|===
+
+
+[[port]]
+=== Port
+For the default port structure, see link:spec.adoc#port[Port] in {cj}.
+
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|id| `string` | -> {cj-port}.`id`: a {cj-id}
+|id| `number` | See <<id>>
+
+|label| `object` | -> {cj-port}.`label`: A {cj-label}.
+|label| `string` | See <<label>>
+
+|ports| `array`(<<port>> `[]`) | -> {cj-port}.`ports`: An array of {cj-port}s.
+|===
+
+
+
+
+[[edge]]
+=== Edge
+For the default edge structure, see link:spec.adoc#edge[Edge] in {cj}.
+
+[options="header",cols="^2m,^5,8"]
+|===
+| Property | Type | Description
+
+|id| `string` | -> {cj-edge}.`id`: a {cj-id}
+|id| `number` | See <<id>>
+
+|directed| `boolean`
+|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgeDefault` on <<graph>> and <<edge-direction>>.
+
+|label| `object` | -> {cj-edge}.`label`: A {cj-label}.
+|label| `string` | See <<label>>
+
+|graphs| `array` (<<Graph>>[]) | -> {cj-edge} `graphs`: An array of {cj-graph}s.
+|graph| `object`(<<graph>>) | `graph` allowed as alias for `graphs`
+|graph| `array`(<<graph>> `[]`) | `graph` allowed as alias for `graphs`
+|graphs| `object`(<<graph>>) | Polymorph object and array
+
+
+|source
+.2+| `string` or `number` (integer) or `array`(node id `[]`). +
++
+Either a single node id +
+or an `array` of node ids.
+| Shortcut syntax: All created endpoints are interpreted as _incoming_. I.e. `"source": "n17"` has the same effect as +
+`"endpoint": { "node":"n17", "direction": "in" }`. Ports are only available in endpoints syntax.
+
+| target
+//| Either a single node id or +
+//an `array` of node ids.
+| Shortcut syntax: All created endpoints are interpreted as _outgoing_.
+I.e. +
+`"target": "n12"` has the same effect as +
+`"endpoint": { "node":"n12", "direction": "out" }`.
+Ports are only available in endpoints syntax.
+
+|type|`string`|-> {cj-edge}.`type`
+|typeUri|`string`|-> {cj-edge}.`typeUri`
+|typeNode|`string`| -> {cj-edge}.`typeNode`
+|typeNode|`number` (integer)|Interpreted as the <<id>> of the <<node>> that defines the type of edge. Like {cj-edge}.`typeNode`.
+
+
+|directed
+| `boolean`
+|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgeDefault` on <<graph>>.
+
+|endpoints
+| `array` (<<endpoint>> `[]`)
+
+| This is the canonical way to express edges.
+|===
+
+
+.Example: Directed Bi-Edge
+****
+[source,json]
+----
+{
+  "source": "n12",
+  "target": "n17"
+}
+----
+is the same as
+
+[source,json]
+----
+{
+  "endpoints": [
+    { "node": "n12",  "direction": "in"  },
+    { "node": "n17",  "direction": "out" }
+  ]
+}
+----
+or
+[source,json]
+----
+{
+  "source": "n12",
+  "target": "n17",
+  "directed": true
+}
+----
+
+****
+
+.Example: Undirected Bi-Edge
+****
+[source,json]
+----
+{
+  "source": "n12",
+  "target": "n17",
+  "directed": false
+}
+----
+is the same as
+
+[source,json]
+----
+{
+  "endpoints": [
+    { "node": "n12",  "direction": "undir" },
+    { "node": "n17",  "direction": "undir" }
+  ]
+}
+----
+****
+
+
+.Example: Directed Hyper-Edge
+****
+[source,json]
+----
+{
+  "source": ["n12","n3","n123"],
+  "target": ["n17","n100"]
+}
+----
+is the same as
+
+[source,json]
+----
+{
+  "endpoints": [
+    { "node": "n12",  "direction": "in"  },
+    { "node": "n3",   "direction": "in"  },
+    { "node": "n123", "direction": "in"  },
+    { "node": "n17",  "direction": "out" },
+    { "node": "n100", "direction": "out" }
+  ]
+}
+----
+****
+
+.Example: Undirected Hyper-Edge
+****
+[source,json]
+----
+{
+  "source": ["n12","n3","n123"],
+  "target": ["n17","n100"],
+  "directed": false
+}
+----
+is the same as
+
+[source,json]
+----
+{
+  "endpoints": [
+    { "node": "n12",  "direction": "undir" },
+    { "node": "n3",   "direction": "undir" },
+    { "node": "n123", "direction": "undir" },
+    { "node": "n17",  "direction": "undir" },
+    { "node": "n100", "direction": "undir" }
+  ]
+}
+----
+****
+
+[[endpoint]]
+=== Edge Endpoint
+For the default endpoint structure, see link:spec.adoc#endpoint[Endpoint] in {cj}.
+
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|direction|`string`| -> {cj-endpoint}.`direction`. See also <<edge-direction>>.
+
+|node| `string` | -> {cj-endpoint}.`node`: A {cj-id}
+|node| `number` (integer) | Required property. Value may be `string` (see above) or `number` (auto-converted to string). Defines the endpoint node: The node to which the endpoint of the edge is attached.
+
+|port| `string` | -> {cj-endpoint}.`port`
+|port| `number` (integer) | Optional. Interpreted as a {cj-id} to refer to a <<port>>.
+
+|type| `string`| -> {cj-endpoint}.`type`
+|typeUri| `string`(URI) | -> {cj-endpoint}.`typeUri`
+|typeNode| `string`| -> {cj-endpoint}.`typeNode`
+|typeNode|`number` (integer) | Auto-converted to a string and interpreted like {cj-endpoint}.`typeNode`.
+
+|===
+
+== Features
+
+
+=== Data
+In {cj}, extended data can only be attached to elements via the `data` property.
+
+In {ecj}, data handling is much more relaxed:
+Each element defined in this spec can have arbitrary additional JSON properties -- except those defined in this spec.
+All additional properties are interpreted as data attached to the structural element.
+Nested JSON is allowed.
+
+Any other properties are copied over as user-data.
+Values within the `data` property remain.
+
+[cols="a,a"]
+|===
+|
+.{ecj} Input
+[source,json]
+----
+{
+  "id": "node123",
+  "label": "Apple",
+  "model": "MacBook Pro",
+  "data": {
+    "insurance": false
+  }
+}
+----
+
+|.{cj} Interpretation
+[source,json]
+----
+{
+  "id": "node123",
+  "label": "Apple",
+  "data": {
+    "model": "MacBook Pro",
+    "insurance": false
+  }
+}
+----
+|===
+
+
+
+Edge case: If an object, e.g., a node, is using _both_ a direct JSON property and the same time the same property key within the `data` object, but with a different value, then both properties are 'shifted outwards'.
+
+[cols="a,a"]
+|===
+|
+.{ecj} Input
+[source,json]
+----
+{
+  "id": "node123",
+  "label": "Apple",
+  "model": "MacBook Pro",
+  "insurance": true,
+  "data": {
+    "insurance": false
+  }
+}
+----
+
+|.{cj} Interpretation
+[source,json]
+----
+{
+  "id": "node123",
+  "label": "Apple",
+  "data": {
+    "model": "MacBook Pro",
+    "insurance": true,
+    "data": {
+      "insurance": false
+    }
+  }
+}
+----
+|===
+
+
+[[edge-direction]]
+=== Edge Direction
+The edge direction can be stated in three locations: (1) on the graph, (2) on each edge, and (3) on each endpoint. The precedence is as follows: endpoint > edge > graph.
+
+. The <<graph>> property `edgeDefault` can be used to set a default direction for all edges in the graph.
+The two valid values are `directed` and `undirected` (the default).
+This has only an effect if neither the edge nor and endpoint override this setting.
+
+. An <<edge>> may state  a `directed` property.
+If set to `true`, the edge is directed. If set to `false`, the edge is undirected.
+How to interpret a hyperedge with, e.g. 4 endpoints as _directed_? In {ecj}, the first endpoint is interpreted as `in` and all others as `out`.
+
+. Each <<endpoint>> can use a `direction` property to explicitly state its direction.
+The valid values are `in`, `out`, and `undir` (undirected).
+This option is the only one supported by {cj}.
+
+.Examples
+|===
+3+h| Input h| Result
+
+| __endpoint__ `direction` | __edge__ `directed` | __graph__ `edgeDefault`  | Result Endpoint Direction
+
+| `in`          2.3+| _Ignored, endpoint is stated_                         | `in`
+| `out`                                | `out`
+| `undir`                              | `undir`
+
+.2+| --
+   | `true`
+       .2+| _Ignored, edge is stated_        | `in`/`out` (see above)
+   | `false`                                 | `undir`
+
+
+.2+| --
+.2+| --
+              | `directed`        | `in`/`out` (see above)
+              | `undirected`      | `undir`
+|===
+
+
+
+
+[appendix]
+== Reserved Property Names
+
+The following property names are used by {cj} in certain places.
+
+[cols="2m,4d"]
+|===
+| Property | Usage
+
+| baseUri | <<graph>> base URI for RDF interpretation
+| directed | <<edge>> directedness
+| direction | <<endpoint>> direction (in/out/undir)
+| edgeDefault | <<graph>> default edge direction
+| edges | <<graph>> edges
+| endpoints | <<edge>> endpoints
+| graphs | <<node>> nested graphs, <<edge>> nested graphs
+| id | <<node>> id, <<edge>> id, <<graph>> id, <<port>> id
+| label | <<node>>, <<edge>>, <<graph>>, <<port>>
+| language | <<label>>
+| node | <<endpoint>> referenced node id
+| nodes | <<graph>> nodes
+| port | <<endpoint>> referenced port id
+| ports | <<node>> ports
+| source | <<edge>>
+| target | <<edge>>
+| type | <<edge>>, <<endpoint>>
+| typeNode | <<edge>>, <<endpoint>>
+| typeUri | <<edge>>, <<endpoint>>
+| value | <<label>>
+
+|===
+
+The following property names are merely suggested.
+
+[cols="2m,4d"]
+|===
+| description | Suggested for <<node>>, <<edge>>, <<graph>>, <<port>>, <<endpoint>> description
+|===

@@ -1,0 +1,49 @@
+{
+  "connectedJson": {
+    "versionDate": "2025-07-14",
+    "versionNumber": "5.0.0"
+  },
+  "baseUri": "http://example.org/",
+  "graphs": [{
+    "nodes": [
+      { "id":  "12" },
+      { "id":  "a",
+        "ports": [
+          { "id": "a1"},
+          { "id": "a2",
+            "ports": [ "a2-1", "a2-2" ]
+          }]},
+      { "id":  "b", "data": {"foo": "bar"} },
+      { "id":  "c" },
+      { "id":  "d" },
+      { "id":  "e" },
+      { "id":  "f" }
+    ],
+    "edges": [
+      { "endpoints": [
+        { "direction": "in", "node":  "12"},
+        { "direction": "out", "node":  "a"}
+      ]},
+      { "endpoints":  [
+        { "direction": "in", "node": "12", "port":  "a2-1"},
+        { "direction": "out", "node": "a"}
+      ]},
+      { "endpoints":  [
+        { "direction": "in", "node": "12"},
+        { "direction": "in", "node": "a", "port": "a2-1" },
+        { "direction": "out", "node": "d"},
+        { "direction": "out", "node": "e"}
+      ]},
+      { "endpoints":  [
+        { "direction": "in", "node": "12"},
+        { "direction": "in", "node": "a"},
+        { "direction": "out", "node": "d"},
+        { "direction": "out", "node": "e"},
+        { "direction": "undir", "node": "f"}
+      ]}
+    ],
+    "data": {
+      "hello": ["My data","can be","here"]
+    }
+  }]
+}
