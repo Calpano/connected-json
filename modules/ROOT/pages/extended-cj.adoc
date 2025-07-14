@@ -23,6 +23,7 @@ Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.o
 
 toc::[]
 
+
 == Introduction
 Real-world JSON comes in many dialects and variants.
 This document defines how to interpret various JSON structures unambiguously as a graph of nodes and edges. For clarity, the interpretation as {cj} is given. Many formats in the wild are already quite close to {cj} anyway.

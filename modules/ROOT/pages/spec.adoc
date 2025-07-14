@@ -9,8 +9,9 @@ A JSON Format for exchanging connected data (graphs, networks).
 
 image::cj-logo.png[width=100%,align="center"]
 
-Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**.
-Remember it as the connected version of https://json.org[JSON.org]
+Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. +
+Remember it as the connected version of https://json.org[JSON.org] +
+See also: link:extended-cj.adoc[Extended Connected JSON].
 
 [cols="2h,12",width=80%]
 |===
@@ -21,6 +22,7 @@ Remember it as the connected version of https://json.org[JSON.org]
 | Spec | https://calpano.github.io/connected-json/spec.html[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
+
 
 toc::[]
 
@@ -91,7 +93,7 @@ Suggested MIME type: `application/connected+json` (not yet registered).
 We define two main formats:
 
 {cj} (CJ):: A strict format for writing. There is always only one option to encode a structure.
-{ecj} (ECJ):: A relaxed superset of CJ for reading. It offers many aliases, shortcuts and variants to interpret JSON as as graph.
+link:extended-cj.adoc[{ecj}] (ECJ):: A relaxed superset of CJ for reading. It offers many aliases, shortcuts and variants to interpret JSON as as graph. See link:extended-cj.adoc[Extended CJ Specification].
 
 
 These main formats are refined based on allowing comments (https://json5.org/[JSON5] adds comments to JSON) and canonicalization:
