@@ -712,6 +712,7 @@ The following property names are used by {cj} in certain places.
 | Property | Usage
 
 | baseUri | <<graph>> base URI for RDF interpretation
+| connectedJson |<<document>>
 | canonical | <<graph>>
 | data | Reserved property for user data. {cj} does not interpret this property for any element.
 | direction | <<endpoint>> direction (in/out/undir)
@@ -730,6 +731,8 @@ The following property names are used by {cj} in certain places.
 | typeNode | <<edge>>, <<endpoint>>
 | typeUri | <<edge>>, <<endpoint>>
 | value | <<label>>
+| versionDate | <<meta-document>>
+| versionNumber | <<meta-document>>
 
 |===
 
