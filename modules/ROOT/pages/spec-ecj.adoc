@@ -613,7 +613,11 @@ Edge case: If an object, e.g., a node, is using _both_ a direct JSON property an
   "model": "MacBook Pro",
   "insurance": true,
   "data": {
-    "insurance": false
+    "insurance": false,
+    "foo": "bar",
+    "data" : {
+      "insurance": 7
+    }
   }
 }
 ----
@@ -625,10 +629,14 @@ Edge case: If an object, e.g., a node, is using _both_ a direct JSON property an
   "id": "node123",
   "label": "Apple",
   "data": {
-    "model": "MacBook Pro",
+    "foo": "bar",
     "insurance": true,
+    "model": "MacBook Pro",
     "data": {
-      "insurance": false
+      "insurance": false,
+      "data": {
+        "insurance": 7
+      }
     }
   }
 }
