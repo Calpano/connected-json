@@ -18,13 +18,13 @@ Remember it as the connected version of https://json.org[JSON.org] +
 
 Choose your variant:
 
-link:spec-cj.adoc[{cj}]::
+xref:spec-cj.adoc[{cj}]::
 **A strict format, for writing**, where each construct has one way in JSON to express it.
 
 image::cj-logo.png[width=100%,align="center"]
 
 
-link:spec-ecj.adoc[{ecj}]::
+xref:spec-ecj.adoc[{ecj}]::
 **A relaxed format, for reading**, where each graph construct has multiple ways to express it in JSON. Defines how to interpret a range of JSON graph structures as {cj}.
 
 image::ecj-logo.png[width=100%,align="center"]

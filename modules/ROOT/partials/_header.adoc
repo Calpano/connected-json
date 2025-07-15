@@ -24,14 +24,14 @@ ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 :cj: Connected JSON
 :ccj: Canonical CJ
 :ecj: Extended CJ
-:cj-document: link:spec.adoc#document[CJ:Document]
-:cj-id: link:spec.adoc#id[CJ:ID]
-:cj-label: link:spec.adoc#label[CJ:Label]
-:cj-graph: link:spec.adoc#graph[CJ:Graph]
-:cj-node: link:spec.adoc#node[CJ:Node]
-:cj-edge: link:spec.adoc#edge[CJ:Edge]
-:cj-endpoint: link:spec.adoc#endpoint[CJ:Endpoint]
-:cj-port: link:spec.adoc#port[CJ:Port]
+:cj-document: xref:spec.adoc#document[CJ:Document]
+:cj-id: xref:spec.adoc#id[CJ:ID]
+:cj-label: xref:spec.adoc#label[CJ:Label]
+:cj-graph: xref:spec.adoc#graph[CJ:Graph]
+:cj-node: xref:spec.adoc#node[CJ:Node]
+:cj-edge: xref:spec.adoc#edge[CJ:Edge]
+:cj-endpoint: xref:spec.adoc#endpoint[CJ:Endpoint]
+:cj-port: xref:spec.adoc#port[CJ:Port]
 :graphml: GraphML
 :jgf: JSON Graph Format
 :leftright: ↔

@@ -6,7 +6,7 @@ include::../partials/_header.adoc[]
 :toclevels: 4
 
 A specification how to interpret various JSON constructs as
-link:spec-cj.adoc[{cj}].
+xref:spec-cj.adoc[{cj}].
 
 image::ecj-logo.png[width=100%,align="center"]
 
@@ -38,11 +38,11 @@ Different from GraphML and {cj}, this format allows flexible data attachment dir
 **Any element can carry arbitrary additional properties**.
 No intermediate `data` required.
 
-As this format is meant for relaxed parsing of various CJ-like JSON dialects, it does not define rules for stream processing. See link:notes/streaming-json.adoc[] and especially link:spec-cj.adoc#streaming[Streaming in CJ] for details.
+As this format is meant for relaxed parsing of various CJ-like JSON dialects, it does not define rules for stream processing. See xref:notes/streaming-json.adoc[] and especially xref:spec-cj.adoc#streaming[Streaming in CJ] for details.
 
 === Example
 First of all, all {cj} files are valid {ecj}.
-So look at link:spec-cj.adoc#example[the example in the CJ specification].
+So look at xref:spec-cj.adoc#example[the example in the CJ specification].
 
 Here is a simple example showcasing some additional features:
 
@@ -59,7 +59,7 @@ include::example$example-1.ecj.json5[]
 
 
 == Overview
-{ecj} uses the same link:spec-cj.adoc#conceptual_model[conceptual model] as {cj}, but it maps a broader range of JSON structures to the graph model.
+{ecj} uses the same xref:spec-cj.adoc#conceptual_model[conceptual model] as {cj}, but it maps a broader range of JSON structures to the graph model.
 It is a superset of {cj}.
 
 === Conventions
@@ -126,7 +126,7 @@ If subgraphs are created, those properties inherit downwards as usual.
 
 |baseUri|`string`(URI)| Optional. Document-level. Documented in {cj-document}.
 
-|connectedJson| `object` | Optional. Document-level. Documented in link:spec-cj.adoc#meta-document[CJ Document Metadata].
+|connectedJson| `object` | Optional. Document-level. Documented in xref:spec-cj.adoc#meta-document[CJ Document Metadata].
 
 |compoundNode| `boolean` | Optional. Graph-level. Documented in {cj-graph}.
 
@@ -150,14 +150,11 @@ If subgraphs are created, those properties inherit downwards as usual.
 |label| `object` | Optional. Graph-level. Documented in {cj-graph}.
 |label| `string` | Optional. Graph-level. See <<label>>.
 
-|meta| `object`(link:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec-cj.adoc#meta-graph[Graph Metadata]].
+|meta| `object`(xref:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. xref:spec-cj.adoc#meta-graph[Graph Metadata]].
 
 |nodes| `array`(<<node>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
 
 |===
-
-.Streaming
-For streaming processing, the property order MUST be: (`baseUri`, `id`, `label`), (`nodes`, `edges`). The order within each brace group is not relevant.
 
 
 `graph` and `graphs`::
@@ -185,7 +182,7 @@ In other words: A {cj-label} without language.
 
 [[graph]]
 === Graph
-For the default graph structure, see link:spec-cj.adoc#graph[Graph] in {cj}.
+For the default graph structure, see xref:spec-cj.adoc#graph[Graph] in {cj}.
 {ecj} adds some aliases.
 
 .Property Table
@@ -193,18 +190,13 @@ For the default graph structure, see link:spec-cj.adoc#graph[Graph] in {cj}.
 |===
 | Property | Type | Description
 
-// Streaming Header
-|baseUri|`string`(URI)| -> {cj-graph} `baseUri`.
-
-|connectedJson| `object` | -> {cj-graph} `connectedJson`
-
 |compoundNode| `boolean` |
 Optional.
 Default: `false`. +
 If `true`, and a graph directly contains another graph, the subgraph is interpreted as a __synthetic compound node__, using the graph id and label.
 The handling of compound nodes is application-specific.
 See <<compound_node>> below.
-This is similar to link:https://graphviz.org/Gallery/directed/cluster.html[DOT syntax] using `cluster` as a prefix for subgraphs. Having a cluster prefix is like `"compoundNode": true`.
+This is similar to xref:https://graphviz.org/Gallery/directed/cluster.html[DOT syntax] using `cluster` as a prefix for subgraphs. Having a cluster prefix is like `"compoundNode": true`.
 
 |edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges in this graph and all subgraphs. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`. See <<edge-direction>>.
 
@@ -215,7 +207,7 @@ This is similar to link:https://graphviz.org/Gallery/directed/cluster.html[DOT s
 |label| `string` | Optional. See <<label>>.
 
 
-|meta| `object`(link:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. link:spec-cj.adoc#meta-graph[Graph Metadata]].
+|meta| `object`(xref:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. xref:spec-cj.adoc#meta-graph[Graph Metadata]].
 
 
 // Streaming Data
@@ -298,7 +290,7 @@ The `compoundNode` setting is inherited downwards from parent to child graphs, f
 
 [[node]]
 === Node
-For the default node structure, see link:spec-cj.adoc#node[Node] in {cj}.
+For the default node structure, see xref:spec-cj.adoc#node[Node] in {cj}.
 
 .Property Table
 [options="header",cols="^3m,^2,8"]
@@ -322,7 +314,7 @@ For the default node structure, see link:spec-cj.adoc#node[Node] in {cj}.
 
 [[port]]
 === Port
-For the default port structure, see link:spec-cj.adoc#port[Port] in {cj}.
+For the default port structure, see xref:spec-cj.adoc#port[Port] in {cj}.
 
 [options="header",cols="^3m,^2,8"]
 |===
@@ -342,7 +334,7 @@ For the default port structure, see link:spec-cj.adoc#port[Port] in {cj}.
 
 [[edge]]
 === Edge
-For the default edge structure, see link:spec-cj.adoc#edge[Edge] in {cj}.
+For the default edge structure, see xref:spec-cj.adoc#edge[Edge] in {cj}.
 
 [options="header",cols="^2m,^5,8"]
 |===
@@ -386,9 +378,6 @@ Ports are only available in endpoints syntax.
 |typeNode|`number` (integer)|Interpreted as the <<id>> of the <<node>> that defines the type of edge. Like {cj-edge}.`typeNode`.
 
 
-|directed
-| `boolean`
-|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgeDefault` on <<graph>>.
 
 |endpoints
 | `array` (<<endpoint>> `[]`)
@@ -542,7 +531,7 @@ is the same as
 
 [[endpoint]]
 === Edge Endpoint
-For the default endpoint structure, see link:spec-cj.adoc#endpoint[Endpoint] in {cj}.
+For the default endpoint structure, see xref:spec-cj.adoc#endpoint[Endpoint] in {cj}.
 
 [options="header",cols="^3m,^2,8"]
 |===

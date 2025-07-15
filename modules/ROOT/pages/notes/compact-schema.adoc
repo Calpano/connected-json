@@ -8,7 +8,7 @@ This document is not formally part of the {cj} or {ecj} specification.
 Here is a compact view on which properties are interpreted by {ecj}.
 It is designed to let humans quickly understand which parts of JSON are 'claimed' by {ecj}.
 
-See link:extensible-json.adoc#extension_properties[_Extension Properties_].
+See xref:../extensible-json.adoc#extension_properties[_Extension Properties_].
 
 .Spec including aliases, multilingual labels and Knowledge Graph extension. [To be added: Styling]
 ----

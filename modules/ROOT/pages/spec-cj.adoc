@@ -11,7 +11,7 @@ image::cj-logo.png[width=100%,align="center"]
 
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. +
 Remember it as the connected version of https://json.org[JSON.org] +
-See also: link:spec-ecj.adoc[Extended Connected JSON].
+See also: xref:spec-ecj.adoc[Extended Connected JSON].
 
 [cols="2h,12",width=80%]
 |===
@@ -46,7 +46,7 @@ It supports the semantic capabilities and data representation found in GraphML, 
 
 This format is intended as a universal interchange format for all kinds of graphs, which can be as complex as what GraphML allows -- and that is a lot.
 
-For ways how to interpret similar, much more flexible formats unambiguously as {cj}, look into link:spec-ecj.adoc[Extended CJ].
+For ways how to interpret similar, much more flexible formats unambiguously as {cj}, look into xref:spec-ecj.adoc[Extended CJ].
 
 To support streaming for large graphs (> 1 GB) and to make textual diffing {cj} files easy, we also define **<<canonical_connected_json>>**.
 
@@ -94,7 +94,7 @@ Suggested MIME type: `application/connected+json` (not yet registered).
 We define two main formats:
 
 {cj} (CJ):: A strict format for writing. There is always only one option to encode a structure.
-link:spec-ecj.adoc[{ecj}] (ECJ):: A relaxed superset of CJ for reading. It offers many aliases, shortcuts and variants to interpret JSON as as graph. See link:spec-ecj.adoc[Extended CJ Specification].
+xref:spec-ecj.adoc[{ecj}] (ECJ):: A relaxed superset of CJ for reading. It offers many aliases, shortcuts and variants to interpret JSON as as graph. See xref:spec-ecj.adoc[Extended CJ Specification].
 
 
 These main formats are refined based on allowing comments (https://json5.org/[JSON5] adds comments to JSON) and canonicalization:
@@ -109,7 +109,7 @@ These main formats are refined based on allowing comments (https://json5.org/[JS
 | Connected JSON | `.cj.json5` | Written by tools, commented by humans.  | yes
 | Canonical Connected JSON | `.cj` | Optimized for streaming and diffing | no
 
-4+| Defined in link:spec-ecj.adoc[Extended CJ]
+4+| Defined in xref:spec-ecj.adoc[Extended CJ]
 | Extended Connected JSON | `.json` | Read diverse JSON files | no
 | Extended Connected JSON | `.json5` | Read diverse JSON files | yes
 |===
@@ -576,7 +576,7 @@ Typically, this is represented in an application by adding synthetic 'contains'-
 
 [#streaming]
 === Streaming
-JSON in general is not ideal for streaming data, see also link:notes/streaming-json.adoc[Notes on Streaming JSON].
+JSON in general is not ideal for streaming data, see also xref:notes/streaming-json.adoc[Notes on Streaming JSON].
 However, {ccj} is designed to be streamed efficiently.
 The property tables are sorted for optimized stream processing.
 This order is in contrast to https://www.rfc-editor.org/rfc/rfc8785[RFC 8785] (JSON Canonicalization Scheme, JCS), which defines strict lexicographical order.
