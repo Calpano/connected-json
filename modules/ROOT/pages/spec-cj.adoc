@@ -612,8 +612,11 @@ In general, small properties must come before the large properties (due to value
 {ccj} is a strict subset of {cj}.
 It forbids using comments (no JSON5).
 {ccj} mandates a strict formatting, described below.
-
 Properties in which the value is an empty array should be omitted.
+
+.Summary
+- Mandatory pretty-printing
+- Mandatory property order
 
 === Formatting
 There is no RFC defining JSON pretty-printing.
@@ -626,6 +629,7 @@ Indentation::
 * Each level of nesting within an object or array must be indented.
 * The indentation must consist of two spaces. Tabs must not be used.
 Line-Breaks::
+* The line break character is `\n`.
 * The opening brace `{` of an object and the opening bracket `[` of an array must be placed on the same line as their corresponding key or at the beginning of the document.
 * Each key-value pair in an object and each element in an array must be placed on its own line.
 * The closing brace `}` or bracket `]` must be placed on a new line, aligned with the indentation level of its opening brace or bracket.
@@ -694,13 +698,6 @@ Commas::
 
 .Download
 - xref:attachment$cj-schema.json[JSON Schema]
-- xref:attachment$cj-schema.json5[JSON Schema a JSON5, with comments]
-
-// .JSON Schema for {cj}
-// [source,json]
-// ----
-// include::../attachments/connected-json-schema.json[]
-// ----
 
 [appendix]
 == Reserved Property Names

@@ -1,9 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://j-s-o-n.org/schema/connected-json.json5",
-  "title": "Connected JSON",
+  "title": "Connected JSON (5.0.0)",
   "description": "A JSON schema for Connected JSON v5.0.0. Connected JSON is a format for exchanging connected data like graphs and networks.",
   "type": "object",
+  "additionalProperties": false,
   "definitions": {
     "id": {
       "description": "A unique identifier. Its scope of uniqueness depends on the element it identifies (e.g., document, graph, or node).",
@@ -14,6 +15,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "language": {
             "description": "An optional language tag, typically following BCP 47.",
@@ -39,6 +41,7 @@
     "port": {
       "description": "A connection point on a node, which can be nested.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "id": {
           "description": "A required identifier for the port, unique within its parent node.",
@@ -68,6 +71,7 @@
     "edgeEndpoint": {
       "description": "Defines one end of an edge, connecting it to a node and specifying the direction.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "node": {
           "description": "The required ID of the node this endpoint connects to.",
@@ -111,6 +115,7 @@
     "node": {
       "description": "Represents a node in the graph.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "id": {
           "description": "A required, unique identifier for the node within the top-level graph.",
@@ -148,6 +153,7 @@
     "edge": {
       "description": "Represents a hyperedge connecting two or more nodes.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "id": {
           "description": "An optional, unique identifier for the edge within the top-level graph.",
@@ -198,6 +204,7 @@
     "graphMetadata": {
       "description": "Metadata about a graph, useful for streaming and processing.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "canonical": {
           "description": "If true, indicates the graph follows Canonical CJ ordering and formatting.",
@@ -225,6 +232,7 @@
     "graph": {
       "description": "The main container for nodes and edges. Can be nested to create subgraphs.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "id": {
           "description": "An optional identifier for the graph, unique within the document if at the top level.",
@@ -271,6 +279,7 @@
     "documentMetadata": {
       "description": "Metadata about the Connected JSON document itself.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "versionDate": {
           "description": "The specification version date used by the document, e.g., '2025-07-14'.",

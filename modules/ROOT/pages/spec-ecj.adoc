@@ -128,9 +128,10 @@ If subgraphs are created, those properties inherit downwards as usual.
 
 |connectedJson| `object` | Optional. Document-level. Documented in xref:spec-cj.adoc#meta-document[CJ Document Metadata].
 
-|compoundNode| `boolean` | Optional. Graph-level. Documented in {cj-graph}.
+|compoundNode| `boolean` | Optional. Graph-level. Documented in <<graph>>.
 
-|edgeDefault| `string` | Optional. Graph-level. Documented in {cj-graph}.
+|edgeDefault| `string` | Optional. Graph-level.
+Documented in <<graph>>.
 
 |edges| `array`(<<edge>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
 
