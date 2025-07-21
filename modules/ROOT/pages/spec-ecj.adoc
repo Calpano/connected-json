@@ -350,43 +350,62 @@ See <<edge-direction>> and <<graph>>.`edgeDefault`.
 |label| `object` | -> {cj-edge}.`label`: A {cj-label}.
 |label| `string` | See <<label>>
 
-|graphs| `array` (<<Graph>>[]) | -> {cj-edge} `graphs`: An array of {cj-graph}s.
-|graph| `object`(<<graph>>) | `graph` allowed as alias for `graphs`
-|graph| `array`(<<graph>> `[]`) | `graph` allowed as alias for `graphs`
-|graphs| `object`(<<graph>>) | Polymorph object and array
-
-
-|source
-.2+| `string` or `number` (integer) or `array`(node id `[]`). +
-+
-Either a single node id +
-or an `array` of node ids.
-| Shortcut syntax: All created endpoints are interpreted as _incoming_. I.e. `"source": "n17"` has the same effect as +
-`"endpoint": { "node":"n17", "direction": "in" }`. Ports are only available in endpoints syntax.
-
-| target
-//| Either a single node id or +
-//an `array` of node ids.
-| Shortcut syntax: All created endpoints are interpreted as _outgoing_.
-I.e. +
-`"target": "n12"` has the same effect as +
-`"endpoint": { "node":"n12", "direction": "out" }`.
-Ports are only available in endpoints syntax.
-
 |type|`string`|-> {cj-edge}.`type`
 |typeUri|`string`|-> {cj-edge}.`typeUri`
 |typeNode|`string`| -> {cj-edge}.`typeNode`
 |typeNode|`number` (integer)|Interpreted as the <<id>> of the <<node>> that defines the type of edge. Like {cj-edge}.`typeNode`.
 
+3+e| Defining Endpoints
 
+|source|`string`| A single node id interpreted as _endpoint_ with _direction_ `in`. See below.
+
+|source|`number`| A single node id (converted to string) interpreted as _endpoint_ with _direction_ `in`. See below.
+
+|source|`array`(node id `[]`)| An array containing either strings or integers (converted to strings) interpreted as node id in an endpoint with direction `in`. See below.
+
+|sources|`string`| A single node id interpreted as _endpoint_ with _direction_ `in`. See below.
+
+|sources|`number`| A single node id (converted to string) interpreted as _endpoint_ with _direction_ `in`. See below.
+
+|sources|`array`(node id `[]`)| An array containing either strings or integers (converted to strings) interpreted as node id in an endpoint with direction `in`. See below.
+
+
+|target|`string`| A single node id interpreted as _endpoint_ with _direction_ `out`. See below.
+
+|target|`number`| A single node id (converted to string) interpreted as _endpoint_ with _direction_ `out`. See below.
+
+|target|`array`(node id `[]`)| An array containing either strings or integers (converted to strings) interpreted as node id in an endpoint with direction `out`. See below.
+
+|targets|`string`| A single node id interpreted as _endpoint_ with _direction_ `out`. See below.
+
+|targets|`number`| A single node id (converted to string) interpreted as _endpoint_ with _direction_ `out`. See below.
+
+|targets|`array`(node id `[]`)| An array containing either strings or integers (converted to strings) interpreted as node id in an endpoint with direction `out`. See below.
 
 |endpoints
 | `array` (<<endpoint>> `[]`)
-
 | This is the canonical way to express edges.
+
+3+e| Nested Graphs
+
+|graph | `object` (<<graph>>) | `graph` allowed as alias for `graphs`
+|graph | `array` (<<graph>> `[]`) | `graph` allowed as alias for `graphs`
+|graphs| `object`(<<graph>>) | Polymorph object and array
+|graphs| `array` (<<graph>> `[]`) | -> {cj-edge} `graphs`: An array of {cj-graph}s.
+
 |===
 
-All endpoint-generating properties are evaluated and generate endpoints.
+All endpoint-generating properties () are evaluated and generate endpoints.
+
+.Source(s)
+Shortcut syntax: All created endpoints are interpreted as _incoming_. I.e. `"source": "n17"` has the same effect as +
+`"endpoint": { "node":"n17", "direction": "in" }`. Ports are only available in `endpoints` property.
+
+.Target(s)
+Shortcut syntax: All created endpoints are interpreted as _outgoing_. I.e. +
+`"target": "n12"` has the same effect as +
+`"endpoint": { "node":"n12", "direction": "out" }`.
+
 
 ==== Bi-Edges
 .Simplified Structure for Bi-Edges, without Ports, without Nested Graphs
