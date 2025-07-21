@@ -163,8 +163,6 @@ If both are used, a single array is constructed with the entry of `graph` first,
 
 TIP: The pattern of allowing both (a) a single object or (b) an array of a-objects, is used throughout the spec.
 
-NOTE: A list of allowed alias names is given in the xref:aliases.adoc[] extension.
-@@TODO inline here
 
 [[id]]
 === ID
