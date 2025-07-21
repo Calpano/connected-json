@@ -199,7 +199,8 @@ The handling of compound nodes is application-specific.
 See <<compound_node>> below.
 This is similar to xref:https://graphviz.org/Gallery/directed/cluster.html[DOT syntax] using `cluster` as a prefix for subgraphs. Having a cluster prefix is like `"compoundNode": true`.
 
-|edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges in this graph and all subgraphs. Iff set to `undirected`, every <<edge>> is implied to have set `"directed": false`. See <<edge-direction>>.
+|edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges in this graph and all subgraphs.
+See <<edge-direction>>.
 
 |id| `string` | -> {cj-node}.`id`: a {cj-id}
 |id|`number` (integer) | Is converted to string and interpreted as a {cj-id}.
@@ -345,7 +346,8 @@ For the default edge structure, see xref:spec-cj.adoc#edge[Edge] in {cj}.
 |id| `number` | See <<id>>
 
 |directed| `boolean`
-|Default: `true` (keeps stated endpoint directions, including `undir`). Can be set to `false` to define __all__  endpoint directions as `undir`. See also `edgeDefault` on <<graph>> and <<edge-direction>>.
+|Default: `true`.
+See <<edge-direction>> and <<graph>>.`edgeDefault`.
 
 |label| `object` | -> {cj-edge}.`label`: A {cj-label}.
 |label| `string` | See <<label>>
@@ -651,7 +653,7 @@ The edge direction can be stated in three locations: (1) on the graph, (2) on ea
 
 . The <<graph>> property `edgeDefault` can be used to set a default direction for all edges in the graph.
 The two valid values are `directed` and `undirected` (the default).
-This has only an effect if neither the edge nor and endpoint override this setting.
+This has only an effect if neither the edge nor an endpoint override this setting.
 
 . An <<edge>> may state  a `directed` property.
 If set to `true`, the edge is directed. If set to `false`, the edge is undirected.
