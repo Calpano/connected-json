@@ -210,22 +210,6 @@
           "description": "If true, indicates the graph follows Canonical CJ ordering and formatting.",
           "type": "boolean",
           "default": false
-        },
-        "nodeCountTotal": {
-          "description": "Total number of nodes in this graph and all its subgraphs.",
-          "type": "integer"
-        },
-        "edgeCountTotal": {
-          "description": "Total number of edges in this graph and all its subgraphs.",
-          "type": "integer"
-        },
-        "nodeCountInGraph": {
-          "description": "Number of nodes directly within this graph (excluding subgraphs).",
-          "type": "integer"
-        },
-        "edgeCountInGraph": {
-          "description": "Number of edges directly within this graph (excluding subgraphs).",
-          "type": "integer"
         }
       }
     },

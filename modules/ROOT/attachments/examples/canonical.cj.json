@@ -6,9 +6,7 @@
     {
       "id": "g1",
       "meta": {
-        "canonical": true,
-        "nodeCountInGraph": 3,
-        "edgeCountInGraph": 2
+        "canonical": true
       },
       "label": [
         {

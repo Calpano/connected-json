@@ -330,18 +330,6 @@ To make handling large graphs easier, a graph may include a `meta` header. This 
 I.e., all properties are ordered according to the property tables.
 Default: `false`.
 
-|nodeCountTotal
-| `number`(integer) | Optional. Total count of nodes in this graph including all nodes in subgraphs.
-
-|edgeCountTotal
-| `number`(integer) | Optional. Total count of edges in this graph including all edges in subgraphs.
-
-|nodeCountInGraph
-| `number`(integer) | Optional. The count of nodes directly in this graph excluding nodes in subgraphs.
-
-|edgeCountInGraph
-| `number`(integer) | Optional. The count of edges directly in this graph excluding edges in subgraphs.
-
 |===
 
 
