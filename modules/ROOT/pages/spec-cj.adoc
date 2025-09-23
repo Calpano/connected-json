@@ -63,6 +63,11 @@ include::example$example-1.cj.json[]
 ----
 
 === Change Log
+2025-09-23: Version 6.0.0::
+* Removed graph.meta properties `nodeCountTotal`, `edgeCountTotal`, `nodeCountInGraph`, and `edgeCountInGraph`.
+* Moved `canonical` from graph.meta to document `connectedJson`.
+* Removed graph metadata.
+
 2025-07-14: Version 5.0.0::
 * Split spec into two parts: {cj} for writing strict files, where there is always only one option to encode a structure and {ecj} which is much more liberal and flexible in parsing.
 * Moved `edgeDefault` to {ecj}.
@@ -218,6 +223,9 @@ A graph may state a `connectedJson` property, which is only interpreted at root 
 |===
 | Property | Type | Description
 
+|canonical| `boolean` | Optional. If `true`, this document is considered a canonical representation: All properties are ordered according to the property tables.
+Default: `false`.
+
 |versionDate
 | `string` | Optional. Version date identifier to define the {cj} version used by the document. E.g. `2025-07-10`
 
@@ -299,8 +307,6 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 
 |id| `string` | Optional. Unique identifier for the graph within a <<document>>. See <<id>>.
 
-|meta| `object`(<<meta-graph>>) | Optional. <<meta-graph>>
-
 |label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
 // Streaming Data
@@ -316,21 +322,6 @@ See <<graph-nesting>>.
 
 |===
 
-
-
-[[meta-graph]]
-==== Graph Metadata
-To make handling large graphs easier, a graph may include a `meta` header. This head is most useful at the root graph, before any nodes and edges are stated.
-
-[options="header",cols="^3m,^2,8"]
-|===
-| Property | Type | Description
-
-|canonical| `boolean` | Optional. If `true`, this graph is considered a canonical representation of the graph.
-I.e., all properties are ordered according to the property tables.
-Default: `false`.
-
-|===
 
 
 
@@ -698,7 +689,7 @@ The following property names are used by {cj} in certain places.
 
 | baseUri | <<graph>> base URI for RDF interpretation
 | connectedJson |<<document>>
-| canonical | <<graph>>
+| canonical | <<meta-document>>
 | data | Reserved property for user data. {cj} does not interpret this property for any element.
 | direction | <<endpoint>> direction (in/out/undir)
 | edges | <<graph>> edges
@@ -707,7 +698,6 @@ The following property names are used by {cj} in certain places.
 | id | <<node>> id, <<edge>> id, <<graph>> id, <<port>> id
 | label | <<node>>, <<edge>>, <<graph>>, <<port>>
 | language | <<label>>
-| meta | <<graph>>
 | node | <<endpoint>> referenced node id
 | nodes | <<graph>> nodes
 | port | <<endpoint>> referenced port id

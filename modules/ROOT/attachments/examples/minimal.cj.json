@@ -3,8 +3,8 @@
   "$id": "https://j-s-o-n.org/schema/connected-json/5.0.0",
 
   "connectedJson": {
-    "versionNumber": "5.0.0",
-    "versionDate": "2025-07-14"
+    "versionNumber": "6.0.0",
+    "versionDate": "2025-09-23"
   },
   "graphs": [ ]
 }

@@ -201,18 +201,6 @@
         "endpoints"
       ]
     },
-    "graphMetadata": {
-      "description": "Metadata about a graph, useful for streaming and processing.",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "canonical": {
-          "description": "If true, indicates the graph follows Canonical CJ ordering and formatting.",
-          "type": "boolean",
-          "default": false
-        }
-      }
-    },
     "graph": {
       "description": "The main container for nodes and edges. Can be nested to create subgraphs.",
       "type": "object",
@@ -221,10 +209,6 @@
         "id": {
           "description": "An optional identifier for the graph, unique within the document if at the top level.",
           "$ref": "#/definitions/id"
-        },
-        "meta": {
-          "description": "Optional metadata for the graph.",
-          "$ref": "#/definitions/graphMetadata"
         },
         "label": {
           "description": "An optional label for the graph.",
@@ -272,6 +256,11 @@
         "versionNumber": {
           "description": "The specification version number used by the document, e.g., '5.0.0'.",
           "type": "string"
+        },
+        "canonical": {
+          "description": "If true, indicates the graph follows Canonical CJ ordering and formatting.",
+          "type": "boolean",
+          "default": false
         }
       }
     }
