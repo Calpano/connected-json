@@ -1,0 +1,115 @@
+= JSON XML String
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+A bridge between XML and JSON. For round-tripping XML with proper whitespace handling with JSON formats.
+
+== Analysis
+JSON has only the primitive `String` to represent strings.
+JSON strings have no additional tagging or metadata capabilities.
+
+https://www.w3.org/TR/xml/#dt-cdsection[XML] strings, on the other hand, are much more powerful. In fact, each XML element can be seen as a container for text nodes and sub-elements.
+
+- The text nodes themselves can contain https://www.w3.org/TR/xml/#dt-cdsection[`CDATA` sections].
+- Elements can define https://www.w3.org/TR/xml/#sec-white-space[white-space handling]: +
+The surrounding XML element can define via a special attribute `xml:preserve` whether the XML-consuming app should decide (attribute is absent or value is `default`) or whether the space should be protected (attribute value `preserve`).
+
+XML in practice is used for two scenarios:
+
+.Structured Data
+[source,xml]
+----
+<products>
+    <product category="clothing">
+        T-Shirt
+    </product>
+    <product category="food">
+        Strawberry
+    </product>
+</products>
+----
+
+.Formatted Text
+[source,xml]
+----
+<desc>
+    The <em>sweet</em> strawberry has
+    the best <b>taste</b> of all berries.
+</desc>
+----
+
+And in reality, e.g., in GraphML documents, we have both combined: Structured data (graph, nodes, edges) with formatted text (data, descriptions).
+
+In our example, the `<desc>` could be processed into the JSON string
+----
+"The <em>sweet</em> strawberry has the best <b>taste</b> of all berries."
+----
+
+.Formatted Text with Protected Whitespace
+[source,xml]
+----
+<desc xml:space="preserve">
+    The <em>sweet</em> strawberry has
+    the best <b>taste</b> of all berries.
+</desc>
+----
+
+This example could only be processed into this JSON string
+----
+"\n    The <em>sweet</em> strawberry has\n  the best <b>taste</b> of all berries.\n"
+----
+
+When converting back from the JSON strings, it makes a difference if the string is meant to encode XML or a plain string.
+If written to XML, the characters `<` and `&` need to be escaped as `& l t ;` and `& a m p ;` (no spaces).
+
+== Proposal
+We define a __JSON XML String__ as a new _primitive_ value in our JSON APIs. A JSON XML String has two properties:
+
+xml:: The string value. Required.
+xmlSpace:: This is either `default` (the default) or `preserve`. Optional. It encodes the _effective XML space setting_ at the exporting element.
+
+A JSON XML String can be represented as a JSON object, using exactly two properties, `xml` and `xmlSpace`. The `xmlSpace` property has a default value and may be omitted.
+
+.Example
+****
+.XML
+[source,xml]
+----
+<desc xml:space="preserve">
+
+          Hello &lt;3
+
+</desc>
+----
+The contents of the `<desc>` element can be represented in JSON as
+
+.JSON
+[source,json]
+----
+{
+  "xml": "\n\n          Hello &lt;\n\n",
+  "xmlSpace": "preserve"
+}
+----
+****
+
+When converting back to XML to an element `aaa`, the expected output is
+
+.XML
+[source,xml]
+----
+<aaa xml:space="preserve">
+
+          Hello &lt;3
+
+</aaa>
+----
+
+The empty XML string is in JSON `{"xml":""}`.
+
+NOTE: We use these JSON XML Strings to round-trip GraphML textual XML, which occurs as `<desc>`, `<key><default>` and `<data>` elements.
+
+
+== Practical Advice
+In Graphinout, we use a Jackson JSON parser, inspect JSON objects and report those with the properties `xml` (and optionally also `xmlSpace`) to the next API layer using a custom JSON API, in which JSON XML Strings are a kind of primitive.
+See `IJsonXmlString` in graphinout `base` repository.
