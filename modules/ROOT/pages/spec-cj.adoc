@@ -347,6 +347,7 @@ A node is an atom in the graph.
 
 |===
 
+NOTE: The link:knowledge-graph.adoc[knowledge graph extension] defines `data/content` and `datas/contentType` properties to store content on a node.
 
 [[port]]
 === Port
@@ -427,8 +428,7 @@ See <<endpoint>> and xref:rdf-interpretation.adoc[].
 Precedence between `type`, `typeUri` and `typeNode` is the same as defined for <<endpoint>>.
 
 
-
-
+NOTE: __Weighted edges__ should use `data/weight` to store a JSON number as edge weight.
 
 
 [[endpoint]]
