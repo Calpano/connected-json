@@ -2,7 +2,7 @@
 :prevent-blank-line:
 include::../../partials/_header.adoc[]
 
-This document is not formThis document is not formally part of the {cj} or {ecj} specification.
+This document is not formally part of the {cj} or {ecj} specification.
 
 It describes the rationale for the _Streaming_ recommendations within the {cj} spec.
 The concepts in this document apply to all JSON formats that might get streamed.
