@@ -6,14 +6,14 @@
       "data": {
         "content": "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems.",
         "contentType": "text/plain"
-      },
+      }
     },
     {
       "id": "machine_learning",
       "label": "Machine Learning",
       "data": {
         "content": "Machine Learning is a subset of AI that provides systems the ability to automatically learn and improve from experience without being explicitly programmed.",
-        "contentType": "text/plain",
+        "contentType": "text/plain"
       }
     },
     {
@@ -24,7 +24,7 @@
           "en": "Deep Learning is a subset of machine learning that uses neural networks with many layers.",
           "de": "Deep Learning ist ein Teilbereich des maschinellen Lernens, der neuronale Netze mit vielen Schichten verwendet."
         },
-        "contentType": "text/plain",
+        "contentType": "text/plain"
       }
     },
     {
@@ -32,9 +32,9 @@
       "label": "Neural Networks",
       "data": {
         "content": "<p>Neural networks are computing systems inspired by the <strong>biological neural networks</strong> that constitute animal brains.</p>",
-        "contentType": "text/html",
+        "contentType": "text/html"
       }
-    },
+    }
   ],
   "edges": [
     {
