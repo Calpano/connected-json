@@ -1,0 +1,66 @@
+= Property Graph
+:prevent-blank-line:
+include::../partials/_header.adoc[]
+
+****
+{cj} Property Graph Extension. +
+Version: 0.1.0
+****
+
+Connected JSON (CJ) is inherently an extensible format. This small document describes one option to model a property graph in a CJ-compatible way.
+
+CJ already defines a network of nodes, including node and link labels. Furthermore, link types can be expressed. So what is missing?
+Node types.
+
+
+
+== Elements
+
+[[node]]
+=== Node
+We extend the xref:spec-cj.adoc#node[CJ node] with these properties in its `data` object:
+
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+| type
+| `string` or `string[]` | Type labels for the node.
+
+|===
+
+
+== Example
+
+The following example demonstrates how to model a knowledge graph using Connected JSON with the extensions described above:
+
+
+.Sample in Cypher Syntax
+----
+// Create Person nodes with properties
+CREATE (p1:Person { name: 'Alice', age: 28 })
+CREATE (p2:Person { name: 'Bob', age: 30 })
+
+// Create a Book node
+CREATE (b:Book { title: 'Graph Databases', pages: 250 })
+
+// Create relationships with their own properties
+CREATE (p1)-[:KNOWS { since: 2021 }]->(p2)
+CREATE (p2)-[:READ { rating: 5 }]->(b)
+----
+
+
+
+
+
+.Property Graph Example
+[source,json5]
+----
+include::example$property-graph-example.cj.json5[]
+----
+
+This example shows:
+
+* Nodes with a type
+* Nodes with properties
+* Edges with properties

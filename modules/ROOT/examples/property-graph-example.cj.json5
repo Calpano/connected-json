@@ -1,0 +1,28 @@
+{
+  "$schema": "https://calpano.github.io/connected-json/_attachments/cj-schema.json",
+  "graphs": [
+    {
+      "id": "property-graph-example",
+      "nodes": [
+        // Create Person nodes with properties
+        { "id": "p1",
+          "label": [{ "value": "Alice" } ],
+          "data": { "age": 28, "type": "Person" } },
+        { "id": "p2",
+          "label": [{ "value": "Bob" } ],
+          "data": { "age": 30, "type": "Person" } },
+        // Create a Book node
+        { "id": "b",
+          "label": [{ "value": "Graph Databases" } ],
+          "data": { "pages": 250, "type": "Book" } }
+      ],
+      "edges": [
+        // Create relationships with their own properties
+        { "id": "knows", "type": "KNOWS", "endpoints": [ { "node": "p1" }, { "node": "p2" } ],
+          "data": { "since": 2021 } },
+        { "id": "reads", "type": "READ", "endpoints": [ { "node": "p2" }, { "node": "b" } ],
+          "data": { "rating": 5 } }
+      ]
+    }
+  ]
+}
