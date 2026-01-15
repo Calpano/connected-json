@@ -195,7 +195,7 @@ Default: `false`. +
 If `true`, and a graph directly contains another graph, the subgraph is interpreted as a __synthetic compound node__, using the graph id and label.
 The handling of compound nodes is application-specific.
 See <<compound_node>> below.
-This is similar to xref:https://graphviz.org/Gallery/directed/cluster.html[DOT syntax] using `cluster` as a prefix for subgraphs. Having a cluster prefix is like `"compoundNode": true`.
+This is similar to https://graphviz.org/Gallery/directed/cluster.html[DOT syntax] using `cluster` as a prefix for subgraphs. Having a cluster prefix is like `"compoundNode": true`.
 
 |edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges in this graph and all subgraphs.
 See <<edge-direction>>.
