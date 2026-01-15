@@ -5,7 +5,7 @@ site:
 content:
   sources:
     - url: https://github.com/Calpano/connected-json.git
-      branches: HEAD
+      branches: [main, v*]
 ui:
   bundle:
     url: ./modules/_ui
