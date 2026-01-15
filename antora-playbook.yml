@@ -1,10 +1,10 @@
 site:
   title: Connected JSON
-  #  url: https://example.com
+  url: https://calpano.github.io/connected-json
   start_page: ROOT::spec.adoc
 content:
   sources:
-    - url: https://github.com/Calpano/connected-json.git
+    - url: ./
       branches: [main, v*]
 ui:
   bundle:
@@ -29,6 +29,3 @@ antora:
       index_latest_only: true
       snippet_length: 250
       languages: [ en, de ]
-
-
-
