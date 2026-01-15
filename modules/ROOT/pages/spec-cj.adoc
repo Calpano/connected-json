@@ -15,10 +15,10 @@ See also: xref:spec-ecj.adoc[Extended Connected JSON].
 
 [cols="2h,12",width=80%]
 |===
-| Version | 5.0.0
-| Date | 2025-07-14
+| Version | 7.0.0
+| Date | 2026-01-15
 | Editor | Dr. Max Völkel
-| Status | Last Call Working Drafts (Until 2025-09-31)
+| Status | Working Draft
 | Spec | https://calpano.github.io/connected-json/spec.html[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
@@ -63,6 +63,18 @@ include::example$example-1.cj.json[]
 ----
 
 === Change Log
+Every potentially breaking change increments the major version number. See https://semver.org/[semantic versioning].
+
+2026-01-15: Version 7.0.0::
+* Simplified IDs: Duplicates are not allowed.
+* Added <<uri>> concept.
+* Added `baseUri` also to graphs (was only document before).
+* Simplified edge and endpoint `type` definition.
+* Added node `types`.
+* JSON schema: Fixed `$schema` as allowed property, removed `$id`.
+* __Extended Connected JSON__ is becoming a __JSON Graph Entry Format__ (JSON GEF) in contrast to CJ, which is a __graph interchange format__.
+* Migrated `label` to a JSON object with an `entries` array.
+
 2025-09-23: Version 6.0.0::
 * Removed graph.meta properties `nodeCountTotal`, `edgeCountTotal`, `nodeCountInGraph`, and `edgeCountInGraph`.
 * Moved `canonical` from graph.meta to document `connectedJson`.
@@ -76,7 +88,7 @@ include::example$example-1.cj.json[]
 * Simplified graph nesting. Now a CJ document _is_ a graph (or array of graphs).
 
 2025-07-03: Version 3.0.0::
-* Renamed all properties with a dash to camelCase form. This makes it pragmatically more easy to represent properties in programming languages as variable names or enum values.
+* Renamed all properties with a dash to camelCase form. This makes it pragmatically easier to represent properties in programming languages as variable names or enum values.
 ** `type-node` -> `typeNode`
 ** `type-uri` -> `typeUri`
 * Renamed some lowercase properties to camelCase form. This avoids IDEs and editors complaining about spelling.
@@ -193,6 +205,149 @@ Endpoint *-> Direction
 
 
 
+
+
+== Addressing Elements
+
+[[id]]
+=== ID
+IDs (identifiers) are used in {cj} to address <<node,nodes>>, <<port,ports>>, <<edge,edges>> and <<graph,graphs>>.
+Ids are strings.
+
+.Identifier Scope
+A CJ document MAY NOT contain the same id twice.
+The identifiers for different elements have different scopes in which they must be unique.
+
+**Summary: All ids must be document-wide unique, except port ids, which are only node-local.**
+
+[cols="2,6"]
+|===
+h| Scope h| Comment
+| <<document>> | <<node>> ids, <<edge>> ids and  <<graph>> ids are unique per document.
+Nested graphs do not provide a new id scope.
+| <<node>> | <<port>> ids are only unique within their corresponding <<node>>.
+|===
+
+
+[[baseUri]]
+=== Base URI
+Similar to the way HTML resolves local links, CJ resolves local <<ID, ids>> via a `baseUri`.
+CJ supports nested graphs and each graph may define a `baseUri`.
+Deeper nested `baseUri` declarations overwrite higher defined `baseUri` declarations.
+
+.Active Base URI
+For any element (graph, node, edge) the **active base URI** is the `baseUri` of the nearest enclosing graph.
+For a graph, this can be the `baseUri` property of itself.
+
+- If no `baseUri` is defined in any graph, the active base URI is the `baseUri` of the document.
+- If the `baseUri` of the document is not defined within CJ, it may be provided at export time by the environment as a parameter.
+- If no `baseUri` is given by any means, the `baseUri` is implied as the empty string.
+
+See also the xref:rdf-interpretation.adoc[] of a CJ document.
+
+[[uri]]
+=== URI (Uniform Resource Identifier)
+For `graph`, `edge` and `node`, CJ computes a __URI__,
+a globally unique identifier (URI, https://www.rfc-editor.org/rfc/rfc3986.html[RFC 3986]).
+URIs in CJ are __computed__ from the `id` property.
+
+- If an element `id` is not present (e.g. property not given or the empty string or another JSON type): Element has no URI.
+- `id` contains a colon (`:`): URI is set to the `id` string.
+- `id` contains no colon: URI is computed by concatenating the __active <<baseUri>>__ with the id string.
+
+[CAUTION]
+--
+Nodes are duplicates if they have the same ID or URI.
+Duplicates are not allowed in a CJ graph.
+
+.Example
+A node with id `aaa` base be a duplicate of a node with id `+++https://example.org#aaa+++` if the __baseUri__ is set to `+++https://example.org#+++`.
+--
+
+Ports have no URI.
+
+.RDF
+Graph URIs are only used for RDF export.
+RDF blank nodes are represented using the pseudo-URI-schema `\_:` + a locally unique identifier.
+Nodes with a _blank node_ id (starting with `\_:`) or without and id are both exported as _blank nodes_ in RDF.
+
+
+.Computed URIs
+[plantuml]
+....
+hide empty members
+hide circle
+
+class graph
+class edge
+class endpoint
+class port
+class node
+class graphId as "graph id"
+class graphUri as "graph uri"
+class edgeId as "edge id"
+class edgeUri as "edge uri"
+class nodeId as "node id"
+class nodeUri as "node uri"
+class portId as "port id"
+
+graph *-- graph
+graph *-- node
+graph *-- edge
+
+graph *.. graphId
+graphId ..> graphUri : computed
+edge *--> endpoint
+edge *.. edgeId
+edgeId ..> edgeUri : computed
+node *.. nodeId
+nodeId ..> nodeUri : computed
+port *--> portId
+node *--> port
+....
+
+
+[#addressing]
+=== Addressing
+An `endpoint` refers to a `node`, and optionally to a `port` within the referenced `node`.
+A `edge` or `endpoint`  `type` refers to a `node`.
+
+- `endpoint.node` may be a `node` `id` or node _URI_.
+- `endpoint.port` may be a `port` `id`, but not a URI.
+- `endpoint.type` may be a `node` `id` or node _URI_.
+- `edge.type` may be a `node` `id` or node _URI_.
+
+Why? This mechanism allows CJ to be used completely ignoring URIs and `baseUri`. However, once desired, CJ graphs can be exported with URIs to the semantic web, and remembering this publishing decision in the `baseUri`. Mixed usage is also possible.
+
+.Addressing
+[plantuml]
+....
+hide empty members
+hide circle
+
+class edge
+class endpoint
+class port
+class node
+class nodeId as "node id"
+class nodeUri as "node uri"
+class portId as "port id"
+
+edge *--> endpoint
+node *. nodeId
+nodeId -> nodeUri : computed
+port *-> portId
+endpoint ..> nodeId : 'node'
+endpoint ..> nodeUri  : 'node'
+node *--> port
+nodeId <.. edge : 'type'
+nodeUri <.. edge : 'type'
+nodeId <.. endpoint : 'type'
+nodeUri <.. endpoint : 'type'
+endpoint ..> portId : 'port'
+....
+
+
 == Elements
 
 [[document]]
@@ -206,7 +361,7 @@ Every file is a _document_.
 
 |connectedJson| `object`(<<meta-document>>) | Optional. <<meta-document>>
 
-|baseUri|`string`(URI)| Optional. Is used to fine-tune the xref:rdf-interpretation.adoc[].
+|baseUri|`string`(URI)| Optional. See <<baseUri>>.
 
 |data| `any` | Optional. Allows user-attached <<data>>.
 
@@ -217,7 +372,7 @@ Every file is a _document_.
 
 [[meta-document]]
 ==== Document Metadata
-A graph may state a `connectedJson` property, which is only interpreted at root level.
+A graph MAY state a `connectedJson` property, which is only interpreted at root level.
 
 [options="header",cols="^3m,^2,8"]
 |===
@@ -236,47 +391,42 @@ Default: `false`.
 
 
 
-[[id]]
-=== ID
-IDs (identifiers) are used in {cj} to address <<node,nodes>>, <<port,ports>>, <<edge,edges>> and <<graph,graphs>>.
-Ids are strings.
-
-If an array contains elements with an `id` (this mechanism is used in `graphs`, `nodes`, `edges`) then the ids must be unique within that array.
-If an `id` is for multiple entries in the array, later entries are interpreted as JSON Merge Patch on the earlier ones and a parse warning MUST be emitted.
-The merging is done as defined in https://datatracker.ietf.org/doc/html/rfc7386[RFC 7386].
-
-[[idScope]]
-==== Identifier Scope
-The identifiers for different elements have different scopes in which they must be unique.
-
-[cols="2,6"]
-|===
-h| Scope h| Comment
-| <<document>> | <<node>> ids, <<edge>> ids and  <<graph>> ids are unique per document.
-Nested graphs do not provide a new id scope.
-| <<node>> | <<port>> ids are only unique within their corresponding <<node>>.
-|===
-
-
 
 [[label]]
 === Label
 Labels are used in {cj} to label <<node,nodes>>, <<port,ports>>, <<edge,edges>> and <<graph,graphs>>.
-In {cj}, labels are multilingual: They consist of an object with an optional `language` property and a required `value` property.
-The label itself is an array of such label entries.
+In {cj}, labels are multilingual: Each <<label_entry>> is an object with an optional `language` property and a required `value` property.
+The label itself is an object with an `entries` array of <<label_entry, label entries>>.
 
+.Label Example
 [source,json5]
 ----
-[
+{
+  "entries": [
     {"language":"de", "value": "Hallo, Welt"},
     {"language":"en", "value": "Hello, World"},
     // a value without language information is also allowed
     { "value": "Hi"}
-]
+  ]
+}
 ----
 
-If a language tag (including the empty one) is used multiple times, later entries are interpreted as JSON Merge Patch on the earlier ones and a parse warning MUST be emitted.
-The merging is done as defined in https://datatracker.ietf.org/doc/html/rfc7386[RFC 7386].
+.Property Table in Canonical / Streaming Order
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
+
+|entries| `array`(<<label_entry>>) | Optional.
+
+|data| `any` | Optional. Allows user-attached <<data>>.
+
+|===
+
+
+[#label_entry]
+==== Label Entry
+A language tag with an empty string is interpreted as the default language, the same as an absent language tag.
+Each language tag (including the absent one) may be used at most once.
 
 .Property Table in Canonical / Streaming Order
 [options="header",cols="^3m,^2,8"]
@@ -306,6 +456,8 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 // Streaming Header
 
 |id| `string` | Optional. Unique identifier for the graph within a <<document>>. See <<id>>.
+
+|baseUri|`string`(URI)| Optional. See <<baseUri>>.
 
 |label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
@@ -341,13 +493,16 @@ A node is an atom in the graph.
 
 |ports| `array`(<<port>> `[]`) | Optional array of <<port>>.
 
+|types|`array(string)` |Optional.
+The types of this node, each given as a node `id` or node <<uri,_URI_>>.
+
 |data| `any` | Optional. Allows user-attached <<data>>.
 
 |graphs| `array` (<<graph>> `[]`) | Optional. Graph(s) nested within the node. This turns the node into a compound node. The edges in a subgraph can refer to nodes higher up in the tree of graphs. See <<graph-nesting>>.
 
 |===
 
-NOTE: The link:knowledge-graph.adoc[knowledge graph extension] defines `data/content` and `datas/contentType` properties to store content on a node.
+// NOTE: The link:knowledge-graph.adoc[knowledge graph extension] defines `data/content` and `data/contentType` properties to store content on a node.
 
 [[port]]
 === Port
@@ -373,7 +528,7 @@ This is used in practice graphical editors, where a port is a connection point o
 [[edge]]
 === Edge
 Uses <<endpoint, endpoints>> to link to <<node,nodes>>.
-However, simple bi-edges with only two ends have a shortcut syntax.
+// However, simple bi-edges with only two ends have a shortcut syntax.
 
 The structural model for any edge is this:
 
@@ -404,18 +559,15 @@ NOTE: Edges have been modelled like GraphML. They have been extended with a `typ
 |===
 | Property | Type | Description
 
-|id|`string` |Optional id. Unique per graph. See <<id>>.
+|id|`string` |Optional id. Unique per document. See <<id>>.
 
 |label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
 
-|type|`string`
-.3+|Optional. The kind of edge.
-Any type define here applies to all endpoints.
+|type|`string` |Optional. The kind of edge.
+Any type defined here applies to all endpoints.
 Endpoints override this type, if set.
-See <<endpoint>> and xref:rdf-interpretation.adoc[].
-|typeUri|`string`
-|typeNode|`string`
+See <<endpoint>> and <<addressing>>.
 
 |endpoints| `array` (<<endpoint>> `[]`)| The endpoints define the nodes to which this edge is attached.
 
@@ -424,9 +576,6 @@ See <<endpoint>> and xref:rdf-interpretation.adoc[].
 |graphs| `array` (<<graph>> `[]`) | Optional. Graph(s) nested within the edge. This turns the edge into a compound edge. The edges in a sub-graph can refer to edges higher up in the tree of graphs. See <<graph-nesting>>.
 
 |===
-
-Precedence between `type`, `typeUri` and `typeNode` is the same as defined for <<endpoint>>.
-
 
 NOTE: __Weighted edges__ should use `data/weight` to store a JSON number as edge weight.
 
@@ -443,27 +592,22 @@ NOTE: __Weighted edges__ should use `data/weight` to store a JSON number as edge
 A `string` containing a single __nodeId__ (<<id>>). This is the id of the <<node>> to which this endpoint is attached.
 
 |port| `string` | Optional. __Port id__.
-Port ids are only unique per node/port. See <<id>>. If a port is referenced, it defines in addition to the node where precisely the endpoint is attached. NOTE: All port ids are unique within a node (see <<idScope>>), so that a single string can address all ports directly.
+Port ids are only unique per node/port. See <<id>>. If a port is referenced, it defines in addition to the node where precisely the endpoint is attached. NOTE: All port ids are unique within a node (see <<id>>), so that a single string can address all ports directly.
 
 |direction
 | One of: `in`, `out` or `undir` | Optional.
 Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`.
 
-|type| `string`| Optional. The type of relation from the edge entity to the endpoint node.
-If a URI is given, us `typeUri` instead. This property states the relation as a string, e.g. `works at` or `knows`. Default is `related`.
-
-|typeUri| `string`(URI) | Optional. The type of relation from the edge entity to the endpoint node.
-
-|typeNode| `string` | Uses a node in the graph (referenced by node id, see <<id>>) to define the kind of relation. +
-This is the same strategy that RDF uses:
-property URIs are themselves RDF resources, which can have a label and other edges attached to them.
+|type|`string` |Optional.
+The type of relation from the edge entity to the endpoint node.
+Default type is `related`.
+See <<endpoint>> and <<addressing>>.
 
 |data| `any` | Optional. Allows user-attached <<data>>.
 |===
 
-.Edge Type (`type`, `typeUri`, `typeNode`)
-- Either `type`, `typeUri`, or `typeNode` MAY be used. If several are given, `typeUri` has precedence, then `typeNode`, then `type`.
-Usually, the type of edge is defined at the <<edge>> level.
+.Edge Type (`type`)
+- Usually, the type of edge is defined at the <<edge>> level.
 However, in hyper-edges more complex relations (tuples) may need to be expressed.
 In this case, endpoint-level typing can be used. +
 If both edge and endpoint types are given, the endpoint type has precedence.
@@ -597,7 +741,7 @@ Properties in which the value is an empty array should be omitted.
 - Mandatory pretty-printing
 - Mandatory property order
 
-=== Formatting
+=== Formatting (Pretty-Print)
 There is no RFC defining JSON pretty-printing.
 So here is a small spec.
 We need a compact, defined, format, so that different CJ tools create the exact same syntax.
@@ -618,57 +762,11 @@ Spacing::
 Commas::
 * A comma `,` must follow every element in an array and every key-value pair in an object, except for the last one.
 
-.Example
+.Example for Canonical Connected JSON
 [source,json]
 ----
-{
-  "connectedJson": {
-    "versionDate": "2025-07-14",
-    "versionNumber": "5.0.0"
-  },
-  "baseUri": "http://example.org/",
-  "data": {
-    "author": "Max Völkel"
-  },
-  "graphs": [
-    {
-      "id": "graph1",
-      "meta": {
-        "canonical": true
-      },
-      "label": {
-        "language": "en",
-         "value": "Example Graph"
-      },
-      "nodes": [
-        {
-          "id": "node1",
-          "label": {
-            "language": "en",
-            "value": "Node 1"
-          }
-        }
-      ],
-      "edges": [
-        {
-          "id": "edge1",
-          "label": {
-            "language": "en",
-            "value": "Edge from Node 1 to Node 2"
-          },
-          "endpoints": [
-            {
-              "node": "node1",
-              "direction": "out"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
+include::example$example-canonical.cj.json[]
 ----
-
 
 
 
@@ -687,12 +785,13 @@ The following property names are used by {cj} in certain places.
 |===
 | Property | Usage
 
-| baseUri | <<graph>> base URI for RDF interpretation
+| baseUri | <<document>>, <<graph>> as <<baseUri,base URI>> for RDF interpretation
 | connectedJson |<<document>>
 | canonical | <<meta-document>>
-| data | Reserved property for user data. {cj} does not interpret this property for any element.
+| data | Reserved property for user data. {cj} does not interpret contents of this property for any element.
 | direction | <<endpoint>> direction (in/out/undir)
 | edges | <<graph>> edges
+| entries | <<label>> entries
 | endpoints | <<edge>> endpoints
 | graphs | <<node>> nested graphs, <<edge>> nested graphs
 | id | <<node>> id, <<edge>> id, <<graph>> id, <<port>> id
@@ -703,8 +802,7 @@ The following property names are used by {cj} in certain places.
 | port | <<endpoint>> referenced port id
 | ports | <<node>> ports
 | type | <<edge>>, <<endpoint>>
-| typeNode | <<edge>>, <<endpoint>>
-| typeUri | <<edge>>, <<endpoint>>
+| types | <<node>>
 | value | <<label>>
 | versionDate | <<meta-document>>
 | versionNumber | <<meta-document>>

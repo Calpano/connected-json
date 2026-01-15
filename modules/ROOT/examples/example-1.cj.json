@@ -1,9 +1,10 @@
 {
+  "$schema": "https://j-s-o-n.org/schema/connected-json/7.0.0",
   "connectedJson": {
-    "versionDate": "2025-07-14",
-    "versionNumber": "5.0.0"
+    "versionDate": "2026-01-15",
+    "versionNumber": "7.0.0"
   },
-  "baseUri": "http://example.org/",
+  "baseUri": "https://example.org/",
   "graphs": [{
     "nodes": [
       { "id":  "12" },

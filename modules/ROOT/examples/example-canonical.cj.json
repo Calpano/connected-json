@@ -1,0 +1,45 @@
+{
+  "$schema": "https://j-s-o-n.org/schema/connected-json/7.0.0",
+  "connectedJson": {
+    "canonical": true,
+    "versionDate": "2026-01-15",
+    "versionNumber": "7.0.0"
+  },
+  "baseUri": "https://example.org/",
+  "data": {
+    "author": "Max Völkel"
+  },
+  "graphs": [
+    {
+      "id": "graph1",
+      "label": {
+        "language": "en",
+        "value": "Example Graph"
+      },
+      "nodes": [
+        {
+          "id": "node1",
+          "label": {
+            "language": "en",
+            "value": "Node 1"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge1",
+          "label": {
+            "language": "en",
+            "value": "Edge from Node 1 to Node 2"
+          },
+          "endpoints": [
+            {
+              "node": "node1",
+              "direction": "out"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
