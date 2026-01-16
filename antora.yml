@@ -1,13 +1,12 @@
 # component descriptor
 name: connected-json
 title: Connected JSON
-# version: '1.2.3' on other branches
-version: ~
+version: '7.0.0'
 start_page: spec.adoc
 # prerelease: Draft
 asciidoc:
   attributes:
-    schema-url: https://j-s-o-n.org/schema/cj-schema.json
+    schema-url: https://j-s-o-n.org/schema/7.0.0/cj-schema.json
     experimental: ''
     stem: ''
     sectnums: '@'
