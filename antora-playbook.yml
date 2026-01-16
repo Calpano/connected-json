@@ -1,7 +1,7 @@
 site:
   title: Connected JSON
   url: https://calpano.github.io/connected-json
-  start_page: ROOT::spec.adoc
+  start_page: connected-json::spec.adoc
 content:
   sources:
     - url: ./
