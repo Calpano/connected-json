@@ -3,6 +3,7 @@ name: connected-json
 title: Connected JSON
 # version: '1.2.3' on other branches
 version: ~
+start_page: spec.adoc
 # prerelease: Draft
 asciidoc:
   attributes:
