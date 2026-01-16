@@ -1,0 +1,22 @@
+{ "$schema": "https://j-s-o-n.org/schema/cj-schema.json",
+  "graphs":
+  [ { "id": "social",
+      "label": { "entries": [ { "value": "Simple Social Network" } ] },
+      "nodes": [
+        { "id": "alice",
+          "label": { "entries": [ { "value": "Alice" } ] }
+        },
+        { "id": "bob",
+          "label": { "entries": [ { "value": "Bob" } ] }
+        }
+      ],
+      "edges": [
+        { "type": "knows",
+          "endpoints": [
+            { "node": "alice", "direction": "out" },
+            { "node": "bob", "direction": "in" }
+          ]
+        }
+      ]
+  } ]
+}
