@@ -63,6 +63,9 @@ jobs:
           KROKI_URL: http://localhost:8081
         run: npx antora antora-playbook.yml
 
+      - name: Copy CNAME for custom domain
+        run: cp CNAME site/
+
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
