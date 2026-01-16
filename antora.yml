@@ -1,5 +1,5 @@
 # component descriptor
-name: ROOT
+name: connected-json
 title: Connected JSON
 version: '5.0.0'
 # prerelease: Draft
