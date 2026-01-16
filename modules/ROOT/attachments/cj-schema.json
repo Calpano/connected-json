@@ -7,7 +7,7 @@
   "definitions": {
     "$schema": {
       "type": "string",
-      "const": "http://json-schema.org/draft-07/schema#"
+      "format": "uri"
     },
     "id": {
       "description": "A unique identifier. Its scope of uniqueness depends on the element it identifies (e.g., document, graph, or node).",
