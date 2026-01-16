@@ -675,8 +675,10 @@ Commas::
 [appendix]
 == JSON Schema
 
+Canonical URL: {schema-url}
+
 .Download
-- xref:attachment$cj-schema.json[JSON Schema]
+- {schema-url}[JSON Schema]
 
 [appendix]
 == Reserved Property Names
