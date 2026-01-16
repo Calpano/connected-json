@@ -7,6 +7,7 @@ start_page: spec.adoc
 # prerelease: Draft
 asciidoc:
   attributes:
+    schema-url: https://j-s-o-n.org/schema/cj-schema.json
     experimental: ''
     stem: ''
     sectnums: '@'

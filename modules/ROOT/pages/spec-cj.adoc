@@ -9,7 +9,7 @@ A JSON Format for exchanging connected data (graphs, networks).
 
 image::cj-logo.png[width=100%,align="center"]
 
-Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. +
+Permanent URL: **https://j-s-o-n.org[J-S-O-N.org]**. +
 Remember it as the connected version of https://json.org[JSON.org] +
 See also: xref:spec-ecj.adoc[Extended Connected JSON].
 
@@ -19,7 +19,7 @@ See also: xref:spec-ecj.adoc[Extended Connected JSON].
 | Date | 2026-01-15
 | Editor | Dr. Max Völkel
 | Status | Working Draft
-| Spec | https://calpano.github.io/connected-json/spec.html[this site]
+| Spec | https://j-s-o-n.org/connected-json/spec/[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 
@@ -773,8 +773,10 @@ include::example$example-canonical.cj.json[]
 [appendix]
 == JSON Schema
 
+Canonical URL: {schema-url}
+
 .Download
-- xref:attachment$cj-schema.json[JSON Schema]
+- {schema-url}[JSON Schema]
 
 [appendix]
 == Reserved Property Names
