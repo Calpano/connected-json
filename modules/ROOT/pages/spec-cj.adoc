@@ -675,6 +675,14 @@ Commas::
 [appendix]
 == JSON Schema
 
+// Construct schema URL based on version (empty for main/latest, versioned for release branches)
+ifeval::["{page-component-version}" != ""]
+:schema-url: https://j-s-o-n.org/schema/{page-component-version}/cj-schema.json
+endif::[]
+ifeval::["{page-component-version}" == ""]
+:schema-url: https://j-s-o-n.org/schema/cj-schema.json
+endif::[]
+
 Canonical URL: {schema-url}
 
 .Download
