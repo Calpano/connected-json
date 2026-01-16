@@ -1,7 +1,9 @@
 site:
   title: Connected JSON
-  url: https://calpano.github.io/connected-json
+  url: https://j-s-o-n.org
   start_page: connected-json::spec.adoc
+urls:
+  html_extension_style: indexify
 content:
   sources:
     - url: ./
