@@ -3,3 +3,4 @@
 /node_modules/
 doc-site
 package-lock.json
+/.claude/settings.local.json
