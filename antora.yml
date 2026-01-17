@@ -2,7 +2,7 @@
 name: connected-json
 title: Connected JSON
 version: '7.0.0'
-start_page: spec.adoc
+start_page: index.adoc
 # prerelease: Draft
 asciidoc:
   attributes:
