@@ -726,6 +726,7 @@ In general, small properties must come before the large properties (due to value
 It forbids using comments (no JSON5).
 {ccj} mandates a strict formatting, described below.
 Properties in which the value is an empty array should be omitted.
+Nodes referenced (from edges/endpoints via `type` or `node` or from nodes via `types`) must be omitted if they contain no properties besides their `id`. The existence of theses nodes is already implied.
 
 .Summary
 - Mandatory pretty-printing
