@@ -1,9 +1,9 @@
-* xref:ROOT:spec.adoc[Specifications]
-** xref:ROOT:spec-cj.adoc[Connected JSON (CJ)]
-** xref:ROOT:spec-ecj.adoc[Extended CJ]
+* xref:ROOT:index.adoc[]
+* xref:ROOT:spec-cj.adoc[CJ Specification]
+* https://github.com/Calpano/connected-json/issues[Issues (GitHub)]
+* Pages
+** xref:ROOT:json-graph-entry-format.adoc[Graph Entry Format]
 ** xref:json-xml-string.adoc[JSON XML Strings]
-* https://github.com/Calpano/connected-json/issues[Issues on GitHub]
-* Migrating from
 ** xref:migrating-from-json-graph.adoc[JSON Graph Format]
 ** xref:migrating-from-graphml.adoc[GraphML]
 * xref:rdf-interpretation.adoc[Interpretation as RDF]
