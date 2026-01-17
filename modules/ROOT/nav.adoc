@@ -1,12 +1,12 @@
-* xref:ROOT:index.adoc[]
-* xref:ROOT:spec-cj.adoc[CJ Specification]
+* xref:ROOT:index.adoc[Overview]
+* xref:ROOT:spec-cj.adoc[Specification]
 * https://github.com/Calpano/connected-json/issues[Issues (GitHub)]
 * Pages
 ** xref:ROOT:json-graph-entry-format.adoc[Graph Entry Format]
 ** xref:json-xml-string.adoc[JSON XML Strings]
 ** xref:migrating-from-json-graph.adoc[JSON Graph Format]
 ** xref:migrating-from-graphml.adoc[GraphML]
-* xref:rdf-interpretation.adoc[Interpretation as RDF]
+** xref:rdf-interpretation.adoc[Interpretation as RDF]
 * Notes
 ** xref:notes/extensible-json.adoc[Extensible JSON]
 //** xref:notes/compact-schema.adoc[A compact schema for extensible JSON?]

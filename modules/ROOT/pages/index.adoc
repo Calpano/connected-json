@@ -1,7 +1,7 @@
 = Overview
 :prevent-blank-line:
 include::../partials/_header.adoc[]
-:reftext: Spec
+:reftext: Overview
 :toc: macro
 :toclevels: 4
 

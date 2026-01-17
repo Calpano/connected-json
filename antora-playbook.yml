@@ -1,7 +1,7 @@
 site:
   title: Connected JSON
   url: https://j-s-o-n.org
-  start_page: connected-json::spec.adoc
+  start_page: connected-json::index.adoc
 urls:
   html_extension_style: indexify
   # This replaces 'master' (or whatever your version is)
