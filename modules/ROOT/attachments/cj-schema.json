@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://j-s-o-n.org/schema/connected-json/5.0.0",
+  "$id": "https://j-s-o-n.org/schema/cj-5.0.0.json",
   "title": "Connected JSON (5.0.0)",
   "description": "A JSON schema for Connected JSON v5.0.0. Connected JSON is a format for exchanging connected data like graphs and networks.",
   "type": "object",

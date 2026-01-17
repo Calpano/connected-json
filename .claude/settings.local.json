@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:j-s-o-n.org)",
+      "Bash(git show:*)",
+      "WebFetch(domain:calpano.github.io)",
+      "Bash(curl:*)",
+      "Bash(base=\"https://j-s-o-n.org/connected-json\")",
+      "Bash(for page in spec.html spec-cj.html spec-ecj.html json-xml-string.html migrating-from-graphml.html migrating-from-json-graph.html notes/extensible-json.html notes/streaming-json.html rdf-interpretation.html 5.0.0/spec.html 5.0.0/spec-cj.html 5.0.0/spec-ecj.html 5.0.0/json-xml-string.html 5.0.0/migrating-from-graphml.html 5.0.0/migrating-from-json-graph.html 5.0.0/notes/extensible-json.html 5.0.0/notes/streaming-json.html 5.0.0/rdf-interpretation.html)",
+      "Bash(do)",
+      "Bash(if curl -sL \"$base/$page\")",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(git checkout:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}
