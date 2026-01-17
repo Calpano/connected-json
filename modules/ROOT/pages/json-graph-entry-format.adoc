@@ -1,24 +1,14 @@
-= Extended Connected JSON Specification
-:prevent-blank-line:
-include::../partials/_header.adoc[]
-:reftext: Spec
-:toc: macro
-:toclevels: 4
+= JSON Graph Entry Format (GEF)
+:gef: Graph Entry Format (GEF)
 
-A specification how to interpret various JSON constructs as
+How to interpret various JSON constructs as a graph, mapped to
 xref:spec-cj.adoc[{cj}].
-
-image::ecj-logo.png[width=100%,align="center"]
-
-Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.org[JSON.org] :)
 
 [cols="2h,12",width=80%]
 |===
-| Version | 5.0.0 (http://semver.org[SemVer])
 | Date | 2025-07-14
 | Editor | Dr. Max Völkel
-| Status | Draft
-| Spec | https://calpano.github.io/connected-json/extended-cj.html[this site]
+| Status | Working Draft
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 
@@ -31,8 +21,8 @@ toc::[]
 Real-world JSON comes in many dialects and variants.
 This document defines how to interpret various JSON structures unambiguously as a graph of nodes and edges.
 For clarity, the interpretation as {cj} is given.
-Many formats in the wild are already quite close to {ecj} anyway.
-{ecj} is a superset of https://github.com/jsongraph/json-graph-specification[JSON Graph Format].
+Many formats in the wild are already quite close to {cj} anyway.
+{gef} is a superset of https://github.com/jsongraph/json-graph-specification[JSON Graph Format].
 
 Different from GraphML and {cj}, this format allows flexible data attachment directly onto elements alongside the core graph structure:
 **Any element can carry arbitrary additional properties**.
@@ -41,12 +31,12 @@ No intermediate `data` required.
 As this format is meant for relaxed parsing of various CJ-like JSON dialects, it does not define rules for stream processing. See xref:notes/streaming-json.adoc[] and especially xref:spec-cj.adoc#streaming[Streaming in CJ] for details.
 
 === Example
-First of all, all {cj} files are valid {ecj}.
+First of all, all {cj} files are valid {gef}.
 So look at xref:spec-cj.adoc#example[the example in the CJ specification].
 
 Here is a simple example showcasing some additional features:
 
-.{ecj} Example File
+.{gef} Example File
 [source,json]
 ----
 include::example$example-1.ecj.json5[]
@@ -54,21 +44,21 @@ include::example$example-1.ecj.json5[]
 
 === Change Log
 2025-07-14: Version 5.0.0::
-* Split spec into two parts: {cj} for writing strict files, where there is always only one option to encode a structure and {ecj} which is much more liberal and flexible in parsing.
-* Moved `edgeDefault` to {ecj}.
+* Split spec into two parts: {cj} for writing strict files, where there is always only one option to encode a structure and {gef} which is much more liberal and flexible in parsing.
+* Moved `edgeDefault` to {gef}.
 
 
 == Overview
-{ecj} uses the same xref:spec-cj.adoc#conceptual_model[conceptual model] as {cj}, but it maps a broader range of JSON structures to the graph model.
+{gef} uses the same xref:spec-cj.adoc#conceptual_model[conceptual model] as {cj}, but it maps a broader range of JSON structures to the graph model.
 It is a superset of {cj}.
 
 === Conventions
 Where a property is just copied over from the {cj} specification with the exact same semantics, we use the symbolic `->` to indicate this, followed by a link to the documentation in the Cj spec, prefixed with `CJ:`.
 
 === Polymorphism
-{ecj} uses a kind of 'JSON polymorphism': A property allows multiple JSON types to be used. Interpretation of that JSON value depends on the used type.
+{gef} uses a kind of 'JSON polymorphism': A property allows multiple JSON types to be used. Interpretation of that JSON value depends on the used type.
 
-- For example, the property `label` is in {ecj} either a JSON string or a JSON object (multilingual like in {cj}). Interpretation is defined per property.
+- For example, the property `label` is in {gef} either a JSON string or a JSON object (multilingual like in {cj}). Interpretation is defined per property.
 - Some properties allow for either a JSON object or a JSON array with multiple such objects.
 Example: `graph` and `graphs`. Their interpretation is described below.
 
@@ -79,7 +69,7 @@ The interpretation of an object-vs-array property is by creating an implicit arr
 [cols="a,a"]
 |===
 |
-.{ecj} Input
+.{gef} Input
 [source,json]
 ----
 {
@@ -113,7 +103,7 @@ NOTE: Every element can carry arbitrary JSON properties besides the ones interpr
 For the default document structure, see {cj-document}.
 
 .Root Object as Graph Object
-In {ecj}, a graph can be stated at the root level, without using a `graph` property.
+In {gef}, a graph can be stated at the root level, without using a `graph` property.
 Using a `graph` property is additionally allowed, effectively creating subgraphs.
 If any _Graph-level_ attributes are used, a synthetic root graph is created.
 The graph-level properties are applied to this synthetic root graph.
@@ -151,7 +141,7 @@ Documented in <<graph>>.
 |label| `object` | Optional. Graph-level. Documented in {cj-graph}.
 |label| `string` | Optional. Graph-level. See <<label>>.
 
-|meta| `object`(xref:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. xref:spec-cj.adoc#meta-graph[Graph Metadata]].
+|connectedJson| `object`(xref:spec-cj.adoc#meta-document[Document Metadata]]) | Optional. xref:spec-cj.adoc#meta-document[Graph Metadata]].
 
 |nodes| `array`(<<node>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
 
@@ -166,7 +156,7 @@ TIP: The pattern of allowing both (a) a single object or (b) an array of a-objec
 
 [[id]]
 === ID
-In all places where a {cj-id} can be used, {ecj} also allows to state the ID using a JSON `number`.
+In all places where a {cj-id} can be used, {gef} also allows to state the ID using a JSON `number`.
 This number is converted at parse-time into the corresponding string.
 E.g., the number `3` is convered to the string id `"3"`.
 Floating-point numbers or negative numbers are not allowed.
@@ -182,7 +172,7 @@ In other words: A {cj-label} without language.
 [[graph]]
 === Graph
 For the default graph structure, see xref:spec-cj.adoc#graph[Graph] in {cj}.
-{ecj} adds some aliases.
+{gef} adds some aliases.
 
 .Property Table
 [options="header",cols="^3m,^2,8"]
@@ -233,7 +223,7 @@ The `compoundNode` setting is inherited downwards from parent to child graphs, f
 [cols="a,a"]
 |===
 |
-.{ecj} Input
+.{gef} Input
 [source,json]
 ----
 {
@@ -579,7 +569,7 @@ For the default endpoint structure, see xref:spec-cj.adoc#endpoint[Endpoint] in 
 === Data
 In {cj}, extended data can only be attached to elements via the `data` property.
 
-In {ecj}, data handling is much more relaxed:
+In {gef}, data handling is much more relaxed:
 Each element defined in this spec can have arbitrary additional JSON properties -- except those defined in this spec.
 All additional properties are interpreted as data attached to the structural element.
 Nested JSON is allowed.
@@ -591,7 +581,7 @@ Values within the `data` property remain.
 [cols="a,a"]
 |===
 |
-.{ecj} Input
+.{gef} Input
 [source,json]
 ----
 {
@@ -624,7 +614,7 @@ Edge case: If an object, e.g., a node, is using _both_ a direct JSON property an
 [cols="a,a"]
 |===
 |
-.{ecj} Input
+.{gef} Input
 [source,json]
 ----
 {
@@ -674,7 +664,7 @@ This has only an effect if neither the edge nor an endpoint override this settin
 
 . An <<edge>> may state  a `directed` property.
 If set to `true`, the edge is directed. If set to `false`, the edge is undirected.
-How to interpret a hyperedge with, e.g. 4 endpoints as _directed_? In {ecj}, the first endpoint is interpreted as `in` and all others as `out`.
+How to interpret a hyperedge with, e.g. 4 endpoints as _directed_? In {gef}, the first endpoint is interpreted as `in` and all others as `out`.
 
 . Each <<endpoint>> can use a `direction` property to explicitly state its direction.
 The valid values are `in`, `out`, and `undir` (undirected).
@@ -716,7 +706,7 @@ And a parser warning is emitted if the values differ.
 [cols="a,a"]
 |===
 |
-.{ecj} Graph Input
+.{gef} Graph Input
 [source,json]
 ----
 {

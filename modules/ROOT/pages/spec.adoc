@@ -1,32 +1,33 @@
-= Connected JSON Specifications
+= Connected JSON
 :prevent-blank-line:
 include::../partials/_header.adoc[]
 :reftext: Spec
 :toc: macro
 :toclevels: 4
 
-A JSON Format for exchanging connected data (graphs, networks).
+xref:spec-cj.adoc[{cj}] (CJ) is a JSON format for exchanging connected data (graphs, networks). +
+Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. Remember it as the __connected version__ of https://json.org[JSON.org]. +
+ +
 
-Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. +
-Remember it as the connected version of https://json.org[JSON.org] +
-
-[cols="2h,12",width=80%]
+[cols="3h,7"]
 |===
-| Spec | https://calpano.github.io/connected-json/spec.html[this page]
-| Git | https://github.com/Calpano/connected-json.git[]
+| Full specification | https://j-s-o-n.org/connected-json/spec[] +
+| JSON schema | https://j-s-o-n.org/schema/cj-schema.json[]
 |===
-
-Choose your variant:
-
-xref:spec-cj.adoc[{cj}]::
-**A strict format, for writing**, where each construct has one way in JSON to express it.
 
 image::cj-logo.png[width=100%,align="center"]
 
+CJ is **a strict format, for interchange**, where each construct has one way in JSON to express it.
 
-xref:spec-ecj.adoc[{ecj}]::
-**A relaxed format, for reading**, where each graph construct has multiple ways to express it in JSON. Defines how to interpret a range of JSON graph structures as {cj}.
+.Short Example
+[source,json]
+----
+include::attachment$examples/short.cj.json[]
+----
 
-image::ecj-logo.png[width=100%,align="center"]
 
 
+Import from JSON::
+For importing JSON graph formats, take a look at the xref:json-graph-entry-format.adoc[{gef}], which is a **relaxed format, for human authoring**, where each graph construct has multiple ways to express it in JSON. Defines how to interpret a range of JSON graph structures as {cj}.
+Import other Formats::
+On https://GraphInOut.com, you can convert other formats to and from CJ.

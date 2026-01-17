@@ -23,7 +23,8 @@ ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 :x-comment: ------------------ Content snippets
 :cj: Connected JSON
 :ccj: Canonical CJ
-:ecj: Extended CJ
+:ecj: Extended CJ (->GEF)
+:gef: Graph Entry Format
 :cj-document: xref:spec.adoc#document[CJ:Document]
 :cj-id: xref:spec.adoc#id[CJ:ID]
 :cj-label: xref:spec.adoc#label[CJ:Label]
