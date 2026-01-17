@@ -6,26 +6,32 @@
       "nodes": [
         {
           "id": "city_berlin",
-          "label": [
-            { "language": "en", "value": "Berlin" },
-            { "language": "de", "value": "Berlin" }
-          ]
+          "label": {
+            "entries": [
+              { "language": "en", "value": "Berlin" },
+              { "language": "de", "value": "Berlin" }
+            ]
+          }
         },
         {
           "id": "city_paris",
-          "label": [
-            { "language": "en", "value": "Paris" },
-            { "language": "fr", "value": "Paris" }
-          ]
+          "label": {
+            "entries": [
+              { "language": "en", "value": "Paris" },
+              { "language": "fr", "value": "Paris" }
+            ]
+          }
         }
       ],
       "edges": [
         {
           "id": "e_train",
-          "label": [
-            { "language": "fr", "value": "Ligne de train" },
-            { "language": "en", "value": "Train line" }
-          ],
+          "label": {
+            "entries": [
+              { "language": "fr", "value": "Ligne de train" },
+              { "language": "en", "value": "Train line" }
+            ]
+          },
           "endpoints": [
             { "node": "city_berlin" },
             { "node": "city_paris" }

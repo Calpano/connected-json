@@ -3,27 +3,27 @@
   "graphs": [
     {
       "id": "g1",
-      "label": [
-        { "value": "Simple Social Network" }
-      ],
+      "label": {
+        "entries": [ { "value": "Simple Social Network" } ]
+      },
       "nodes": [
         {
           "id": "n1",
-          "label": [ { "value": "Alice" } ]
+          "label": { "entries": [ { "value": "Alice" } ] }
         },
         {
           "id": "n2",
-          "label": [ { "value": "Bob" } ]
+          "label": { "entries": [ { "value": "Bob" } ] }
         },
         {
           "id": "n3",
-          "label": [ { "value": "Charlie" } ]
+          "label": { "entries": [ { "value": "Charlie" } ] }
         }
       ],
       "edges": [
         {
           "id": "e1",
-          "label": [ { "value": "knows" } ],
+          "label": { "entries": [ { "value": "knows" } ] },
           "endpoints": [
             { "node": "n1", "direction": "out" },
             { "node": "n2", "direction": "in" }
@@ -31,7 +31,7 @@
         },
         {
           "id": "e2",
-          "label": [ { "value": "knows" } ],
+          "label": { "entries": [ { "value": "knows" } ] },
           "endpoints": [
             { "node": "n2", "direction": "out" },
             { "node": "n3", "direction": "in" }

@@ -13,7 +13,7 @@
       "graphs": [
         {
           "id": "europe",
-          "label": [ { "value": "European Partition" } ],
+          "label": { "entries": [ { "value": "European Partition" } ] },
           "nodes": [
             { "id": "germany" },
             { "id": "france" }

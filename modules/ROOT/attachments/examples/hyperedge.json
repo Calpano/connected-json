@@ -3,16 +3,16 @@
   "graphs": [
     {
       "id": "g_hyper",
-      "label": [ { "value": "Chemical Reaction" } ],
+      "label": { "entries": [ { "value": "Chemical Reaction" } ] },
       "nodes": [
-        { "id": "h2", "label": [ { "value": "Hydrogen" } ] },
-        { "id": "o2", "label": [ { "value": "Oxygen" } ] },
-        { "id": "h2o", "label": [ { "value": "Water" } ] }
+        { "id": "h2", "label": { "entries": [ { "value": "Hydrogen" } ] } },
+        { "id": "o2", "label": { "entries": [ { "value": "Oxygen" } ] } },
+        { "id": "h2o", "label": { "entries": [ { "value": "Water" } ] } }
       ],
       "edges": [
         {
           "id": "e_reaction",
-          "label": [ { "value": "Combustion" } ],
+          "label": { "entries": [ { "value": "Combustion" } ] },
           "endpoints": [
             { "node": "h2", "direction": "in", "data": { "stoichiometry": 2 } },
             { "node": "o2", "direction": "in", "data": { "stoichiometry": 1 } },

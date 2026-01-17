@@ -5,14 +5,14 @@
     {
       "id": "g_knowledge",
       "nodes": [
-        { "id": "person_einstein", "label": [ { "value": "Albert Einstein" } ] },
-        { "id": "place_ulm", "label": [ { "value": "Ulm" } ] },
-        { "id": "concept_relativity", "label": [ { "value": "Theory of Relativity" } ] }
+        { "id": "person_einstein", "label": { "entries": [ { "value": "Albert Einstein" } ] } },
+        { "id": "place_ulm", "label": { "entries": [ { "value": "Ulm" } ] } },
+        { "id": "concept_relativity", "label": { "entries": [ { "value": "Theory of Relativity" } ] } }
       ],
       "edges": [
         {
           "id": "e_birthPlace",
-          "typeUri": "birthPlace",
+          "type": "birthPlace",
           "endpoints": [
             { "node": "person_einstein", "direction": "out" },
             { "node": "place_ulm", "direction": "in" }
@@ -20,7 +20,7 @@
         },
         {
           "id": "e_knowsAbout",
-          "typeUri": "knowsAbout",
+          "type": "knowsAbout",
           "endpoints": [
             { "node": "person_einstein", "direction": "out" },
             { "node": "concept_relativity", "direction": "in" }

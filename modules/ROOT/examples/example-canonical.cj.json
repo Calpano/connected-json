@@ -13,15 +13,23 @@
     {
       "id": "graph1",
       "label": {
-        "language": "en",
-        "value": "Example Graph"
+        "entries": [
+          {
+            "language": "en",
+            "value": "Example Graph"
+          }
+        ]
       },
       "nodes": [
         {
           "id": "node1",
           "label": {
-            "language": "en",
-            "value": "Node 1"
+            "entries": [
+              {
+                "language": "en",
+                "value": "Node 1"
+              }
+            ]
           }
         }
       ],
@@ -29,8 +37,12 @@
         {
           "id": "edge1",
           "label": {
-            "language": "en",
-            "value": "Edge from Node 1 to Node 2"
+            "entries": [
+              {
+                "language": "en",
+                "value": "Edge from Node 1 to Node 2"
+              }
+            ]
           },
           "endpoints": [
             {

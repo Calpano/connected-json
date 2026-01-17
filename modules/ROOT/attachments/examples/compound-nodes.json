@@ -6,13 +6,13 @@
       "nodes": [
         {
           "id": "n_server_rack",
-          "label": [ { "value": "Server Rack A" } ],
+          "label": { "entries": [ { "value": "Server Rack A" } ] },
           "graphs": [
             {
               "id": "rack_internals",
               "nodes": [
-                { "id": "web_server", "label": [ { "value": "Web Server" } ] },
-                { "id": "db_server", "label": [ { "value": "Database" } ] }
+                { "id": "web_server", "label": { "entries": [ { "value": "Web Server" } ] } },
+                { "id": "db_server", "label": { "entries": [ { "value": "Database" } ] } }
               ],
               "edges": [
                 {

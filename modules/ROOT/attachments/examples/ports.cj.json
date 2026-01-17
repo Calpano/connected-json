@@ -3,11 +3,11 @@
   "graphs": [
     {
       "id": "g_ports",
-      "label": [ { "value": "Circuit Diagram with Ports" } ],
+      "label": { "entries": [ { "value": "Circuit Diagram with Ports" } ] },
       "nodes": [
         {
           "id": "and_gate",
-          "label": [ { "value": "AND Gate" } ],
+          "label": { "entries": [ { "value": "AND Gate" } ] },
           "ports": [
             { "id": "in1" },
             { "id": "in2" },
@@ -16,11 +16,11 @@
         },
         {
           "id": "ic1",
-          "label": [ { "value": "Microcontroller" } ],
+          "label": { "entries": [ { "value": "Microcontroller" } ] },
           "ports": [
             {
               "id": "gpio",
-              "label": [ { "value": "GPIO Bank" } ],
+              "label": { "entries": [ { "value": "GPIO Bank" } ] },
               "ports": [
                 { "id": "pin1" },
                 { "id": "pin2" }
