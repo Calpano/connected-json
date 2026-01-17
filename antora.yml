@@ -2,8 +2,13 @@
 name: connected-json
 title: Connected JSON
 # version: '1.2.3' on other branches
-version: ~
+version: main
 start_page: spec.adoc
+#    It changes the text in the version picker dropdown.
+display_version: 'Dev'
+# 2. Prerelease Flag: Tells Antora this isn't stable.
+#    This prevents it from being the "default" page if you have stable versions.
+prerelease: true
 # prerelease: Draft
 asciidoc:
   attributes:

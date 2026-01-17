@@ -4,6 +4,9 @@ site:
   start_page: connected-json::spec.adoc
 urls:
   html_extension_style: indexify
+  # This replaces 'master' (or whatever your version is)
+  # with 'next' in the URL only.
+  latest_prerelease_version_segment: 'dev'
 content:
   sources:
     - url: ./
