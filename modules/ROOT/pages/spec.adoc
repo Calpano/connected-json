@@ -25,9 +25,25 @@ CJ is **a strict format, for interchange**, where each construct has one way in 
 include::attachment$examples/short.cj.json[]
 ----
 
+.Example
+[plantuml]
+....
+hide empty members
+hide circle
+
+package social as "Simple Social Network" {
+ class alice as "Alice"
+ class bob as "Bob"
+ alice -> bob : knows
+' class aliceLabel as "Alice" : label
+' class bobLabel as "Bob" : label
+' alice *-- aliceLabel
+' bob *-- bobLabel
+}
+....
 
 
 Import from JSON::
 For importing JSON graph formats, take a look at the xref:json-graph-entry-format.adoc[{gef}], which is a **relaxed format, for human authoring**, where each graph construct has multiple ways to express it in JSON. Defines how to interpret a range of JSON graph structures as {cj}.
 Import other Formats::
-On https://GraphInOut.com, you can convert other formats to and from CJ.
+On https://GraphInOut.com[GraphInOut.com], you can convert other formats to and from CJ.

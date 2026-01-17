@@ -9,20 +9,15 @@ A JSON Format for exchanging connected data (graphs, networks).
 
 image::cj-logo.png[width=100%,align="center"]
 
-Permanent URL: **https://j-s-o-n.org[J-S-O-N.org]**. +
-Remember it as the connected version of https://json.org[JSON.org] +
-See also: xref:spec-ecj.adoc[Extended Connected JSON].
-
-[cols="2h,12",width=80%]
+[.center,cols=">3h,12",width=65%]
 |===
 | Version | 7.0.0
 | Date | 2026-01-15
 | Editor | Dr. Max Völkel
 | Status | Working Draft
-| Spec | https://j-s-o-n.org/connected-json/spec/[this site]
+| Spec | https://j-s-o-n.org/connected-json/7.0.0/spec[]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
-
 
 toc::[]
 
@@ -46,7 +41,7 @@ It supports the semantic capabilities and data representation found in GraphML, 
 
 This format is intended as a universal interchange format for all kinds of graphs, which can be as complex as what GraphML allows -- and that is a lot.
 
-For ways how to interpret similar, much more flexible formats unambiguously as {cj}, look into xref:spec-ecj.adoc[Extended CJ].
+For ways how to interpret similar, much more flexible formats unambiguously as {cj}, look into xref:json-graph-entry-format.adoc[Extended CJ].
 
 To support streaming for large graphs (> 1 GB) and to make textual diffing {cj} files easy, we also define **<<canonical_connected_json>>**.
 
@@ -108,13 +103,11 @@ Every potentially breaking change increments the major version number. See https
 == Overview
 Suggested MIME type: `application/connected+json` (not yet registered).
 
-We define two main formats:
+This specification defines the **CJ** format (Connected JSON).
+There is always only one option to encode a structure.
+For ways how to interpret similar, much more flexible formats unambiguously as {cj}, look into xref:json-graph-entry-format.adoc[JSON Graph Entry Format].
 
-{cj} (CJ):: A strict format for writing. There is always only one option to encode a structure.
-xref:spec-ecj.adoc[{ecj}] (ECJ):: A relaxed superset of CJ for reading. It offers many aliases, shortcuts and variants to interpret JSON as as graph. See xref:spec-ecj.adoc[Extended CJ Specification].
-
-
-These main formats are refined based on allowing comments (https://json5.org/[JSON5] adds comments to JSON) and canonicalization:
+For inline comments, use https://json5.org/[JSON5] together with CJ.
 
 .The Connected JSON Formats
 [%header,cols="3h,1d,3d,1d"]
@@ -123,12 +116,9 @@ These main formats are refined based on allowing comments (https://json5.org/[JS
 
 4+| Defined in {cj} (this specification)
 | Connected JSON | `.cj` or `.cj.json` | Written by tools | no
-| Connected JSON | `.cj.json5` | Written by tools, commented by humans.  | yes
-| Canonical Connected JSON | `.cj` | Optimized for streaming and diffing | no
+| Connected JSON5 | `.cj.json5` | Written by tools, commented by humans.  | yes
+| Canonical Connected JSON | `.cj` | Optimized for streaming and textual diffing | no
 
-4+| Defined in xref:spec-ecj.adoc[Extended CJ]
-| Extended Connected JSON | `.json` | Read diverse JSON files | no
-| Extended Connected JSON | `.json5` | Read diverse JSON files | yes
 |===
 
 All formats restrict JSON to the I-JSON subset defined in https://www.rfc-editor.org/rfc/rfc7493.html[RFC 7493]: No duplicate object properties, UTF-8 encoding, no unpaired UTF-8 surrogate pairs.
@@ -736,6 +726,7 @@ In general, small properties must come before the large properties (due to value
 It forbids using comments (no JSON5).
 {ccj} mandates a strict formatting, described below.
 Properties in which the value is an empty array should be omitted.
+Nodes referenced (from edges/endpoints via `type` or `node` or from nodes via `types`) must be omitted if they contain no properties besides their `id`. The existence of theses nodes is already implied.
 
 .Summary
 - Mandatory pretty-printing

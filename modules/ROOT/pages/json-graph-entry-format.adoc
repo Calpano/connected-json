@@ -39,7 +39,7 @@ Here is a simple example showcasing some additional features:
 .{gef} Example File
 [source,json]
 ----
-include::example$example-1.ecj.json5[]
+include::example$example-1.gef.json5[]
 ----
 
 === Change Log
