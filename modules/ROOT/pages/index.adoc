@@ -22,10 +22,10 @@ CJ is **a strict format, for interchange**, where each construct has one way in 
 .Short Example
 [source,json]
 ----
-include::attachment$examples/short.cj.json[]
+include::attachment$examples/example-short.cj.json[]
 ----
 
-.Example
+.Simple Example
 [plantuml]
 ....
 hide empty members
@@ -42,6 +42,41 @@ package social as "Simple Social Network" {
 }
 ....
 
+.A Longer Example
+[source,json]
+----
+include::attachment$examples/example-medium.cj.json[]
+----
+
+This example shows a hyperedge (booking_82648CX9), a node with a multilingual label (Milan) and an edge with attached JSON data (booking_82648CX9).
+
+.Diagram
+[plantuml]
+....
+hide empty members
+hide circle
+
+package social as "Travel Bookings" {
+ class Person
+ class City
+ class alice as "Alice"
+ class bob as "Bob"
+ class milan {
+    en: Milan
+    it: Milano
+    de: Mailand
+ }
+ class booking_82648CX9<<Edge>> {
+    year: 2026
+ }
+ City <-- milan : type
+ Person <-- alice : type
+ Person <-- bob : type
+ booking_82648CX9 --> alice : traveler
+ booking_82648CX9 --> bob : traveler
+ booking_82648CX9 --> milan : destination
+}
+....
 
 Import from JSON::
 For importing JSON graph formats, take a look at the xref:json-graph-entry-format.adoc[{gef}], which is a **relaxed format, for human authoring**, where each graph construct has multiple ways to express it in JSON. Defines how to interpret a range of JSON graph structures as {cj}.

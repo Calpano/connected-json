@@ -1,0 +1,37 @@
+{ "$schema": "https://j-s-o-n.org/schema/cj-7.0.0.json",
+  "graphs":
+  [ { "id": "social",
+      "label": { "entries": [ { "value": "Travel Bookings" } ] },
+      "nodes": [
+        { "id": "alice",
+          "label": { "entries": [ { "value": "Alice" } ] },
+          "types": [ "Person" ]
+        },
+        { "id": "bob",
+          "label": { "entries": [ { "value": "Bob" } ] },
+          "types": [ "Person" ]
+        },
+        { "id": "milan",
+          "label": { "entries": [
+            { "value": "Milan", "language": "en" },
+            { "value": "Milano", "language": "it" },
+            { "value": "Mailand", "language": "de" }
+          ] },
+          "types": [ "City" ]
+        }
+      ],
+      "edges": [
+        { "id": "booking_82648CX9",
+          "type": "knows",
+          "endpoints": [
+            { "node": "alice", "type": "traveler" },
+            { "node": "bob", "type": "traveler" },
+            { "node": "milan", "type": "destination" }
+          ],
+          "data": {
+            "year": 2026
+          }
+        }
+      ]
+  } ]
+}
