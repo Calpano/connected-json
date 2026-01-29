@@ -1,5 +1,6 @@
 = JSON Graph Entry Format (GEF)
 :gef: Graph Entry Format (GEF)
+:cj: Connected JSON (CJ)
 
 How to interpret various JSON constructs as a graph, mapped to
 xref:spec-cj.adoc[{cj}].
