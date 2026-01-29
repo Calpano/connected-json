@@ -4,6 +4,8 @@ include::../partials/_header.adoc[]
 :reftext: Overview
 :toc: macro
 :toclevels: 4
+:keywords: graph, syntax, cj, connected json, graphml, json, format
+:description: Connected JSON (CJ) is a JSON format for exchanging connected data (graphs, networks).
 
 xref:spec-cj.adoc[{cj}] (CJ) is a JSON format for exchanging connected data (graphs, networks). +
 Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. Remember it as the __connected version__ of https://json.org[JSON.org]. +
