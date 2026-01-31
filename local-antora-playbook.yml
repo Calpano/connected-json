@@ -6,7 +6,6 @@ content:
   sources:
     - url: .
       branches: [main, v*, HEAD]
-      start_path: .
 ui:
   bundle:
     url: ./modules/_ui
