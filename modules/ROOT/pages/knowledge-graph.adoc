@@ -39,7 +39,7 @@ The following example demonstrates how to model a knowledge graph using Connecte
 .Knowledge Graph Example
 [source,json]
 ----
-include::example$knowledge-graph-example.cj.json[]
+include::example$knowledge-graph-example.gef.json[]
 ----
 
 This example shows:

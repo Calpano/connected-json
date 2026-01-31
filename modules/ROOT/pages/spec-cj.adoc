@@ -124,7 +124,7 @@ For inline comments, use https://json5.org/[JSON5] together with CJ.
 All formats restrict JSON to the I-JSON subset defined in https://www.rfc-editor.org/rfc/rfc7493.html[RFC 7493]: No duplicate object properties, UTF-8 encoding, no unpaired UTF-8 surrogate pairs.
 
 
-
+[[conceptual_model]]
 === Conceptual Model
 Before diving into JSON structures, it is  helpful to describe how {cj} sees a graph.
 In general, {cj} supports hyperedges with mixed directionality, like GraphML.

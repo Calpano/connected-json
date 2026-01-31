@@ -71,7 +71,7 @@ The interpretation of an object-vs-array property is by creating an implicit arr
 |===
 |
 .{gef} Input
-[source,json]
+[source,json5]
 ----
 {
   "graphs": {
@@ -81,7 +81,7 @@ The interpretation of an object-vs-array property is by creating an implicit arr
 ----
 
 |.{cj} Interpretation
-[source,json]
+[source,json5]
 ----
 {
   "graphs": [
@@ -101,7 +101,8 @@ NOTE: Every element can carry arbitrary JSON properties besides the ones interpr
 
 [[document]]
 === Document
-For the default document structure, see {cj-document}.
+For the default document structure, see
+xref:spec-cj.adoc#document[CJ document].
 
 .Root Object as Graph Object
 In {gef}, a graph can be stated at the root level, without using a `graph` property.
@@ -115,7 +116,7 @@ If subgraphs are created, those properties inherit downwards as usual.
 |===
 | Property | Type | Description
 
-|baseUri|`string`(URI)| Optional. Document-level. Documented in {cj-document}.
+|baseUri|`string`(URI)| Optional. Document-level. Documented in xref:spec-cj.adoc#document[CJ document].
 
 |connectedJson| `object` | Optional. Document-level. Documented in xref:spec-cj.adoc#meta-document[CJ Document Metadata].
 
@@ -124,10 +125,10 @@ If subgraphs are created, those properties inherit downwards as usual.
 |edgeDefault| `string` | Optional. Graph-level.
 Documented in <<graph>>.
 
-|edges| `array`(<<edge>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
+|edges| `array`(<<edge>> `[]`) | Optional. Graph-level. Documented in <<graph>>.
 
 |graph| `object`(<<graph>>)
-.4+| Optional. Document-level. Can also be used inside graphs. Documented in {cj-document} and {cj-graph}.
+.4+| Optional. Document-level. Can also be used inside graphs. Documented in xref:spec-cj.adoc#document[CJ document] and <<graph>>.
 
 |graphs| `object`(<<graph>>)
 
@@ -136,15 +137,15 @@ Documented in <<graph>>.
 |graphs| `array`(<<graph>> `[]`)
 
 |id| `string`
-.2+| Optional. Graph-level. Documented in {cj-graph}. A number is converted to string to be used as ID.
+.2+| Optional. Graph-level. Documented in <<graph>>. A number is converted to string to be used as ID.
 |id| `number` (integer)
 
-|label| `object` | Optional. Graph-level. Documented in {cj-graph}.
+|label| `object` | Optional. Graph-level. Documented in <<graph>>.
 |label| `string` | Optional. Graph-level. See <<label>>.
 
-|connectedJson| `object`(xref:spec-cj.adoc#meta-document[Document Metadata]]) | Optional. xref:spec-cj.adoc#meta-document[Graph Metadata]].
+|connectedJson| `object`(xref:spec-cj.adoc#meta-document[Document Metadata]]) | Optional. xref:spec-cj.adoc#meta-document[Graph Metadata].
 
-|nodes| `array`(<<node>> `[]`) | Optional. Graph-level. Documented in {cj-graph}.
+|nodes| `array`(<<node>> `[]`) | Optional. Graph-level. Documented in <<graph>>.
 
 |===
 
@@ -157,9 +158,9 @@ TIP: The pattern of allowing both (a) a single object or (b) an array of a-objec
 
 [[id]]
 === ID
-In all places where a {cj-id} can be used, {gef} also allows to state the ID using a JSON `number`.
+In all places where a xref:spec-cj.adoc#id[CJ ID] can be used, {gef} also allows to state the ID using a JSON `number`.
 This number is converted at parse-time into the corresponding string.
-E.g., the number `3` is convered to the string id `"3"`.
+E.g., the number `3` is converted to the string id `"3"`.
 Floating-point numbers or negative numbers are not allowed.
 
 
@@ -168,7 +169,7 @@ Floating-point numbers or negative numbers are not allowed.
 .Shorthand
 A label definition like `"label": "Hello, World"` has no language information.
 It is interpreted as `{ "value": x }` with _x_ being the string value.
-In other words: A {cj-label} without language.
+In other words: A xref:spec-cj.adoc#label[CJ Label] without language.
 
 [[graph]]
 === Graph
@@ -191,25 +192,25 @@ This is similar to https://graphviz.org/Gallery/directed/cluster.html[DOT syntax
 |edgeDefault| `string` | Optional. Default is `directed`. Defines the default directedness for edges in this graph and all subgraphs.
 See <<edge-direction>>.
 
-|id| `string` | -> {cj-node}.`id`: a {cj-id}
-|id|`number` (integer) | Is converted to string and interpreted as a {cj-id}.
+|id| `string` | -> xref:spec-cj.adoc#node[CJ Node].`id`: a xref:spec-cj.adoc#id[CJ ID]
+|id|`number` (integer) | Is converted to string and interpreted as a xref:spec-cj.adoc#id[CJ ID].
 
-|label| `object` | -> {cj-node}.`label`: A {cj-label}.
+|label| `object` | -> xref:spec-cj.adoc#node[CJ Node].`label`: A xref:spec-cj.adoc#label[CJ Label].
 |label| `string` | Optional. See <<label>>.
 
 
-|meta| `object`(xref:spec-cj.adoc#meta-graph[Graph Metadata]]) | Optional. xref:spec-cj.adoc#meta-graph[Graph Metadata]].
+|meta| `object`(xref:spec-cj.adoc#meta-document[Graph Metadata]]) | Optional. xref:spec-cj.adoc#meta-document[Graph Metadata]].
 
 
 // Streaming Data
 |nodes| `array`(<<node>> `[]`) | 0 to n nodes. Default: Empty.
 
-|edges| `array`(<<edge>> `[]`) | -> {cj-graph}.`edges`: An array of {cj-edge}
+|edges| `array`(<<edge>> `[]`) | -> xref:spec-cj.adoc#graph[CJ Graph].`edges`: An array of xref:spec-cj.adoc#edge[CJ Edge]
 
 |graph| `object`(<<graph>>) | `graph` allowed as alias for `graphs`
 |graph| `array`(<<graph>> `[]`) | `graph` allowed as alias for `graphs`
 |graphs| `object`(<<graph>>) | Polymorph object and array
-|graphs| `array`(<<graph>> `[]`) | -> {cj-graph}.`graphs`: An array of {cj-graph}s.
+|graphs| `array`(<<graph>> `[]`) | -> xref:spec-cj.adoc#graph[CJ Graph].`graphs`: An array of xref:spec-cj.adoc#graph[CJ Graph]s.
 
 |===
 
@@ -288,14 +289,14 @@ For the default node structure, see xref:spec-cj.adoc#node[Node] in {cj}.
 |===
 | Property | Type | Description
 
-|id| `string` | -> {cj-node}.`id`: a {cj-id}
-|id|`number` (integer) | Is converted to string and interpreted as a {cj-id}.
+|id| `string` | -> xref:spec-cj.adoc#node[CJ Node].`id`: a xref:spec-cj.adoc#id[CJ ID]
+|id|`number` (integer) | Is converted to string and interpreted as a xref:spec-cj.adoc#id[CJ ID].
 
-|label|`string`| Interpreted as `{ "value": x }` with _x_ being the string value. In other words: A {cj-label} without language.
+|label|`string`| Interpreted as `{ "value": x }` with _x_ being the string value. In other words: A xref:spec-cj.adoc#label[CJ Label] without language.
 
-| ports| `array`(<<port>> `[]`) | -> {cj-node}.`ports`: an array of {cj-port}
+| ports| `array`(<<port>> `[]`) | -> xref:spec-cj.adoc#node[CJ Node].`ports`: an array of xref:spec-cj.adoc#port[CJ Port]
 
-|graphs| `array` (<<Graph>>[]) | -> {cj-node} `graphs`: An array of {cj-graph}s.
+|graphs| `array` (<<Graph>>[]) | -> xref:spec-cj.adoc#node[CJ Node] `graphs`: An array of xref:spec-cj.adoc#graph[CJ Graph]s.
 |graph| `object`(<<graph>>) | `graph` allowed as alias for `graphs`
 |graph| `array`(<<graph>> `[]`) | `graph` allowed as alias for `graphs`
 |graphs| `object`(<<graph>>) | Polymorph object and array
@@ -311,13 +312,13 @@ For the default port structure, see xref:spec-cj.adoc#port[Port] in {cj}.
 |===
 | Property | Type | Description
 
-|id| `string` | -> {cj-port}.`id`: a {cj-id}
+|id| `string` | -> xref:spec-cj.adoc#port[CJ Port].`id`: a xref:spec-cj.adoc#id[CJ ID]
 |id| `number` | See <<id>>
 
-|label| `object` | -> {cj-port}.`label`: A {cj-label}.
+|label| `object` | -> xref:spec-cj.adoc#port[CJ Port].`label`: A xref:spec-cj.adoc#label[CJ Label].
 |label| `string` | See <<label>>
 
-|ports| `array`(<<port>> `[]`) | -> {cj-port}.`ports`: An array of {cj-port}s.
+|ports| `array`(<<port>> `[]`) | -> xref:spec-cj.adoc#port[CJ Port].`ports`: An array of xref:spec-cj.adoc#port[CJ Port]s.
 |===
 
 
@@ -331,20 +332,20 @@ For the default edge structure, see xref:spec-cj.adoc#edge[Edge] in {cj}.
 |===
 | Property | Type | Description
 
-|id| `string` | -> {cj-edge}.`id`: a {cj-id}
+|id| `string` | -> xref:spec-cj.adoc#edge[CJ Edge].`id`: a xref:spec-cj.adoc#id[CJ ID]
 |id| `number` | See <<id>>
 
 |directed| `boolean`
 |Default: `true`.
 See <<edge-direction>> and <<graph>>.`edgeDefault`.
 
-|label| `object` | -> {cj-edge}.`label`: A {cj-label}.
+|label| `object` | -> xref:spec-cj.adoc#edge[CJ Edge].`label`: A xref:spec-cj.adoc#label[CJ Label].
 |label| `string` | See <<label>>
 
-|type|`string`|-> {cj-edge}.`type`
-|typeUri|`string`|-> {cj-edge}.`typeUri`
-|typeNode|`string`| -> {cj-edge}.`typeNode`
-|typeNode|`number` (integer)|Interpreted as the <<id>> of the <<node>> that defines the type of edge. Like {cj-edge}.`typeNode`.
+|type|`string`|-> xref:spec-cj.adoc#edge[CJ Edge].`type`
+|typeUri|`string`|-> xref:spec-cj.adoc#edge[CJ Edge].`typeUri`
+|typeNode|`string`| -> xref:spec-cj.adoc#edge[CJ Edge].`typeNode`
+|typeNode|`number` (integer)|Interpreted as the <<id>> of the <<node>> that defines the type of edge. Like xref:spec-cj.adoc#edge[CJ Edge].`typeNode`.
 
 3+e| Defining Endpoints
 
@@ -382,7 +383,7 @@ See <<edge-direction>> and <<graph>>.`edgeDefault`.
 |graph | `object` (<<graph>>) | `graph` allowed as alias for `graphs`
 |graph | `array` (<<graph>> `[]`) | `graph` allowed as alias for `graphs`
 |graphs| `object`(<<graph>>) | Polymorph object and array
-|graphs| `array` (<<graph>> `[]`) | -> {cj-edge} `graphs`: An array of {cj-graph}s.
+|graphs| `array` (<<graph>> `[]`) | -> xref:spec-cj.adoc#edge[CJ Edge] `graphs`: An array of xref:spec-cj.adoc#graph[CJ Graph]s.
 
 |===
 
@@ -548,18 +549,18 @@ For the default endpoint structure, see xref:spec-cj.adoc#endpoint[Endpoint] in 
 |===
 | Property | Type | Description
 
-|direction|`string`| -> {cj-endpoint}.`direction`. See also <<edge-direction>>.
+|direction|`string`| -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`direction`. See also <<edge-direction>>.
 
-|node| `string` | -> {cj-endpoint}.`node`: A {cj-id}
+|node| `string` | -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`node`: A xref:spec-cj.adoc#id[CJ ID]
 |node| `number` (integer) | Required property. Value may be `string` (see above) or `number` (auto-converted to string). Defines the endpoint node: The node to which the endpoint of the edge is attached.
 
-|port| `string` | -> {cj-endpoint}.`port`
-|port| `number` (integer) | Optional. Interpreted as a {cj-id} to refer to a <<port>>.
+|port| `string` | -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`port`
+|port| `number` (integer) | Optional. Interpreted as a xref:spec-cj.adoc#id[CJ ID] to refer to a <<port>>.
 
-|type| `string`| -> {cj-endpoint}.`type`
-|typeUri| `string`(URI) | -> {cj-endpoint}.`typeUri`
-|typeNode| `string`| -> {cj-endpoint}.`typeNode`
-|typeNode|`number` (integer) | Auto-converted to a string and interpreted like {cj-endpoint}.`typeNode`.
+|type| `string`| -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`type`
+|typeUri| `string`(URI) | -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`typeUri`
+|typeNode| `string`| -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`typeNode`
+|typeNode|`number` (integer) | Auto-converted to a string and interpreted like xref:spec-cj.adoc#endpoint[CJ Endpoint].`typeNode`.
 
 |===
 
@@ -794,4 +795,3 @@ The following property names are used by {cj} in certain places.
 |outgoing|out| xref:spec-cj.adoc#endpoint[Endpoint]
 |undirected|undir| xref:spec-cj.adoc#endpoint[Endpoint]
 |===
-
