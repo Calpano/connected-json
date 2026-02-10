@@ -62,8 +62,8 @@ Every potentially breaking change increments the major version number. See https
 
 2026-01-15: Version 7.0.0::
 * Simplified IDs: Duplicates are not allowed.
-* Added <<uri>> concept.
-* Added `baseUri` also to graphs (was only document before).
+* Replaced `baseUri` with a document-level `@context` namespace map (JSON-LD compatible).
+* Node addressing is by ID only. URIs are computed at export time using `@context`.
 * Simplified edge and endpoint `type` definition.
 * Added node `types`.
 * JSON schema: Fixed `$schema` as allowed property, removed `$id`.
@@ -202,7 +202,12 @@ Endpoint *-> Direction
 [[id]]
 === ID
 IDs (identifiers) are used in {cj} to address <<node,nodes>>, <<port,ports>>, <<edge,edges>> and <<graph,graphs>>.
-Ids are strings.
+IDs are strings.
+
+IDs may use namespace prefixes (e.g. `rdfs:label`, `schema:Person`).
+These prefixed IDs are stored as-is in the CJ document.
+The prefix is resolved to a full URI at export time using the <<context, `@context`>> namespace map.
+IDs without a prefix (no colon) are plain local identifiers.
 
 .Identifier Scope
 A CJ document MAY NOT contain the same id twice.
@@ -219,95 +224,62 @@ Nested graphs do not provide a new id scope.
 |===
 
 
-[[baseUri]]
-=== Base URI
-Similar to the way HTML resolves local links, CJ resolves local <<ID, ids>> via a `baseUri`.
-CJ supports nested graphs and each graph may define a `baseUri`.
-Deeper nested `baseUri` declarations overwrite higher defined `baseUri` declarations.
+[[context]]
+=== Context (Namespace Map)
+{cj} uses a document-level `@context` property to define a namespace map.
+This is a JSON-LD compatible subset: only prefix-to-namespace mappings and an optional `@vocab` default namespace.
 
-.Active Base URI
-For any element (graph, node, edge) the **active base URI** is the `baseUri` of the nearest enclosing graph.
-For a graph, this can be the `baseUri` property of itself.
+The `@context` is used at export time (e.g. RDF export) to expand prefixed IDs into full URIs.
+Within a CJ document, all addressing is by <<id,ID>> only.
 
-- If no `baseUri` is defined in any graph, the active base URI is the `baseUri` of the document.
-- If the `baseUri` of the document is not defined within CJ, it may be provided at export time by the environment as a parameter.
-- If no `baseUri` is given by any means, the `baseUri` is implied as the empty string.
+.Context Example
+[source,json]
+----
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "schema": "https://schema.org/",
+    "@vocab": "https://example.org/"
+  }
+}
+----
 
-See also the xref:rdf-interpretation.adoc[] of a CJ document.
+.Property Table
+[options="header",cols="^3m,^2,8"]
+|===
+| Property | Type | Description
 
-[[uri]]
-=== URI (Uniform Resource Identifier)
-For `graph`, `edge` and `node`, CJ computes a __URI__,
-a globally unique identifier (URI, https://www.rfc-editor.org/rfc/rfc3986.html[RFC 3986]).
-URIs in CJ are __computed__ from the `id` property.
+|__prefix__|`string`(URI)| A namespace prefix mapping. The key is the prefix string, the value is the namespace URI. E.g. `"rdfs": "http://www.w3.org/2000/01/rdf-schema#"`.
 
-- If an element `id` is not present (e.g. property not given or the empty string or another JSON type): Element has no URI.
-- `id` contains a colon (`:`): URI is set to the `id` string.
-- `id` contains no colon: URI is computed by concatenating the __active <<baseUri>>__ with the id string.
+|@vocab|`string`(URI)| Optional. Default namespace URI applied to IDs that contain no colon.
 
-[CAUTION]
---
-Nodes are duplicates if they have the same ID or URI.
-Duplicates are not allowed in a CJ graph.
+|===
 
-.Example
-A node with id `aaa` base be a duplicate of a node with id `+++https://example.org#aaa+++` if the __baseUri__ is set to `+++https://example.org#+++`.
---
+.ID Expansion (Export Only)
+At export time, IDs are expanded to URIs using the `@context`:
+
+- If an `id` starts with `\_:` (not a real URI): the id is a **blank node identifier**. It is kept as-is and never expanded. The `_:` prefix is reserved (as in JSON-LD and RDF). Nodes with a blank node id or without an id are exported as _blank nodes_ in RDF.
+- If an `id` contains a colon (`:`): The part before the first colon is looked up as a prefix in `@context`. If found, the prefix is replaced with the namespace URI to form the full URI. E.g. `rdfs:label` with prefix `"rdfs": "http://www.w3.org/2000/01/rdf-schema#"` expands to `http://www.w3.org/2000/01/rdf-schema#label`.
+- If an `id` contains a colon but the prefix is not in `@context`: The `id` string is assumed to be a full URI already (e.g. `https://example.org/foo`).
+- If an `id` contains no colon and `@vocab` is defined: The URI is `@vocab` + `id`.
+- If an `id` contains no colon and no `@vocab` is defined: The element has no URI.
 
 Ports have no URI.
 
-.RDF
-Graph URIs are only used for RDF export.
-RDF blank nodes are represented using the pseudo-URI-schema `\_:` + a locally unique identifier.
-Nodes with a _blank node_ id (starting with `\_:`) or without and id are both exported as _blank nodes_ in RDF.
-
-
-.Computed URIs
-[plantuml]
-....
-hide empty members
-hide circle
-
-class graph
-class edge
-class endpoint
-class port
-class node
-class graphId as "graph id"
-class graphUri as "graph uri"
-class edgeId as "edge id"
-class edgeUri as "edge uri"
-class nodeId as "node id"
-class nodeUri as "node uri"
-class portId as "port id"
-
-graph *-- graph
-graph *-- node
-graph *-- edge
-
-graph *.. graphId
-graphId ..> graphUri : computed
-edge *--> endpoint
-edge *.. edgeId
-edgeId ..> edgeUri : computed
-node *.. nodeId
-nodeId ..> nodeUri : computed
-port *--> portId
-node *--> port
-....
+See also the xref:rdf-interpretation.adoc[] of a CJ document.
 
 
 [#addressing]
 === Addressing
+All addressing in {cj} is by <<id, ID>>.
+
 An `endpoint` refers to a `node`, and optionally to a `port` within the referenced `node`.
-A `edge` or `endpoint`  `type` refers to a `node`.
+An `edge` or `endpoint` `type` refers to a `node`.
 
-- `endpoint.node` may be a `node` `id` or node _URI_.
-- `endpoint.port` may be a `port` `id`, but not a URI.
-- `endpoint.type` may be a `node` `id` or node _URI_.
-- `edge.type` may be a `node` `id` or node _URI_.
-
-Why? This mechanism allows CJ to be used completely ignoring URIs and `baseUri`. However, once desired, CJ graphs can be exported with URIs to the semantic web, and remembering this publishing decision in the `baseUri`. Mixed usage is also possible.
+- `endpoint.node` is a `node` `id`.
+- `endpoint.port` is a `port` `id`.
+- `endpoint.type` is a `node` `id`.
+- `edge.type` is a `node` `id`.
 
 .Addressing
 [plantuml]
@@ -320,20 +292,15 @@ class endpoint
 class port
 class node
 class nodeId as "node id"
-class nodeUri as "node uri"
 class portId as "port id"
 
 edge *--> endpoint
 node *. nodeId
-nodeId -> nodeUri : computed
 port *-> portId
 endpoint ..> nodeId : 'node'
-endpoint ..> nodeUri  : 'node'
 node *--> port
 nodeId <.. edge : 'type'
-nodeUri <.. edge : 'type'
 nodeId <.. endpoint : 'type'
-nodeUri <.. endpoint : 'type'
 endpoint ..> portId : 'port'
 ....
 
@@ -351,7 +318,7 @@ Every file is a _document_.
 
 |connectedJson| `object`(<<meta-document>>) | Optional. <<meta-document>>
 
-|baseUri|`string`(URI)| Optional. See <<baseUri>>.
+|\@context| `object` | Optional. <<context,Namespace map>> for URI expansion at export time. JSON-LD compatible.
 
 |data| `any` | Optional. Allows user-attached <<data>>.
 
@@ -447,8 +414,6 @@ Contains one or more <<node, nodes>> and/or one or more <<edge, edges>>.
 
 |id| `string` | Optional. Unique identifier for the graph within a <<document>>. See <<id>>.
 
-|baseUri|`string`(URI)| Optional. See <<baseUri>>.
-
 |label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
 // Streaming Data
@@ -484,7 +449,7 @@ A node is an atom in the graph.
 |ports| `array`(<<port>> `[]`) | Optional array of <<port>>.
 
 |types|`array(string)` |Optional.
-The types of this node, each given as a node `id` or node <<uri,_URI_>>.
+The types of this node, each given as a node `id`. See <<addressing>>.
 
 |data| `any` | Optional. Allows user-attached <<data>>.
 
@@ -554,7 +519,7 @@ NOTE: Edges have been modelled like GraphML. They have been extended with a `typ
 |label| `object` | Optional. Label (name) of the graph. See <<label>>.
 
 
-|type|`string` |Optional. The kind of edge.
+|type|`string` |Optional. The kind of edge, given as a node `id`.
 Any type defined here applies to all endpoints.
 Endpoints override this type, if set.
 See <<endpoint>> and <<addressing>>.
@@ -578,8 +543,7 @@ NOTE: __Weighted edges__ should use `data/weight` to store a JSON number as edge
 |===
 | Property | Type | Description
 
-|node| `string` | Required. __Node id__.
-A `string` containing a single __nodeId__ (<<id>>). This is the id of the <<node>> to which this endpoint is attached.
+|node| `string` | Required. __Node id__ (<<id>>). The id of the <<node>> to which this endpoint is attached.
 
 |port| `string` | Optional. __Port id__.
 Port ids are only unique per node/port. See <<id>>. If a port is referenced, it defines in addition to the node where precisely the endpoint is attached. NOTE: All port ids are unique within a node (see <<id>>), so that a single string can address all ports directly.
@@ -589,9 +553,9 @@ Port ids are only unique per node/port. See <<id>>. If a port is referenced, it 
 Maps to _incoming_ (`in`), _outgoing_ (`out`), or _undirected_ (`undir`). Default is `undir`.
 
 |type|`string` |Optional.
-The type of relation from the edge entity to the endpoint node.
+The type of relation from the edge entity to the endpoint node, given as a node `id`.
 Default type is `related`.
-See <<endpoint>> and <<addressing>>.
+See <<addressing>>.
 
 |data| `any` | Optional. Allows user-attached <<data>>.
 |===
@@ -786,7 +750,7 @@ The following property names are used by {cj} in certain places.
 |===
 | Property | Usage
 
-| baseUri | <<document>>, <<graph>> as <<baseUri,base URI>> for RDF interpretation
+| @context | <<document>> <<context,namespace map>> for URI expansion
 | connectedJson |<<document>>
 | canonical | <<meta-document>>
 | data | Reserved property for user data. {cj} does not interpret contents of this property for any element.

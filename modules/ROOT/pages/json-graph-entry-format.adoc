@@ -116,7 +116,7 @@ If subgraphs are created, those properties inherit downwards as usual.
 |===
 | Property | Type | Description
 
-|baseUri|`string`(URI)| Optional. Document-level. Documented in xref:spec-cj.adoc#document[CJ document].
+|\@context| `object` | Optional. Document-level. Documented in xref:spec-cj.adoc#context[CJ Context (Namespace Map)].
 
 |connectedJson| `object` | Optional. Document-level. Documented in xref:spec-cj.adoc#meta-document[CJ Document Metadata].
 
@@ -343,9 +343,6 @@ See <<edge-direction>> and <<graph>>.`edgeDefault`.
 |label| `string` | See <<label>>
 
 |type|`string`|-> xref:spec-cj.adoc#edge[CJ Edge].`type`
-|typeUri|`string`|-> xref:spec-cj.adoc#edge[CJ Edge].`typeUri`
-|typeNode|`string`| -> xref:spec-cj.adoc#edge[CJ Edge].`typeNode`
-|typeNode|`number` (integer)|Interpreted as the <<id>> of the <<node>> that defines the type of edge. Like xref:spec-cj.adoc#edge[CJ Edge].`typeNode`.
 
 3+e| Defining Endpoints
 
@@ -558,9 +555,6 @@ For the default endpoint structure, see xref:spec-cj.adoc#endpoint[Endpoint] in 
 |port| `number` (integer) | Optional. Interpreted as a xref:spec-cj.adoc#id[CJ ID] to refer to a <<port>>.
 
 |type| `string`| -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`type`
-|typeUri| `string`(URI) | -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`typeUri`
-|typeNode| `string`| -> xref:spec-cj.adoc#endpoint[CJ Endpoint].`typeNode`
-|typeNode|`number` (integer) | Auto-converted to a string and interpreted like xref:spec-cj.adoc#endpoint[CJ Endpoint].`typeNode`.
 
 |===
 
@@ -750,7 +744,7 @@ The following property names are used by {cj} in certain places.
 |===
 | Property | Usage
 
-| baseUri | CJ: <<graph>> base URI for RDF interpretation
+| @context | CJ: <<document>> namespace map for URI expansion
 | description | Suggested for <<node>>, <<edge>>, <<graph>>, <<port>>, <<endpoint>> description. Will end up in `data`.
 |dir| Alias for <<edge>> `direction`
 .3+| directed | <<edge>> directedness
@@ -781,8 +775,6 @@ The following property names are used by {cj} in certain places.
 | targets | Alias for <<edge>> `target`
 | to | Alias for <<edge>> `target`
 | type | CJ: <<edge>>, <<endpoint>>
-| typeNode | CJ: <<edge>>, <<endpoint>>
-| typeUri | CJ: <<edge>>, <<endpoint>>
 | value | CJ: <<label>>
 |===
 
