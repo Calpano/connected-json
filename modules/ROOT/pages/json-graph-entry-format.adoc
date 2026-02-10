@@ -1,5 +1,14 @@
 = JSON Graph Entry Format (GEF)
 :gef: Graph Entry Format (GEF)
+:cj: Connected JSON (CJ)
+:cj-document: xref:spec-cj.adoc#document[CJ Document]
+:cj-graph: xref:spec-cj.adoc#graph[CJ Graph]
+:cj-node: xref:spec-cj.adoc#node[CJ Node]
+:cj-edge: xref:spec-cj.adoc#edge[CJ Edge]
+:cj-endpoint: xref:spec-cj.adoc#endpoint[CJ Endpoint]
+:cj-port: xref:spec-cj.adoc#port[CJ Port]
+:cj-id: xref:spec-cj.adoc#id[CJ ID]
+:cj-label: xref:spec-cj.adoc#label[CJ Label]
 
 How to interpret various JSON constructs as a graph, mapped to
 xref:spec-cj.adoc[{cj}].
