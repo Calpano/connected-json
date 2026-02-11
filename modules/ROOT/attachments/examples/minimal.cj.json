@@ -1,8 +1,8 @@
 {
-  "$schema": "https://j-s-o-n.org/schema/cj-7.0.0.json",
+  "$schema": "https://j-s-o-n.org/schema/cj-8.0.0.json",
   "connectedJson": {
-    "versionNumber": "6.0.0",
-    "versionDate": "2025-09-23"
+    "versionNumber": "8.0.0",
+    "versionDate": "2026-02-10"
   },
   "graphs": [ ]
 }

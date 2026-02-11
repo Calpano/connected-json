@@ -11,11 +11,11 @@ image::cj-logo.png[width=100%,align="center"]
 
 [.center,cols=">3h,12",width=65%]
 |===
-| Version | 7.0.0
-| Date | 2026-01-15
+| Version | 8.0.0
+| Date | 2026-02-10
 | Editor | Dr. Max Völkel
 | Status | Working Draft
-| Spec | https://j-s-o-n.org/connected-json/7.0.0/spec[]
+| Spec | https://j-s-o-n.org/connected-json/8.0.0/spec[]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 
@@ -59,6 +59,9 @@ include::example$example-1.cj.json[]
 
 === Change Log
 Every potentially breaking change increments the major version number. See https://semver.org/[semantic versioning].
+
+2026-02-10: Version 8.0.0::
+* TBD
 
 2026-01-15: Version 7.0.0::
 * Simplified IDs: Duplicates are not allowed.

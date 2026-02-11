@@ -69,9 +69,9 @@ jobs:
       - name: Copy schemas to clean URLs
         run: |
           mkdir -p site/schema
-          # Find all schema files and copy to clean paths like /schema/cj-7.0.0.json
+          # Find all schema files and copy to clean paths like /schema/cj-1.2.3.json
           find site/connected-json -name 'cj-schema.json' | while read schema; do
-            # Extract version from path (e.g., site/connected-json/7.0.0/_attachments/...)
+            # Extract version from path (e.g., site/connected-json/1.2.3/_attachments/...)
             version=$(echo "$schema" | sed -n 's|site/connected-json/\([0-9][^/]*\)/_attachments/.*|\1|p')
             if [ -n "$version" ]; then
               cp "$schema" "site/schema/cj-${version}.json"

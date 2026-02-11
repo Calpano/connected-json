@@ -1,8 +1,8 @@
 {
-  "$schema": "https://j-s-o-n.org/schema/cj-7.0.0.json",
+  "$schema": "https://j-s-o-n.org/schema/cj-8.0.0.json",
   "connectedJson": {
-    "versionDate": "2026-01-15",
-    "versionNumber": "7.0.0"
+    "versionDate": "2026-02-10",
+    "versionNumber": "8.0.0"
   },
   "@context": {
     "@vocab": "https://example.org/"
