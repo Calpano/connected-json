@@ -3,14 +3,14 @@
 
 A release version for `1.2.3` needs:
 
-- [ ] a branch named `v1.2.3`
+- [ ] a branch named `v1.2.3` (our convention, Antora ignores that name)
 - [ ] modify link:antora.yml[]
 
 +
 [source,yml]
 ----
-# branch to fetch from
-version: v1.2.3
+# used by Antora as output directory name — no 'v' prefix!
+version: '1.2.3'
 
 # version to display in version picker
 display_version: '1.2.3'

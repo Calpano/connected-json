@@ -32,13 +32,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch all branches
-        run: |
-          git fetch --all
-          for branch in $(git branch -r | grep -v '\->' | grep -v 'HEAD'); do
-            git branch --track "${branch#origin/}" "$branch" 2>/dev/null || true
-          done
-
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
@@ -58,26 +51,19 @@ jobs:
             curl -s http://localhost:8081/health | grep -q 'pass' && break || attempt=$((attempt+1)) && sleep 1
           done
 
+      - name: Fetch all branches
+        run: |
+          git fetch --all
+          for branch in $(git branch -r | grep -v '\->' | grep -v 'HEAD'); do
+            git branch --track "${branch#origin/}" "$branch" 2>/dev/null || true
+          done
+
       - name: Generate Site
         env:
           KROKI_URL: http://localhost:8081
-        run: npx antora antora-playbook.yml
-
-      - name: Copy CNAME for custom domain
-        run: cp CNAME site/
-
-      - name: Copy schemas to clean URLs
         run: |
-          mkdir -p site/schema
-          # Find all schema files and copy to clean paths like /schema/cj-1.2.3.json
-          find site/connected-json -name 'cj-schema.json' | while read schema; do
-            # Extract version from path (e.g., site/connected-json/1.2.3/_attachments/...)
-            version=$(echo "$schema" | sed -n 's|site/connected-json/\([0-9][^/]*\)/_attachments/.*|\1|p')
-            if [ -n "$version" ]; then
-              cp "$schema" "site/schema/cj-${version}.json"
-              echo "Copied $schema -> site/schema/cj-${version}.json"
-            fi
-          done
+          chmod +x gen-site.sh
+          ./gen-site.sh
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
