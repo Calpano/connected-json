@@ -4,3 +4,4 @@
 doc-site
 package-lock.json
 /.claude/settings.local.json
+/site
