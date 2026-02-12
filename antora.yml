@@ -8,7 +8,7 @@ start_page: index.adoc
 display_version: '8.0.0'
 # 2. Prerelease Flag: Tells Antora this isn't stable.
 #    This prevents it from being the "default" page if you have stable versions.
-prerelease: true
+prerelease: false
 # prerelease: Draft
 asciidoc:
   attributes:
