@@ -1,0 +1,23 @@
+= How To Release
+
+
+A release version for `1.2.3` needs:
+
+- [ ] a branch named `v1.2.3`
+- [ ] modify link:antora.yml[]
+
++
+[source,yml]
+----
+# branch to fetch from
+version: v1.2.3
+
+# version to display in version picker
+display_version: '1.2.3'
+
+# ensure this is not marked as prerelease
+prerelease: false
+----
+
+- [ ] push changes to `v1.2.3`-branch, to store them
+- [ ] push `main` branch to trigger the deploy
