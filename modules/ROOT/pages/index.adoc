@@ -11,8 +11,8 @@ Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. Remember it as the __connect
 
 [cols="3h,7"]
 |===
-| Full specification | https://j-s-o-n.org/connected-json/spec[] +
-| JSON schema | https://j-s-o-n.org/schema/cj-schema.json[]
+| Full specification | xref:spec-cj.adoc[] +
+| JSON schema | https://j-s-o-n.org/schema/cj-7.0.0.json[]
 |===
 
 image::cj-logo.png[width=100%,align="center"]
