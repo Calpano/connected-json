@@ -18,7 +18,7 @@ Permanent URL: **http://j-s-o-n.org[J-S-O-N.org]**. The connected https://json.o
 | Date | 2025-07-14
 | Editor | Dr. Max Völkel
 | Status | Draft
-| Spec | https://calpano.github.io/connected-json/extended-cj.html[this site]
+| Spec | xref:spec-ecj.adoc[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 

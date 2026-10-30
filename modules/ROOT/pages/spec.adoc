@@ -12,7 +12,7 @@ Remember it as the connected version of https://json.org[JSON.org] +
 
 [cols="2h,12",width=80%]
 |===
-| Spec | https://calpano.github.io/connected-json/spec.html[this page]
+| Spec | xref:spec.adoc[this page]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 

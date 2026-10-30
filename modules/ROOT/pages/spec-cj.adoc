@@ -19,7 +19,7 @@ See also: xref:spec-ecj.adoc[Extended Connected JSON].
 | Date | 2025-07-14
 | Editor | Dr. Max Völkel
 | Status | Last Call Working Drafts (Until 2025-09-31)
-| Spec | https://calpano.github.io/connected-json/spec.html[this site]
+| Spec | xref:spec-cj.adoc[this site]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 
