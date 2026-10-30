@@ -24,6 +24,11 @@ if [ -f site/index.html ] && ! grep -q 'rel="icon"' site/index.html; then
 fi
 # Copy schemas to clean URLs
 mkdir -p site/schema
+# main is published under "dev"; expose its schema as the unversioned "latest" URL
+if [ -f site/connected-json/dev/_attachments/cj-schema.json ]; then
+  cp site/connected-json/dev/_attachments/cj-schema.json site/schema/cj-schema.json
+  echo "Copied dev schema -> site/schema/cj-schema.json"
+fi
 # Find all schema files and copy to clean paths like /schema/cj-1.2.3.json
 find site/connected-json -name 'cj-schema.json' | while read schema; do
   # Extract version from path (e.g., site/connected-json/1.2.3/_attachments/...)

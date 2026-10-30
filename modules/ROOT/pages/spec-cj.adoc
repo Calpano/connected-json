@@ -15,7 +15,7 @@ image::cj-logo.png[width=100%,align="center"]
 | Date | 2026-02-10
 | Editor | Dr. Max Völkel
 | Status | Working Draft
-| Spec | https://j-s-o-n.org/connected-json/8.0.0/spec[]
+| Spec | https://j-s-o-n.org/connected-json/8.0.0/spec-cj/[]
 | Git | https://github.com/Calpano/connected-json.git[]
 |===
 

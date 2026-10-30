@@ -67,10 +67,10 @@ ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 :pointY: Ⓨ
 :pointZ: Ⓩ
 :ticket: https://github.com/Calpano/connected-json/issues/
-// Construct schema URL based on version (empty for main/latest, versioned for release branches)
-ifeval::["{page-component-version}" != ""]
+// Construct schema URL based on version ("main" for the dev build, versioned for release branches)
+ifeval::["{page-component-version}" != "main"]
 :schema-url: https://j-s-o-n.org/schema/cj-{page-component-version}.json
 endif::[]
-ifeval::["{page-component-version}" == ""]
+ifeval::["{page-component-version}" == "main"]
 :schema-url: https://j-s-o-n.org/schema/cj-schema.json
 endif::[]
