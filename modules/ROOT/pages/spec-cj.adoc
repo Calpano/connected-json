@@ -519,7 +519,7 @@ NOTE: Edges have been modelled like GraphML. They have been extended with a `typ
 
 |id|`string` |Optional id. Unique per document. See <<id>>.
 
-|label| `object` | Optional. Label (name) of the graph. See <<label>>.
+|label| `object` | Optional. Label (name) of the edge. See <<label>>.
 
 
 |type|`string` |Optional. The kind of edge, given as a node `id`.
