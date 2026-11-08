@@ -98,7 +98,7 @@ Given document `@context`: `{ "ex": "https://example.org/" }`
 {
   "id": "sale123",
   "source": ["n12","n3","n123"],
-  "target": ["n17","n100"],
+  "target": ["n17","n500"],
   "endpoints": [
     { "node": "n100", "direction": "in",
       "type": "ex:sells" },
@@ -113,6 +113,21 @@ interpretation as RDF (Turtle Syntax)
 [source,turtle]
 ----
 @prefix ex: <https://example.org/> .
+ex:n100 ex:sells ex:n17 .
+ex:n100 ex:sells ex:n500 .
+ex:n100 ex:sells ex:n3 .
 ex:n100 ex:sells ex:item-1 .
+ex:n12  ex:buys  ex:n17 .
+ex:n12  ex:buys  ex:n500 .
+ex:n12  ex:buys  ex:n3 .
 ex:n12  ex:buys  ex:item-1 .
 ----
+
+All endpoint properties generate endpoints, so the edge has nine:
+
+* from `source`: `n12`, `n3`, `n123`, each `in`, untyped;
+* from `target`: `n17`, `n500`, each `out`, untyped;
+* from `endpoints`: `n100` (`in`, `ex:sells`), `n12` (`in`, `ex:buys`), `n3` (`undir`), `item-1` (`out`).
+
+Only the two typed endpoints generate triples. Both are `in`, so each is the subject in every pair with an `out` or `undir` endpoint (`n17`, `n500`, `n3`, `item-1`), and is skipped in every pair with another `in` endpoint.
+All other pairs have no type and generate no triple.
